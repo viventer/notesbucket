@@ -24,8 +24,9 @@
 - Notatki uporządkowane są w hierarchicznej strukturze folderów i podfolderów np. polski -> romantyzm -> dziady -> notatka1.md
 - Aplikacja pozwala na operacje CRUD na folderach, podfolderach i notatkach
 - możliwa jest zmiana nazw notatek i folderów
-- przenoszenie notatek i podfolderów w inne miejsca za pomocą jakiejś biblioteki dnd
+- notatki można przenosić do innych folderów/podfolderów zmieniając ścieżkę u góry
 - Nazwy folderów i plików odpowiadają nazwą, które widzi użytkownik końcowy nawigując się po aplikacji
+- w przypadku usunięcia folderu - notatki trafiają do folderu "Pozostałe", on jest niemożliwy do usunięcia
 
 #### 4. Zarządzanie użytkownikami
 
@@ -53,6 +54,7 @@
 
 - użytkownik może nawigować się po notatkach jak po strukturze katalogów
 - nad strukturą katalogów obecna jest wyszukiwarka, w której może szukać notatek po nazwach katalogów, podkatalogów i samych notatek
+- możliwość pobrania notatek (w formacie github pdf), skopiowania i wydrukowania
 
 ## Wykorzystywane technologie
 
