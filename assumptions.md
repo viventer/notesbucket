@@ -31,8 +31,8 @@
 #### 4. Zarządzanie użytkownikami
 
 - usuwanie użytkowników
-- określanie dostępu do notatek - administrator może określić do których folderów ma mieć dostęp użytkownik (domyślnie do żadnych)
-- konta użytkowników, którzy nie dostali dostępu do żadnych folderów przez dwa tygodnie są automatycznie usuwane
+- określanie dostępu do notatek - administrator może określić do których kategorii ma mieć dostęp użytkownik (domyślnie do żadnych)
+- konta użytkowników, którzy nie dostali dostępu do żadnych kategorii przez dwa tygodnie są automatycznie usuwane
 
 ### Po stronie end usera
 
@@ -48,7 +48,9 @@
 - przycisk sprawdź przenosi automatycznie na stronę logowania
 - logowanie jest wymagana, użytkownik niezalogowany widzi tylko stronę główną
 - logowanie odbywa się poprzez konto google
-- po zalogowaniu użytkownik jest poproszony o podanie prawdziwego imienia i nazwiska (inaczej nie zostanie zweryfikowany i nie będzie miał dostępu do notatek)
+- po rejestracji użytkownik jest poproszony o podanie prawdziwego imienia i nazwiska (inaczej nie zostanie zweryfikowany i nie będzie miał dostępu do notatek)
+- po podaniu danych użytkownik zostaje przeniesiony do poczekalni gdzie czeka (do dwóch tygodni) na uzyskanie dostępu do notatek
+- zalogowany użytkownik może się wylogować i sprawdzić na jakim koncie jest zalogowany
 
 #### 3. Przeglądanie notatek
 
