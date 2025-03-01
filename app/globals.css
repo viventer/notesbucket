@@ -1,24 +1,93 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  font-family: "Ubuntu", "Arial";
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  border: none;
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 195 4% 96%;
+    --foreground: 195 100% 4%;
+
+    --primary: 195 8% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 196 100% 24%;
+    --secondary-foreground: 0 0% 0%;
+
+    --accent: 302 31% 40%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 354 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 153 73% 32%;
+    --success-foreground: 0 0% 100%;
+
+    --card: 240 10% 15%;
+    --card-foreground: 90 100% 98%;
+
+    --muted: 240 10% 25%;
+    --muted-foreground: 0 0% 60%;
+
+    --border: 240 10% 30%;
+    --input: 240 10% 25%;
+    --ring: 202 87% 38%;
+
+    --chart-1: 202 87% 38%;
+    --chart-2: 171 100% 40%;
+    --chart-3: 338 70% 60%;
+    --chart-4: 50 100% 50%;
+    --chart-5: 280 80% 60%;
+
+    --radius: 0.75rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 195 100% 4%;
+      --foreground: 195 4% 96%;
+
+      --primary: 195 8% 60%;
+      --secondary: 196 100% 35%;
+      --accent: 302 31% 50%;
+
+      --card: 195 100% 10%;
+      --muted: 195 100% 20%;
+      --border: 195 100% 30%;
+      --input: 195 100% 25%;
+    }
   }
 }
 
-body {
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-links: var(--foreground);
+  --tw-prose-links-hover: var(--primary);
+  --tw-prose-blockquote: var(--foreground);
+}
+
+.prose blockquote {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html {
+  scroll-behavior: smooth;
 }
