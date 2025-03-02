@@ -55,7 +55,7 @@
       --foreground: 195 4% 96%;
 
       --primary: 195 8% 60%;
-      --secondary: 196 100% 35%;
+      --secondary: 196 100% 43%;
       --accent: 302 31% 50%;
 
       --card: 195 100% 10%;
@@ -90,4 +90,5 @@
 
 html {
   scroll-behavior: smooth;
+  color: hsl(var(--foreground));
 }

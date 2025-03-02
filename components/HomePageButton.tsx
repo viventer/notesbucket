@@ -3,17 +3,16 @@ import Link from "next/link";
 export default function Button({ text }: { text: string }) {
   const buttonContent = (
     <button
-      className="bg-opacity-0 text-center w-fit rounded-2xl relative text-text font-semibold group overflow-hidden text-2xl pr-8 h-12"
+      className="bg-opacity-0 text-center w-fit rounded-sm relative text-text font-semibold group overflow-hidden text-xl pr-2 h-8 sm:text-2xl sm:h-10 sm:pr-4 sm:rounded-lg md:h-12 md:pr-7 md:text-3xl xl:text-4xl xl:h-14 xl:pr-9"
       type="button"
     >
       <p className="mr-[2rem] ml-[2rem]">{text}</p>
-      <div className="bg-secondary rounded-xl h-full w-[3rem] flex items-center justify-center absolute right-0 top-0 group-hover:w-full z-10 duration-500 min-w-12 text-text">
+      <div className="bg-secondary rounded-sm h-full w-8 flex items-center justify-center absolute right-0 top-0 group-hover:w-full z-10 duration-500 text-background sm:rounded-lg sm:w-10 md:w-12 xl:w-14">
         <svg
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          width={"1.5rem"}
-          height={"1.5rem"}
+          className="w-6 sm:w-7 xl:w-10"
         >
           <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
           <g
