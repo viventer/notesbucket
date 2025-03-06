@@ -1,11 +1,26 @@
 "use client";
 
 import CategorySelector from "@/components/CategorySelector";
+import NoteSelector from "@/components/NoteSelector";
+import SubjectSelector from "@/components/SubjectSelector";
 import Logo from "@/icons/Logo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Form, FormProvider, useForm } from "react-hook-form";
 
 export default function page() {
-  const [selectedCategory, setSelectedCategory] = useState("school");
+  const form: NavForm = useForm({
+    defaultValues: {
+      category: "school",
+      subject: "J. polski",
+      note: "",
+    },
+  });
+  const selectedCategory = form.watch("category");
+  const selectedSubject = form.watch("subject");
+  useEffect(() => {
+    console.log(selectedCategory);
+    console.log(selectedSubject);
+  }, [selectedCategory, selectedSubject]);
 
   return (
     <div className="flex">
@@ -14,9 +29,11 @@ export default function page() {
           <Logo className="size-[2rem] text-secondary" />
           <h1 className="text-[1.75rem]">NotesBucket</h1>
         </section>
-        <section>
-          <CategorySelector setSelectedCategory={setSelectedCategory} />
-        </section>
+        <FormProvider {...form}>
+          <CategorySelector form={form} />
+          <SubjectSelector form={form} />
+          <NoteSelector form={form} />
+        </FormProvider>
       </nav>
       <main></main>
     </div>
