@@ -38,13 +38,17 @@ export default function SubjectSelector({ form }: { form: NavForm }) {
               <SelectTrigger>
                 <SelectValue
                   placeholder="Wybierz przedmiot"
-                  className="text-base"
+                  className="text-base z-50"
                 />
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
+            <SelectContent className="bg-background">
               {subjects.map((subject) => (
-                <SelectItem key={subject} value={subject} className="text-base">
+                <SelectItem
+                  key={subject}
+                  value={subject}
+                  className="text-base z-50 "
+                >
                   {subject}
                 </SelectItem>
               ))}

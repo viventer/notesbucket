@@ -17,10 +17,12 @@ export default function page() {
   });
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
+  const selectedNote = form.watch("note");
   useEffect(() => {
     console.log(selectedCategory);
     console.log(selectedSubject);
-  }, [selectedCategory, selectedSubject]);
+    console.log(selectedNote);
+  }, [selectedCategory, selectedSubject, selectedNote]);
 
   return (
     <div className="flex">
