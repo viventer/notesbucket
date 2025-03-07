@@ -4,8 +4,8 @@ import CategorySelector from "@/components/CategorySelector";
 import NoteSelector from "@/components/NoteSelector";
 import SubjectSelector from "@/components/SubjectSelector";
 import Logo from "@/icons/Logo";
-import { useEffect, useState } from "react";
-import { Form, FormProvider, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 export default function page() {
   const form: NavForm = useForm({
