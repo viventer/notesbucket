@@ -21,11 +21,11 @@ export default function CategorySelector({ form }: { form: NavForm }) {
             <RadioGroup
               onValueChange={field.onChange}
               value={field.value}
-              defaultValue="school"
+              defaultValue="Szkoła"
             >
               <FormItem className="flex items-center gap-2">
                 <FormControl>
-                  <RadioGroupItem value="school"></RadioGroupItem>
+                  <RadioGroupItem value="Szkoła"></RadioGroupItem>
                 </FormControl>
                 <FormLabel className="!mt-0 text-base font-normal">
                   Szkoła
@@ -33,7 +33,7 @@ export default function CategorySelector({ form }: { form: NavForm }) {
               </FormItem>
               <FormItem className="flex items-center gap-2">
                 <FormControl>
-                  <RadioGroupItem value="programming"></RadioGroupItem>
+                  <RadioGroupItem value="Programowanie"></RadioGroupItem>
                 </FormControl>
                 <FormLabel className="!mt-0 text-base font-normal">
                   Programowanie
@@ -41,7 +41,7 @@ export default function CategorySelector({ form }: { form: NavForm }) {
               </FormItem>
               <FormItem className="flex items-center gap-2">
                 <FormControl>
-                  <RadioGroupItem value="other"></RadioGroupItem>
+                  <RadioGroupItem value="Inne"></RadioGroupItem>
                 </FormControl>
                 <FormLabel className="!mt-0 text-base font-normal">
                   Inne

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, DocumentReference } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  DocumentReference,
+  query,
+  where,
+} from "firebase/firestore";
 import { FormField, FormItem } from "./ui/form";
 import { db } from "@/lib/firebase";
 import { z } from "zod";
@@ -8,13 +14,33 @@ import { FolderSchema } from "@/lib/dbSchemas";
 
 export default function NoteSelector({ form }: { form: any }) {
   const [folders, setFolders] = useState<FolderData[]>([]);
+  const selectedCategory = form.watch("category");
+  const selectedSubject = form.watch("subject");
 
   useEffect(() => {
     async function fetchFolders() {
-      const querySnapshot = await getDocs(collection(db, "folders"));
+      let querySnapshot;
+      if (selectedSubject) {
+        querySnapshot = await getDocs(
+          query(
+            collection(db, "folders"),
+            where("category", "==", selectedCategory),
+            where(
+              "subject",
+              "==",
+              `${selectedSubject ? selectedSubject : null}`
+            )
+          )
+        );
+      } else {
+        querySnapshot = await getDocs(collection(db, "folders"));
+      }
+      const q = query(collection(db, "folders"), where("category", "==", ""));
       const folderList: FolderData[] = querySnapshot.docs.map((doc) => ({
         ...FolderSchema.parse(doc.data()),
       }));
+
+      console.log(folderList);
 
       const folderMap = new Map<string, FolderData>();
       const rootFolders: FolderData[] = [];
@@ -37,7 +63,7 @@ export default function NoteSelector({ form }: { form: any }) {
     }
 
     fetchFolders();
-  }, []);
+  }, [selectedCategory, selectedSubject]);
 
   return (
     <FormField

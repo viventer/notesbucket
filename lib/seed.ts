@@ -179,6 +179,8 @@ async function seedNode(
       parentFolderRef,
       subFoldersRefs: [] as DocumentReference[],
       notesRefs: [] as DocumentReference[],
+      category: "Szkoła", // kategoria dla wszystkich folderów
+      subject: "J. polski", // przedmiot ustawiony na polski
     };
 
     // Walidacja danych folderu przy użyciu Zod
@@ -219,8 +221,6 @@ async function seedNode(
       id: noteId,
       title,
       mdContent: "", // pusta treść
-      category: "Szkoła", // kategoria dla wszystkich notatek
-      subject: "J. polski", // przedmiot ustawiony na polski
       parentFolderRef,
     };
 

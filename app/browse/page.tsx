@@ -4,13 +4,14 @@ import CategorySelector from "@/components/CategorySelector";
 import NoteSelector from "@/components/NoteSelector";
 import SubjectSelector from "@/components/SubjectSelector";
 import Logo from "@/icons/Logo";
+import { seed } from "@/lib/seed";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 export default function page() {
   const form: NavForm = useForm({
     defaultValues: {
-      category: "school",
+      category: "Szkoła",
       subject: "J. polski",
       note: "",
     },
@@ -33,7 +34,7 @@ export default function page() {
         </section>
         <FormProvider {...form}>
           <CategorySelector form={form} />
-          <SubjectSelector form={form} />
+          {selectedCategory === "Szkoła" && <SubjectSelector form={form} />}
           <NoteSelector form={form} />
         </FormProvider>
       </nav>

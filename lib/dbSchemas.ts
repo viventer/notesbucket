@@ -10,6 +10,8 @@ export const FolderSchema = z.object({
   parentFolderRef: z.custom<DocumentReference | null>(),
   subFoldersRefs: z.array(z.custom<DocumentReference>()).default([]),
   notesRefs: z.array(z.custom<DocumentReference>()).default([]),
+  category: z.custom<Category>(),
+  subject: z.custom<Subject | null>(),
 });
 
 export const NoteSchema = z.object({
@@ -21,7 +23,5 @@ export const NoteSchema = z.object({
   mdContent: z
     .string()
     .max(10000, "Ilość znaków w notatce nie może przekraczać 10000 znaków"),
-  category: z.custom<Category>(),
-  subject: z.custom<Subject | null>(),
   parentFolderRef: z.custom<DocumentReference | null>(),
 });
