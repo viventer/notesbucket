@@ -6,6 +6,7 @@ import ClosedFolder from "@/icons/ClosedFolder";
 import OpenedFolder from "@/icons/OpenedFolder";
 import NoteIcon from "@/icons/NoteIcon";
 import { useFormContext } from "react-hook-form";
+import { truncateString } from "@/lib/utils";
 
 interface FolderProps {
   folder: FolderData;
@@ -16,6 +17,7 @@ export default function Folder({ folder }: FolderProps) {
   const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const { setValue, getValues } = useFormContext();
+  const truncatedFolderName = truncateString(folder.name, 24);
 
   useEffect(() => {
     async function fetchNotes() {
@@ -47,7 +49,7 @@ export default function Folder({ folder }: FolderProps) {
         ) : (
           <ClosedFolder className="size-4 text-secondary" />
         )}
-        {folder.name}
+        {truncatedFolderName}
       </button>
       {isExpanded && (
         <>
@@ -68,7 +70,7 @@ export default function Folder({ folder }: FolderProps) {
                       : "text-primary"
                   }`}
                 />
-                {note.title}
+                {truncateString(note.title, 24)}
               </button>
             ))}
           </div>

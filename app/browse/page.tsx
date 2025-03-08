@@ -3,9 +3,10 @@
 import CategorySelector from "@/components/CategorySelector";
 import NoteSelector from "@/components/NoteSelector";
 import SubjectSelector from "@/components/SubjectSelector";
+import Chevron from "@/icons/Chevron";
 import Logo from "@/icons/Logo";
 import { seed } from "@/lib/seed";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 export default function page() {
@@ -25,19 +26,37 @@ export default function page() {
     console.log(selectedNote);
   }, [selectedCategory, selectedSubject, selectedNote]);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const rotationClass = `rotate-${isExpanded ? "0" : "180"}`;
+
   return (
     <div className="flex">
-      <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-2">
-        <section className="flex items-center gap-2">
-          <Logo className="size-[2rem] text-secondary" />
-          <h1 className="text-[1.75rem]">NotesBucket</h1>
-        </section>
-        <FormProvider {...form}>
-          <CategorySelector form={form} />
-          {selectedCategory === "Szkoła" && <SubjectSelector form={form} />}
-          <NoteSelector form={form} />
-        </FormProvider>
-      </nav>
+      <div
+        className={`bg-[rgba(255,255,255,0.05)]  h-fit w-full sm:w-fit sm:m-4  md:rounded-lg md:m-8 border-solid border-primary border-0 border-b-[0.1rem] md:border-[0.1rem]`}
+      >
+        <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-3 max-w-[400px] sm:mx-3 relative">
+          <section className="flex items-center justify-between ">
+            <div className="flex items-center gap-2">
+              <Logo className="size-[2rem] text-secondary" />
+              <h1 className="text-[1.5rem]">NotesBucket</h1>
+            </div>
+            <button onClick={() => setIsExpanded((prev) => !prev)}>
+              <Chevron className={`size-8 text-text ${rotationClass}`} />
+            </button>
+          </section>
+          <FormProvider {...form}>
+            <section
+              className={`${
+                isExpanded ? "" : "hidden"
+              } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
+            >
+              <CategorySelector form={form} />
+              {selectedCategory === "Szkoła" && <SubjectSelector form={form} />}
+              <NoteSelector form={form} />
+            </section>
+          </FormProvider>
+        </nav>
+      </div>
       <main></main>
     </div>
   );

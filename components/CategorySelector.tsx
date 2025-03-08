@@ -27,11 +27,11 @@ export default function CategorySelector({ form }: { form: NavForm }) {
                 <FormControl>
                   <RadioGroupItem value="Szkoła"></RadioGroupItem>
                 </FormControl>
-                <FormLabel className="!mt-0 text-base font-normal">
+                <FormLabel className="!mt-0 text-base font-normal ">
                   Szkoła
                 </FormLabel>
               </FormItem>
-              <FormItem className="flex items-center gap-2">
+              <FormItem className="flex items-center gap-2 ">
                 <FormControl>
                   <RadioGroupItem value="Programowanie"></RadioGroupItem>
                 </FormControl>
@@ -39,7 +39,7 @@ export default function CategorySelector({ form }: { form: NavForm }) {
                   Programowanie
                 </FormLabel>
               </FormItem>
-              <FormItem className="flex items-center gap-2">
+              <FormItem className="flex items-center gap-2 ">
                 <FormControl>
                   <RadioGroupItem value="Inne"></RadioGroupItem>
                 </FormControl>

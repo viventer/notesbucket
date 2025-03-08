@@ -35,7 +35,6 @@ export default function NoteSelector({ form }: { form: any }) {
       } else {
         querySnapshot = await getDocs(collection(db, "folders"));
       }
-      const q = query(collection(db, "folders"), where("category", "==", ""));
       const folderList: FolderData[] = querySnapshot.docs.map((doc) => ({
         ...FolderSchema.parse(doc.data()),
       }));

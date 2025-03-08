@@ -28,14 +28,14 @@ export default function SubjectSelector({ form }: { form: NavForm }) {
       control={form.control}
       name="subject"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="max-w-[250px]">
           <Select
             onValueChange={field.onChange}
             value={field.value}
             defaultValue="J. polski"
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="text-base">
                 <SelectValue
                   placeholder="Wybierz przedmiot"
                   className="text-base z-50"
