@@ -1,68 +1,14 @@
-import { useEffect, useState } from "react";
-import {
-  collection,
-  getDocs,
-  DocumentReference,
-  query,
-  where,
-} from "firebase/firestore";
-import { FormField, FormItem } from "./ui/form";
-import { db } from "@/lib/firebase";
-import { z } from "zod";
-import Folder from "./Folder";
-import { FolderSchema } from "@/lib/dbSchemas";
+"use client";
 
-export default function NoteSelector({ form }: { form: any }) {
-  const [folders, setFolders] = useState<FolderData[]>([]);
+import { FormField, FormItem } from "./ui/form";
+import Folder from "./Folder";
+import { useFormContext } from "react-hook-form";
+
+export default function NoteSelector({ folders }: { folders: FolderData[] }) {
+  const form = useFormContext();
+
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
-
-  useEffect(() => {
-    async function fetchFolders() {
-      let querySnapshot;
-      if (selectedSubject) {
-        querySnapshot = await getDocs(
-          query(
-            collection(db, "folders"),
-            where("category", "==", selectedCategory),
-            where(
-              "subject",
-              "==",
-              `${selectedSubject ? selectedSubject : null}`
-            )
-          )
-        );
-      } else {
-        querySnapshot = await getDocs(collection(db, "folders"));
-      }
-      const folderList: FolderData[] = querySnapshot.docs.map((doc) => ({
-        ...FolderSchema.parse(doc.data()),
-      }));
-
-      console.log(folderList);
-
-      const folderMap = new Map<string, FolderData>();
-      const rootFolders: FolderData[] = [];
-
-      folderList.forEach((folder) => folderMap.set(folder.id, folder));
-
-      folderList.forEach((folder) => {
-        if (folder.parentFolderRef) {
-          const parent = folderMap.get(folder.parentFolderRef.id);
-          if (parent) {
-            if (!parent.children) parent.children = [];
-            parent.children.push(folder);
-          }
-        } else {
-          rootFolders.push(folder);
-        }
-      });
-
-      setFolders(rootFolders);
-    }
-
-    fetchFolders();
-  }, [selectedCategory, selectedSubject]);
 
   return (
     <FormField

@@ -6,7 +6,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 admin.initializeApp();
 
-const REVALIDATION_SECRET = process.env.REVALIDATION_SECRET;
+const REVALIDATION_SECRET = process.env.NEXT_PRIVATE_REVALIDATE_SECRET;
 
 export const revalidatePage = onDocumentWritten(
   "folders/{folderId}",

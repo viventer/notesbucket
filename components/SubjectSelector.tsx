@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   Select,
@@ -7,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFormContext } from "react-hook-form";
 
-export default function SubjectSelector({ form }: { form: NavForm }) {
+export default function SubjectSelector() {
   const subjects = [
     "Matematyka",
     "J. angielski",
@@ -22,6 +24,8 @@ export default function SubjectSelector({ form }: { form: NavForm }) {
     "WOS",
     "Geografia",
   ];
+
+  const form = useFormContext();
 
   return (
     <FormField

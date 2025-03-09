@@ -1,32 +1,20 @@
-"use client";
-
 import CategorySelector from "@/components/CategorySelector";
 import NoteSelector from "@/components/NoteSelector";
 import SubjectSelector from "@/components/SubjectSelector";
 import Chevron from "@/icons/Chevron";
 import Logo from "@/icons/Logo";
-import { seed } from "@/lib/seed";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { fetchFolders } from "@/lib/fetchFolders";
 
-export default function page() {
-  const form: NavForm = useForm({
-    defaultValues: {
-      category: "Szkoła",
-      subject: "J. polski",
-      note: "",
-    },
-  });
-  const selectedCategory = form.watch("category");
-  const selectedSubject = form.watch("subject");
-  const selectedNote = form.watch("note");
-  useEffect(() => {
-    console.log(selectedCategory);
-    console.log(selectedSubject);
-    console.log(selectedNote);
-  }, [selectedCategory, selectedSubject, selectedNote]);
+export default async function page() {
+  // useEffect(() => {
+  //   console.log(selectedCategory);
+  //   console.log(selectedSubject);
+  //   console.log(selectedNote);
+  // }, [selectedCategory, selectedSubject, selectedNote]);
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const rootFolders = await fetchFolders();
+
+  const isExpanded = true;
   const rotationClass = `rotate-${isExpanded ? "0" : "180"}`;
 
   return (
@@ -37,7 +25,7 @@ export default function page() {
         <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-3 max-w-[400px] sm:mx-3 relative">
           <section>
             <button
-              onClick={() => setIsExpanded((prev) => !prev)}
+              // onClick={() => setIsExpanded((prev) => !prev)}
               className="flex items-center justify-between w-full"
             >
               <div className="flex items-center gap-2">
@@ -47,20 +35,20 @@ export default function page() {
               <Chevron className={`size-8 text-text ${rotationClass}`} />
             </button>
           </section>
-          <FormProvider {...form}>
-            <section
-              className={`${
-                isExpanded ? "" : "hidden"
-              } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
-            >
-              <CategorySelector form={form} />
-              {selectedCategory === "Szkoła" && <SubjectSelector form={form} />}
-              <NoteSelector form={form} />
-            </section>
-          </FormProvider>
+          <section
+            className={`${
+              isExpanded ? "" : "hidden"
+            } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
+          >
+            <CategorySelector />
+            <SubjectSelector />
+            <NoteSelector folders={JSON.parse(JSON.stringify(rootFolders))} />
+          </section>
         </nav>
       </div>
       <main></main>
     </div>
   );
 }
+
+export const revalidate = 86400;

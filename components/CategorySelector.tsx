@@ -8,8 +8,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useFormContext } from "react-hook-form";
 
-export default function CategorySelector({ form }: { form: NavForm }) {
+export default function CategorySelector() {
+  const form = useFormContext();
+
   return (
     <FormField
       control={form.control}
