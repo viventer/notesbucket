@@ -6,12 +6,20 @@ import React, { useState } from "react";
 import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
+import { FormProvider, useForm } from "react-hook-form";
 
 export default function HeaderNav({
   rootFolders,
 }: {
   rootFolders: FolderData[];
 }) {
+  const form = useForm({
+    defaultValues: {
+      category: "Szkoła",
+      subject: "J. polski",
+    },
+  });
+
   const [isExpanded, setIsExpanded] = useState(true);
   const rotationClass = `rotate-${isExpanded ? "0" : "180"}`;
 
@@ -37,9 +45,11 @@ export default function HeaderNav({
             isExpanded ? "" : "hidden"
           } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
         >
-          <CategorySelector />
-          <SubjectSelector />
-          <NoteSelector folders={JSON.parse(JSON.stringify(rootFolders))} />
+          <FormProvider {...form}>
+            <CategorySelector />
+            <SubjectSelector />
+            <NoteSelector folders={JSON.parse(JSON.stringify(rootFolders))} />
+          </FormProvider>
         </section>
       </nav>
     </div>

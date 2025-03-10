@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { FolderSchema, NoteSchema } from "@/lib/dbSchemas";
+import { NoteSchema, NoteType } from "@/lib/dbSchemas";
 import ClosedFolder from "@/icons/ClosedFolder";
 import OpenedFolder from "@/icons/OpenedFolder";
 import NoteIcon from "@/icons/NoteIcon";

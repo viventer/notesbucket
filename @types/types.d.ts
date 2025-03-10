@@ -1,7 +1,5 @@
 type NavForm = UseFormReturn<NavFormValues>;
 
-type NoteType = z.infer<typeof NoteSchema>;
-
 type NavFormValues = {
   category: Category;
   subject: Subject;

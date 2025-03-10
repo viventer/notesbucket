@@ -1,15 +1,16 @@
-"use client";
-
-import { useEffect } from "react";
-import { useFormContext } from "react-hook-form";
-
-export default function Note({ mode }: { mode: "view" | "edit" }) {
-  const { watch } = useFormContext();
-
-  const selectedNote = watch("note");
-  useEffect(() => {
-    console.log(selectedNote);
-  }, [selectedNote]);
-
-  return <div>Note</div>;
+export default function Note({
+  mode,
+  title,
+  content,
+}: {
+  mode: "view" | "edit";
+  title: string;
+  content: string;
+}) {
+  return (
+    <div>
+      <h1>{title}</h1>
+      {content}
+    </div>
+  );
 }

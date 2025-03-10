@@ -25,3 +25,5 @@ export const NoteSchema = z.object({
     .max(10000, "Ilość znaków w notatce nie może przekraczać 10000 znaków"),
   parentFolderRef: z.custom<DocumentReference | null>(),
 });
+
+export type NoteType = z.infer<typeof NoteSchema>;
