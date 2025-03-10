@@ -1,15 +1,20 @@
-"use client";
+import HeaderNav from "@/components/HeaderNav";
+import { fetchFolders } from "@/lib/fetchFolders";
+import FormLayout from "@/components/FormLayout";
 
-import { FormProvider, useForm } from "react-hook-form";
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const rootFolders = await fetchFolders();
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const form: NavForm = useForm({
-    defaultValues: {
-      category: "Szkoła",
-      subject: "J. polski",
-      note: "",
-    },
-  });
-
-  return <FormProvider {...form}>{children}</FormProvider>;
+  return (
+    <div>
+      <FormLayout>
+        <HeaderNav rootFolders={JSON.parse(JSON.stringify(rootFolders))} />
+        <main className="mt-4 w-[90%] max-w-[1400px] mx-auto">{children}</main>
+      </FormLayout>
+    </div>
+  );
 }
