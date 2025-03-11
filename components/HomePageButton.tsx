@@ -36,5 +36,5 @@ export default function Button({ text }: { text: string }) {
     </button>
   );
 
-  return <Link href="/browse">{buttonContent}</Link>;
+  return <Link href="/notes">{buttonContent}</Link>;
 }

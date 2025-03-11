@@ -11,8 +11,10 @@ type Props = {
   };
 };
 
-export async function generateMetadata({ params: { noteId } }: Props) {
-  const note: NoteType = await getNoteById(noteId);
+export async function generateMetadata(props: Props) {
+  const { noteId } = await props.params;
+
+  const note: NoteType | null = await getNoteById(noteId);
 
   if (!note) {
     return {
@@ -21,14 +23,17 @@ export async function generateMetadata({ params: { noteId } }: Props) {
   }
 
   return {
-    tile: note.title,
+    title: note.title,
   };
 }
 
-export default async function page({ params: { noteId } }: Props) {
-  const note: NoteType = await getNoteById(noteId);
+export default async function page(props: Props) {
+  const { noteId } = await props.params;
+  const note: NoteType | null = await getNoteById(noteId);
 
-  if (!note) notFound();
+  if (!note) {
+    notFound();
+  }
 
   const { title, mdContent } = note;
 

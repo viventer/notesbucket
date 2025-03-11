@@ -9,6 +9,7 @@ import OpenedFolder from "@/icons/OpenedFolder";
 import NoteIcon from "@/icons/NoteIcon";
 import { useFormContext } from "react-hook-form";
 import { truncateString } from "@/lib/utils";
+import Link from "next/link";
 
 interface FolderProps {
   folder: FolderData;
@@ -18,7 +19,7 @@ export default function Folder({ folder }: FolderProps) {
   const [notes, setNotes] = useState<NoteType[]>([]);
   const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { setValue, getValues } = useFormContext();
+  const [selectedNote, setSelectedNote] = useState("");
   const truncatedFolderName = truncateString(folder.name, 24);
 
   useEffect(() => {
@@ -58,21 +59,20 @@ export default function Folder({ folder }: FolderProps) {
           <div className="ml-4 flex flex-col gap-1 mt-1">
             {loading && <span>Ładowanie notatek...</span>}
             {notes.map((note) => (
-              <button
-                key={note.id}
-                className={`text-sm flex items-center gap-2 ${
-                  getValues("note") == note.id ? "font-semibold" : ""
-                }`}
-                onClick={() => setValue("note", note.id)}
-              >
-                <NoteIcon
-                  className={`size-4 ${
-                    getValues("note") == note.id
-                      ? "text-accent"
-                      : "text-primary"
+              <button key={note.id} onClick={() => setSelectedNote(note.id)}>
+                <Link
+                  href={`/notes/${note.id}`}
+                  className={`text-sm flex items-center gap-2 ${
+                    selectedNote == note.id ? "font-semibold" : ""
                   }`}
-                />
-                {truncateString(note.title, 24)}
+                >
+                  <NoteIcon
+                    className={`size-4 ${
+                      selectedNote == note.id ? "text-accent" : "text-primary"
+                    }`}
+                  />
+                  {truncateString(note.title, 24)}
+                </Link>
               </button>
             ))}
           </div>

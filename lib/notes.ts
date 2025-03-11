@@ -4,8 +4,12 @@ import { NoteType } from "./dbSchemas";
 import { remark } from "remark";
 import html from "remark-html";
 
-export async function getNoteById(noteId: string): Promise<NoteType> {
+export async function getNoteById(noteId: string): Promise<NoteType | null> {
   const noteDocument = await getDoc(doc(db, "notes", noteId));
+
+  if (!noteDocument.data()) {
+    return null;
+  }
 
   const note = noteDocument.data() as NoteType;
 
