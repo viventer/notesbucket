@@ -20,7 +20,7 @@ export default function HeaderNav({
     },
   });
 
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const rotationClass = `rotate-${isExpanded ? "0" : "180"}`;
 
   return (

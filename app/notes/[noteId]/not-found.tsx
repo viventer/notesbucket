@@ -1,10 +1,29 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import ErrorIcon from "@/icons/ErrorIcon";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="text-center">
-      <p className="mt-10">Sorry, the requested post does not exist.</p>
-      <Link href="/">Back to Home</Link>
-    </div>
+    <Card className="flex flex-col gap-2 justify-center max-w-[500px] mx-auto border-destructive bg-background">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <ErrorIcon className="size-[3rem] text-destructive" />
+          <h2 className="text-[2rem] font-[500]">Zgubiłeś się</h2>
+        </CardTitle>
+        <CardDescription>Strona o podanym adresie nie istnieje</CardDescription>
+      </CardHeader>
+      <CardContent className="w-full  flex justify-end">
+        <Button variant={"link"} asChild className="opacity-100">
+          <Link href={"/notes"}>Wróć na stronę główną</Link>
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
