@@ -34,7 +34,11 @@ export default function Folder({ folder }: FolderProps) {
       const notesData: NoteType[] = snapshot.docs.map((doc) => ({
         ...NoteSchema.parse(doc.data()),
       }));
-      setNotes(notesData);
+      const sortedNotes = notesData.toSorted((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+
+      setNotes(sortedNotes);
       setLoading(false);
     }
     fetchNotes();

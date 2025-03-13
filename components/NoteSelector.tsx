@@ -24,6 +24,8 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
         (folder) => folder.category === selectedCategory
       );
     }
+    filteredFoldersArray.sort((a, b) => a.name.localeCompare(b.name));
+
     setFilteredFolders(filteredFoldersArray);
   }, [selectedCategory, selectedSubject]);
 
