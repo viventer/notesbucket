@@ -1,4 +1,4 @@
-import { FolderSchema } from "@/lib/dbSchemas";
+import { FolderSchema, FolderType } from "@/lib/dbSchemas";
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -8,8 +8,8 @@ export async function fetchFolders() {
     ...FolderSchema.parse(doc.data()),
   }));
 
-  const folderMap = new Map<string, FolderData>();
-  const rootFolders: FolderData[] = [];
+  const folderMap = new Map<string, FolderType>();
+  const rootFolders: FolderType[] = [];
 
   initialFolders.forEach((folder) => folderMap.set(folder.id, folder));
 
@@ -27,5 +27,5 @@ export async function fetchFolders() {
 
   console.log("fetching folders");
 
-  return rootFolders as FolderData[];
+  return rootFolders as FolderType[];
 }

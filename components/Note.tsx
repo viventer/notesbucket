@@ -1,3 +1,5 @@
+import { Card, CardTitle } from "./ui/card";
+
 export default function Note({
   mode,
   title,
@@ -8,9 +10,9 @@ export default function Note({
   content: string;
 }) {
   return (
-    <div>
-      <h1>{title}</h1>
+    <Card className="mt-[10rem]">
+      <CardTitle>{title}</CardTitle>
       {content}
-    </div>
+    </Card>
   );
 }

@@ -3,16 +3,15 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { NoteSchema, NoteType } from "@/lib/dbSchemas";
+import { FolderType, NoteSchema, NoteType } from "@/lib/dbSchemas";
 import ClosedFolder from "@/icons/ClosedFolder";
 import OpenedFolder from "@/icons/OpenedFolder";
 import NoteIcon from "@/icons/NoteIcon";
-import { useFormContext } from "react-hook-form";
 import { truncateString } from "@/lib/utils";
 import Link from "next/link";
 
 interface FolderProps {
-  folder: FolderData;
+  folder: FolderType;
 }
 
 export default function Folder({ folder }: FolderProps) {
@@ -78,7 +77,7 @@ export default function Folder({ folder }: FolderProps) {
           </div>
 
           <div>
-            {folder.children?.map((subFolder: FolderData) => (
+            {folder.children?.map((subFolder: FolderType) => (
               <Folder key={subFolder.id} folder={subFolder} />
             ))}
           </div>

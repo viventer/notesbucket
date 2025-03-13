@@ -27,3 +27,7 @@ export const NoteSchema = z.object({
 });
 
 export type NoteType = z.infer<typeof NoteSchema>;
+
+export type FolderType = z.infer<typeof FolderSchema> & {
+  children?: FolderType[];
+};

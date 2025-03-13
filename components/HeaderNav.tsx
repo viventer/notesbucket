@@ -7,11 +7,12 @@ import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
 import { FormProvider, useForm } from "react-hook-form";
+import { FolderType } from "@/lib/dbSchemas";
 
 export default function HeaderNav({
   rootFolders,
 }: {
-  rootFolders: FolderData[];
+  rootFolders: FolderType[];
 }) {
   const form = useForm({
     defaultValues: {
@@ -23,9 +24,11 @@ export default function HeaderNav({
   const [isExpanded, setIsExpanded] = useState(false);
   const rotationClass = `rotate-${isExpanded ? "0" : "180"}`;
 
+  const selectedCategory = form.watch("category");
+
   return (
     <div
-      className={`bg-[rgba(255,255,255,0.05)]  h-fit w-full sm:w-fit sm:m-4  md:rounded-lg md:m-8 border-solid border-primary border-0 border-b-[0.1rem] md:border-[0.1rem]`}
+      className={`bg-background  h-fit w-full sm:w-fit sm:m-4  md:rounded-lg md:m-8 border-solid border-primary border-0 border-b-[0.1rem] md:border-[0.1rem] fixed left-0 top-0`}
     >
       <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-3 max-w-[400px] sm:mx-3 relative">
         <section>
@@ -47,7 +50,7 @@ export default function HeaderNav({
         >
           <FormProvider {...form}>
             <CategorySelector />
-            <SubjectSelector />
+            {selectedCategory == "Szkoła" && <SubjectSelector />}
             <NoteSelector folders={JSON.parse(JSON.stringify(rootFolders))} />
           </FormProvider>
         </section>

@@ -11,7 +11,9 @@ export default async function Layout({
   return (
     <div>
       <HeaderNav rootFolders={JSON.parse(JSON.stringify(rootFolders))} />
-      <main className="mt-4 w-[90%] max-w-[1400px] mx-auto">{children}</main>
+      <main className="mt-[6rem] w-[90%] max-w-[1400px] mx-auto">
+        {children}
+      </main>
     </div>
   );
 }

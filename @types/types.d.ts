@@ -20,7 +20,3 @@ type Subject =
   | "Historia"
   | "WOS"
   | "Geografia";
-
-type FolderData = z.infer<typeof FolderSchema> & {
-  children?: FolderData[];
-};
