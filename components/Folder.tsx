@@ -9,13 +9,18 @@ import OpenedFolder from "@/icons/OpenedFolder";
 import NoteIcon from "@/icons/NoteIcon";
 import { truncateString } from "@/lib/utils";
 import Link from "next/link";
+import {
+  getNotesFromFolderMetadata,
+  getNotesMetadata,
+  NoteMetadata,
+} from "@/lib/notes";
 
 interface FolderProps {
   folder: FolderType;
 }
 
 export default function Folder({ folder }: FolderProps) {
-  const [notes, setNotes] = useState<NoteType[]>([]);
+  const [notes, setNotes] = useState<NoteMetadata[]>([]);
   const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedNote, setSelectedNote] = useState("");
@@ -26,19 +31,13 @@ export default function Folder({ folder }: FolderProps) {
       setLoading(true);
       const folderRef = doc(db, "folders", folder.id);
 
-      const q = query(
-        collection(db, "notes"),
-        where("parentFolderRef", "==", folderRef)
-      );
-      const snapshot = await getDocs(q);
-      const notesData: NoteType[] = snapshot.docs.map((doc) => ({
-        ...NoteSchema.parse(doc.data()),
-      }));
-      const sortedNotes = notesData.toSorted((a, b) =>
+      const rawNotesData = await getNotesFromFolderMetadata(folderRef);
+
+      const notesData = rawNotesData.toSorted((a, b) =>
         a.title.localeCompare(b.title)
       );
 
-      setNotes(sortedNotes);
+      setNotes(notesData);
       setLoading(false);
     }
     fetchNotes();

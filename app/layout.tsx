@@ -25,9 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl">
+    <html
+      lang="pl"
+      className="scrollbar scrollbar-track-transparent scrollbar-thumb-primary"
+    >
       <body
-        className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background`}
+        className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background `}
       >
         {children}
       </body>

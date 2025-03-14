@@ -3,7 +3,7 @@ import HomePageButton from "@components/HomePageButton";
 
 export default function Home() {
   return (
-    <main className="flex items-center justify-center h-[100svh] w-[100svw]">
+    <div className="flex items-center justify-center h-[100svh] w-[100svw] ">
       <div className="flex items-center justify-center w-fit max-w-[90svw] gap-4">
         <Logo className="hidden xl:block size-[18rem] text-secondary" />
         <section className="relative flex flex-col gap-1">
@@ -21,6 +21,6 @@ export default function Home() {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

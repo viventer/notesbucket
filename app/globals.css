@@ -33,7 +33,7 @@ html {
     --success: 153 73% 32%;
     --success-foreground: 0 0% 100%;
 
-    --card: 240 10% 15%;
+    --card: 195 4% 100%;
     --card-foreground: 90 100% 98%;
 
     --muted: 240 10% 25%;
@@ -61,7 +61,7 @@ html {
       --secondary: 196 100% 43%;
       --accent: 302 31% 50%;
 
-      --card: 195 100% 10%;
+      --card: 195 100% 6%;
       --muted: 195 100% 20%;
       --border: 195 100% 30%;
       --input: 195 100% 25%;
