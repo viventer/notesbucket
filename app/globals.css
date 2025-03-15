@@ -9,6 +9,10 @@
   margin: 0;
 }
 
+article {
+  scrollbar-gutter: stable;
+}
+
 html {
   border: none;
 }

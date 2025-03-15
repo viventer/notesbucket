@@ -1,3 +1,4 @@
+import ActionButtons from "@/components/ActionButtons";
 import Note from "@/components/Note";
 import { NoteType } from "@/lib/dbSchemas";
 import { getNoteById } from "@/lib/notes";
@@ -37,5 +38,10 @@ export default async function page(props: Props) {
 
   const { title, mdContent } = note;
 
-  return <Note mode="view" title={title} content={mdContent} />;
+  return (
+    <>
+      <ActionButtons noteContent={mdContent} />
+      <Note mode="view" title={title} content={mdContent} />
+    </>
+  );
 }
