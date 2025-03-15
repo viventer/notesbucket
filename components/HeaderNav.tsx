@@ -9,6 +9,7 @@ import NoteSelector from "./NoteSelector";
 import { FormProvider, useForm } from "react-hook-form";
 import { FolderType } from "@/lib/dbSchemas";
 import { seedContent } from "@/lib/seedContent";
+import { AdminNav } from "./AdminNav";
 
 export default function HeaderNav({
   rootFolders,
@@ -43,6 +44,9 @@ export default function HeaderNav({
             </div>
             <Chevron className={`size-8 text-text ${rotationClass}`} />
           </button>
+        </section>
+        <section>
+          <AdminNav />
         </section>
         <section
           className={`${
