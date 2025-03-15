@@ -1,4 +1,4 @@
-export default function DownloadPdf({ className }: { className?: string }) {
+export default function DownloadDoc({ className }: { className?: string }) {
   return (
     <svg
       width="800px"
