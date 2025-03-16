@@ -30,7 +30,7 @@ export default function HeaderNav({
 
   return (
     <div
-      className={`bg-card  h-fit w-full sm:w-fit sm:m-4 md:m-8 border-solid border-primary border-0 border-b-[0.1rem] fixed left-0 top-0`}
+      className={`bg-card  h-fit w-full sm:w-fit sm:m-4 md:m-8 border-solid border-primary border-0 border-b-[0.1rem] fixed left-0 top-0 z-10`}
     >
       <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-3 max-w-[400px] sm:mx-3 relative">
         <section>

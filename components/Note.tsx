@@ -12,11 +12,11 @@ export default function Note({
   content: string;
 }) {
   return (
-    <div className="">
+    <div className="z-0">
       {mode === "edit" ? (
         <NoteEditor startContent={content} startTitle={title} />
       ) : (
-        <article className="mb-[4rem] prose bg-background max-w-[1500px] xl:px-8 xl:py-6 xl:bg-card h-[75svh] sm:mb-[2rem] overflow-auto scrollbar-track-transparent scrollbar-thumb-primary scrollbar pr-2">
+        <article className="mb-[4rem] prose bg-background max-w-[1500px] xl:px-8 xl:py-6 xl:bg-card h-[75svh] sm:mb-[2rem] overflow-auto scrollbar-track-transparent scrollbar-thumb-primary scrollbar pr-2 mt-2">
           <h2>{title}</h2>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         </article>

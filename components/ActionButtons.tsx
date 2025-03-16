@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/useToast";
 import AddImage from "@/icons/AddImage";
 import Copy from "@/icons/Copy";
 import DownloadDoc from "@/icons/DownloadDoc";
+import Save from "@/icons/Save";
 
 type action = {
   name: string;
@@ -47,9 +48,20 @@ export default function ActionButtons({
     }
   };
 
+  const saveNoteContent = () => {
+    const event = new KeyboardEvent("keydown", {
+      key: "s",
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    window.dispatchEvent(event);
+  };
+
   const actions: action[] = [
     { name: "copy", icon: Copy, handler: copy },
     { name: "downloadMd", icon: DownloadDoc, handler: downloadMd },
+    { name: "save", icon: Save, handler: saveNoteContent },
   ];
 
   if (mode == "edit") {
