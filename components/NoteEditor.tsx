@@ -22,14 +22,13 @@ export default function NoteEditor({
   const [title, setTitle] = useState(startTitle || "");
   const [isInputFocused, setIsInputfocused] = useState(false);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+  const vimStatusRef = useRef<HTMLDivElement>(null); // Kontener dla statusu Vim
   const pathname = usePathname();
   const noteId = pathname.split("/").pop() as string;
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (isInputFocused === true || title === startTitle) {
-      return;
-    }
+    if (isInputFocused || title === startTitle) return;
     (async function () {
       try {
         await updateNote(noteId, { title });
@@ -39,7 +38,7 @@ export default function NoteEditor({
         console.error(err);
       }
     })();
-  }, [isInputFocused]);
+  }, [isInputFocused, title, startTitle, noteId, showToast]);
 
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
@@ -56,9 +55,37 @@ export default function NoteEditor({
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [content]);
+  }, [content, noteId, showToast]);
+
+  const handleEditorMount = (editor: any, monaco: any) => {
+    // Dodajemy customowy skrót klawiszowy (Ctrl+S) jako przykład
+    editor.addAction({
+      id: "some-unique-id",
+      label: "Some label!",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S],
+      run: (ed: any) => {
+        alert("Chcemy zapisać: " + ed.getValue());
+        return null;
+      },
+    });
+
+    // Konfiguracja ładowania monaco-vim przez window.require
+    if (typeof window !== "undefined" && window.require) {
+      window.require.config({
+        paths: {
+          "monaco-vim": "https://unpkg.com/monaco-vim/dist/monaco-vim",
+        },
+      });
+
+      window.require(["monaco-vim"], function (MonacoVim: any) {
+        if (vimStatusRef.current) {
+          // Inicjalizujemy tryb Vim i pobieramy obiekt vimMode
+          const vimMode = MonacoVim.initVimMode(editor, vimStatusRef.current);
+        }
+      });
+    }
+  };
 
   return (
     <>
@@ -78,9 +105,8 @@ export default function NoteEditor({
         language="markdown"
         value={content}
         theme="vs-dark"
-        onChange={(value) => {
-          setContent(value || "");
-        }}
+        onMount={handleEditorMount}
+        onChange={(value) => setContent(value || "")}
         options={{
           autoIndent: "full",
           minimap: { enabled: false },
@@ -91,6 +117,8 @@ export default function NoteEditor({
           fontSize: 16,
         }}
       />
+      {/* Kontener dla statusu Vim */}
+      <div ref={vimStatusRef} className="vim-status mt-2" />
     </>
   );
 }
