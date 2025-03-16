@@ -45,14 +45,12 @@ export default function HeaderNav({
             <Chevron className={`size-8 text-text ${rotationClass}`} />
           </button>
         </section>
-        <section>
-          <AdminNav />
-        </section>
         <section
           className={`${
             isExpanded ? "" : "hidden"
           } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
         >
+          <AdminNav />
           <FormProvider {...form}>
             <CategorySelector />
             {selectedCategory == "Szkoła" && <SubjectSelector />}

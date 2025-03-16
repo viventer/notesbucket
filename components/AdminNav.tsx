@@ -4,7 +4,7 @@ import {
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuLink,
-} from "@/components/ui/navigation-menu"; // Upewnij się, że ścieżki odpowiadają Twojej strukturze projektu
+} from "@/components/ui/navigation-menu";
 
 export function AdminNav() {
   return (

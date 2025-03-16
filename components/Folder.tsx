@@ -14,6 +14,7 @@ import {
   getNotesMetadata,
   NoteMetadata,
 } from "@/lib/notes";
+import { usePathname } from "next/navigation";
 
 interface FolderProps {
   folder: FolderType;
@@ -25,6 +26,8 @@ export default function Folder({ folder }: FolderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedNote, setSelectedNote] = useState("");
   const truncatedFolderName = truncateString(folder.name, 24);
+  const pathname = usePathname();
+  console.log(pathname);
 
   useEffect(() => {
     async function fetchNotes() {
@@ -63,7 +66,7 @@ export default function Folder({ folder }: FolderProps) {
             {notes.map((note) => (
               <button key={note.id} onClick={() => setSelectedNote(note.id)}>
                 <Link
-                  href={`/notes/${note.id}`}
+                  href={`${pathname}/${note.id}`}
                   className={`text-sm flex items-center gap-2 ${
                     selectedNote == note.id ? "font-semibold" : ""
                   }`}

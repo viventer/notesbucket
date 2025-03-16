@@ -40,7 +40,7 @@ export default async function page(props: Props) {
 
   return (
     <>
-      <ActionButtons noteContent={mdContent} mode="view" />
+      <ActionButtons noteContent={mdContent} mode="edit" />
       <Note mode="edit" title={title} content={mdContent} />
     </>
   );
