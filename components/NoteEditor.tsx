@@ -2,7 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { Input } from "./ui/input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { updateNote } from "@/lib/notes";
+import { on } from "events";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -17,7 +20,19 @@ export default function NoteEditor({
 }) {
   const [content, setContent] = useState(startContent || "");
   const [title, setTitle] = useState(startTitle || "");
+  const [isInputFocused, setIsInputfocused] = useState(false);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+  const pathname = usePathname();
+  const noteId = pathname.split("/").pop() as string;
+
+  useEffect(() => {
+    if (isInputFocused === true || title === startTitle) {
+      return;
+    }
+    (async function () {
+      await updateNote(noteId, { title });
+    })();
+  }, [isInputFocused]);
 
   return (
     <>
@@ -26,8 +41,10 @@ export default function NoteEditor({
         placeholder="tytuł notatki"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="text-xl mb-4"
+        className="text-xl mb-4 max-w-[400px] md:translate-y-[-100%] md:mb-0"
         maxLength={48}
+        onFocus={() => setIsInputfocused(true)}
+        onBlur={() => setIsInputfocused(false)}
         ref={titleInputRef}
       />
       <MonacoEditor
@@ -36,8 +53,14 @@ export default function NoteEditor({
         value={content}
         theme="vs-dark"
         onChange={(value) => {
-          // Obsłuż zmianę zawartości, np. aktualizując stan lub wysyłając dane
-          console.log("Nowa zawartość:", value);
+          setContent(value || "");
+        }}
+        options={{
+          autoIndent: "full",
+          minimap: { enabled: false },
+          wordWrap: "on",
+          lineNumbers: "on",
+          lineNumbersMinChars: 4,
         }}
       />
     </>

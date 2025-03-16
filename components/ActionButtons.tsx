@@ -58,7 +58,7 @@ export default function ActionButtons({
 
   return (
     <>
-      <aside className="w-full flex justify-end gap-4 mb-4">
+      <aside className="w-full flex justify-end gap-4">
         {actions.map((action) => (
           <button
             key={action.name}

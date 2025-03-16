@@ -6,12 +6,11 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { NoteSchema, NoteType } from "./dbSchemas";
-import { remark } from "remark";
-import html from "remark-html";
 
 export async function getNoteById(noteId: string): Promise<NoteType | null> {
   const noteDocument = await getDoc(doc(db, "notes", noteId));
@@ -22,16 +21,11 @@ export async function getNoteById(noteId: string): Promise<NoteType | null> {
 
   const note = noteDocument.data() as NoteType;
 
-  const rawMdContent = note.mdContent;
-
-  const processedMdContent = await remark().use(html).process(rawMdContent);
-  const contentHtml = processedMdContent.toString();
-
   return {
     id: note.id,
     parentFolderRef: note.parentFolderRef,
     title: note.title,
-    mdContent: rawMdContent,
+    mdContent: note.mdContent,
   };
 }
 
@@ -65,4 +59,28 @@ export async function getNotesFromFolderMetadata(
   }));
 
   return notesMetadata;
+}
+
+interface UpdateNoteData {
+  title?: string;
+  content?: string;
+}
+
+export async function updateNote(
+  noteId: string,
+  data: UpdateNoteData
+): Promise<void> {
+  const noteRef = doc(db, "notes", noteId);
+  const updateData: { title?: string; mdContent?: string } = {};
+
+  if (data.title !== undefined) {
+    updateData.title = data.title;
+  }
+  if (data.content !== undefined) {
+    updateData.mdContent = data.content;
+  }
+
+  if (Object.keys(updateData).length > 0) {
+    await updateDoc(noteRef, updateData);
+  }
 }
