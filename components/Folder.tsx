@@ -66,7 +66,9 @@ export default function Folder({ folder }: FolderProps) {
             {notes.map((note) => (
               <button key={note.id} onClick={() => setSelectedNote(note.id)}>
                 <Link
-                  href={`${pathname}/${note.id}`}
+                  href={`/notes/${pathname.includes("edit") ? "edit/" : ""}${
+                    note.id
+                  }`}
                   className={`text-sm flex items-center gap-2 ${
                     selectedNote == note.id ? "font-semibold" : ""
                   }`}
