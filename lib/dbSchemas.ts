@@ -26,6 +26,15 @@ export const NoteSchema = z.object({
   parentFolderRef: z.custom<DocumentReference | null>(),
 });
 
+export const NoteImageSchema = z.object({
+  id: z.string(),
+  title: z
+    .string()
+    .min(3, "Nazwa obrazu musi zawierać min. 3 znaki")
+    .max(24, "Nazwa obrazu może zawierać max. 24 znaki"),
+  url: z.string().url("Niepoprawny url obrazu"),
+});
+
 export type NoteType = z.infer<typeof NoteSchema>;
 
 export type FolderType = z.infer<typeof FolderSchema> & {

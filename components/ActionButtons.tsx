@@ -5,6 +5,10 @@ import AddImage from "@/icons/AddImage";
 import Copy from "@/icons/Copy";
 import DownloadDoc from "@/icons/DownloadDoc";
 import Save from "@/icons/Save";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { ImageUpload } from "./ImageUpload";
 
 type action = {
   name: string;
@@ -20,8 +24,11 @@ export default function ActionButtons({
   mode: "view" | "edit";
 }) {
   const { showToast } = useToast();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const addImage = () => {};
+  const addImage = () => {
+    setIsSheetOpen(true);
+  };
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(noteContent);
@@ -81,6 +88,18 @@ export default function ActionButtons({
           </button>
         ))}
       </aside>
+
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetTrigger asChild>
+          <button className="hidden" />
+        </SheetTrigger>
+        <SheetContent>
+          <DialogTitle className="text-xl font-semibold mb-4">
+            Dodaj obrazy
+          </DialogTitle>
+          <ImageUpload />
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
