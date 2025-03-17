@@ -22,7 +22,7 @@ export default function NoteEditor({
   const [title, setTitle] = useState(startTitle || "");
   const [isInputFocused, setIsInputfocused] = useState(false);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
-  const vimStatusRef = useRef<HTMLDivElement>(null); // Kontener dla statusu Vim
+  const vimStatusRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const noteId = pathname.split("/").pop() as string;
   const { showToast } = useToast();
@@ -62,7 +62,7 @@ export default function NoteEditor({
     if (typeof window !== "undefined" && (window as any).require) {
       (window as any).require.config({
         paths: {
-          "monaco-vim": "https://unpkg.com/monaco-vim/dist/monaco-vim.js", // dodane .js
+          "monaco-vim": "https://unpkg.com/monaco-vim/dist/monaco-vim.js",
         },
       });
 
@@ -109,7 +109,6 @@ export default function NoteEditor({
         />
       </article>
 
-      {/* Kontener dla statusu Vim */}
       <div ref={vimStatusRef} className="vim-status mt-2 bg-background" />
     </>
   );
