@@ -59,11 +59,15 @@ export default function NoteEditor({
   }, [content, noteId, showToast]);
 
   const handleEditorMount = (editor: any, monaco: any) => {
-    // Konfiguracja ładowania monaco-vim przez window.require
-    if (typeof window !== "undefined" && window.require) {
-      window.require(["monaco-vim"], function (MonacoVim) {
+    if (typeof window !== "undefined" && (window as any).require) {
+      (window as any).require.config({
+        paths: {
+          "monaco-vim": "https://unpkg.com/monaco-vim/dist/monaco-vim.js", // dodane .js
+        },
+      });
+
+      (window as any).require(["monaco-vim"], (MonacoVim: any) => {
         if (vimStatusRef.current) {
-          // Inicjalizujemy tryb Vim i pobieramy obiekt vimMode
           MonacoVim.initVimMode(editor, vimStatusRef.current);
           MonacoVim.VimMode.Vim.map("kj", "<Esc>", "insert");
         }
