@@ -107,3 +107,15 @@ html {
 .bg-darker {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+.vim-status input {
+  background-color: var(--background);
+}
+
+.vim-status {
+  font-family: var(--font-ubuntu-mono);
+}
+
+.editor * {
+  font-family: var(--font-ubuntu-mono);
+}

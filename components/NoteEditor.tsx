@@ -59,29 +59,13 @@ export default function NoteEditor({
   }, [content, noteId, showToast]);
 
   const handleEditorMount = (editor: any, monaco: any) => {
-    // Dodajemy customowy skrót klawiszowy (Ctrl+S) jako przykład
-    editor.addAction({
-      id: "some-unique-id",
-      label: "Some label!",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S],
-      run: (ed: any) => {
-        alert("Chcemy zapisać: " + ed.getValue());
-        return null;
-      },
-    });
-
     // Konfiguracja ładowania monaco-vim przez window.require
     if (typeof window !== "undefined" && window.require) {
-      window.require.config({
-        paths: {
-          "monaco-vim": "https://unpkg.com/monaco-vim/dist/monaco-vim",
-        },
-      });
-
-      window.require(["monaco-vim"], function (MonacoVim: any) {
+      window.require(["monaco-vim"], function (MonacoVim) {
         if (vimStatusRef.current) {
           // Inicjalizujemy tryb Vim i pobieramy obiekt vimMode
-          const vimMode = MonacoVim.initVimMode(editor, vimStatusRef.current);
+          MonacoVim.initVimMode(editor, vimStatusRef.current);
+          MonacoVim.VimMode.Vim.map("kj", "<Esc>", "insert");
         }
       });
     }
@@ -100,25 +84,29 @@ export default function NoteEditor({
         onBlur={() => setIsInputfocused(false)}
         ref={titleInputRef}
       />
-      <MonacoEditor
-        height="70vh"
-        language="markdown"
-        value={content}
-        theme="vs-dark"
-        onMount={handleEditorMount}
-        onChange={(value) => setContent(value || "")}
-        options={{
-          autoIndent: "full",
-          minimap: { enabled: false },
-          wordWrap: "on",
-          lineNumbers: "on",
-          lineNumbersMinChars: 4,
-          padding: { top: 16, bottom: 16 },
-          fontSize: 16,
-        }}
-      />
+      <article className="editor">
+        <MonacoEditor
+          height="65vh"
+          language="markdown"
+          value={content}
+          theme="vs-dark"
+          onMount={handleEditorMount}
+          onChange={(value) => setContent(value || "")}
+          options={{
+            autoIndent: "full",
+            minimap: { enabled: false },
+            wordWrap: "on",
+            lineNumbers: "on",
+            lineNumbersMinChars: 4,
+            padding: { top: 16, bottom: 16 },
+            fontSize: 16,
+            fontFamily: "Ubuntu mono, monospace",
+          }}
+        />
+      </article>
+
       {/* Kontener dla statusu Vim */}
-      <div ref={vimStatusRef} className="vim-status mt-2" />
+      <div ref={vimStatusRef} className="vim-status mt-2 bg-background" />
     </>
   );
 }
