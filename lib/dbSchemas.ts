@@ -33,6 +33,7 @@ export const NoteImageSchema = z.object({
     .min(3, "Nazwa obrazu musi zawierać min. 3 znaki")
     .max(24, "Nazwa obrazu może zawierać max. 24 znaki"),
   url: z.string().url("Niepoprawny url obrazu"),
+  noteRef: z.custom<DocumentReference>(),
 });
 
 export type NoteType = z.infer<typeof NoteSchema>;
@@ -40,3 +41,5 @@ export type NoteType = z.infer<typeof NoteSchema>;
 export type FolderType = z.infer<typeof FolderSchema> & {
   children?: FolderType[];
 };
+
+export type NoteImageType = z.infer<typeof NoteImageSchema>;

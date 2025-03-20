@@ -8,7 +8,7 @@ import Save from "@/icons/Save";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { ImageUpload } from "./ImageUpload";
+import { AddImages } from "./AddImages";
 
 type action = {
   name: string;
@@ -93,11 +93,11 @@ export default function ActionButtons({
         <SheetTrigger asChild>
           <button className="hidden" />
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="overflow-auto scrollbar scrollbar-thumb-primary">
           <DialogTitle className="text-xl font-semibold mb-4">
             Dodaj obrazy
           </DialogTitle>
-          <ImageUpload />
+          <AddImages />
         </SheetContent>
       </Sheet>
     </>
