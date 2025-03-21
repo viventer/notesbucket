@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { updateNote } from "@/lib/notes";
 import { useToast } from "@/hooks/useToast";
+import { getAllNoteImages } from "@/lib/notesImages";
+import { NoteImageType } from "@/lib/dbSchemas";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -21,11 +24,20 @@ export default function NoteEditor({
   const [content, setContent] = useState(startContent || "");
   const [title, setTitle] = useState(startTitle || "");
   const [isInputFocused, setIsInputfocused] = useState(false);
+  const [noteImages, setNoteImages] = useState<null | NoteImageType[]>();
   const titleInputRef = useRef<HTMLInputElement | null>(null);
   const vimStatusRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const noteId = pathname.split("/").pop() as string;
   const { showToast } = useToast();
+
+  useEffect(() => {
+    (async function () {
+      const uploadedNoteImages = await getAllNoteImages(noteId);
+      console.log(uploadedNoteImages);
+      setNoteImages([...uploadedNoteImages]);
+    })();
+  }, []);
 
   useEffect(() => {
     if (isInputFocused || title === startTitle) return;
@@ -40,12 +52,47 @@ export default function NoteEditor({
     })();
   }, [isInputFocused, title, startTitle, noteId, showToast]);
 
+  async function getImageUrl(storageFileName: string): Promise<string> {
+    const storage = getStorage();
+    const imageRef = ref(storage, `images/${storageFileName}`);
+    return await getDownloadURL(imageRef);
+  }
+
+  async function fillImageUrls(
+    content: string,
+    noteImages: NoteImageType[]
+  ): Promise<string> {
+    const regex = /!\[(.*?)\]\(\)/g;
+    const matches: { fullMatch: string; imageName: string }[] = [];
+
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(content)) !== null) {
+      matches.push({ fullMatch: match[0], imageName: match[1] });
+    }
+
+    let newContent = content;
+    for (const { fullMatch, imageName } of matches) {
+      const image = noteImages.find((img) => img.name === imageName);
+      let replacement = `[${imageName}]()`;
+      if (image) {
+        const imageUrl = await getImageUrl(image.storageFileName);
+        replacement = `![${imageName}](${imageUrl})`;
+      }
+      newContent = newContent.replace(fullMatch, replacement);
+    }
+    return newContent;
+  }
+
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
         try {
-          await updateNote(noteId, { content });
+          // Upewnij się, że noteImages zostały już załadowane
+          const newContent = noteImages
+            ? await fillImageUrls(content, noteImages)
+            : content;
+          await updateNote(noteId, { content: newContent });
           showToast("Zmiany w zawartości zostały zapisane", "success");
         } catch (err) {
           showToast("Błąd aktualizacji zawartości", "error");
@@ -56,7 +103,7 @@ export default function NoteEditor({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [content, noteId, showToast]);
+  }, [content, noteImages, noteId, showToast]);
 
   const handleEditorMount = (editor: any, monaco: any) => {
     if (typeof window !== "undefined" && (window as any).require) {
