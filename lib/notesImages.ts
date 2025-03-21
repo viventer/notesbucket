@@ -1,7 +1,6 @@
 import {
   deleteDoc,
   doc,
-  DocumentReference,
   getDoc,
   getDocs,
   query,
@@ -33,10 +32,20 @@ export async function addNoteImage(
     name: "",
     url: imageUrl,
     noteRef: noteRef,
+    storageFileName: file.name,
   });
   await updateNoteImage(docRef.id, { id: docRef.id });
 
   return { imageUrl, noteImageId: docRef.id };
+}
+
+export async function uploadImageToStorage(file: File): Promise<string> {
+  const storage = getStorage();
+  const storageRef = ref(storage, `images/${file.name}`);
+  const snapshot = await uploadBytes(storageRef, file);
+  const imageUrl = await getDownloadURL(snapshot.ref);
+
+  return imageUrl;
 }
 
 export async function updateNoteImage(
@@ -87,6 +96,7 @@ export async function getAllNoteImages(
     name: doc.data().name,
     noteRef: doc.data().noteRef,
     url: doc.data().url,
+    storageFileName: doc.data().storageFileName,
   }));
 
   return notesImages;

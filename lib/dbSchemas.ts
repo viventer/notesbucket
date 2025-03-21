@@ -33,6 +33,7 @@ export const NoteImageSchema = z.object({
     .min(3, "Nazwa obrazu musi zawierać min. 3 znaki")
     .max(24, "Nazwa obrazu może zawierać max. 24 znaki"),
   url: z.string().url("Niepoprawny url obrazu"),
+  storageFileName: z.string(),
   noteRef: z.custom<DocumentReference>(),
 });
 

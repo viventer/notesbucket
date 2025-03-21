@@ -17,7 +17,9 @@ import {
   deleteNoteImage,
   removeImageFromStorage,
   updateNoteImage,
+  uploadImageToStorage,
 } from "@/lib/notesImages";
+import { NoteImageType } from "@/lib/dbSchemas";
 
 export interface UploadedImage {
   name: string;
@@ -28,20 +30,26 @@ export interface UploadedImage {
 interface ImageUploaderProps {
   onRemoveUploader: () => void;
   index: number;
-  onImageUpload?: (data: UploadedImage) => void;
+  startNoteImageData?: NoteImageType;
 }
 
 export default function ImageUploader({
   onRemoveUploader,
   index,
-  onImageUpload,
+  startNoteImageData,
 }: ImageUploaderProps) {
-  const [imageName, setImageName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [oldImageName, setOldImageName] = useState("");
+  const [imageName, setImageName] = useState(startNoteImageData?.name || "");
+  const [imageUrl, setImageUrl] = useState(startNoteImageData?.url || "");
+  const [fileName, setFileName] = useState(
+    startNoteImageData?.storageFileName || ""
+  );
+  const [oldImageName, setOldImageName] = useState(
+    startNoteImageData?.name || ""
+  );
   const [isNameInputFocused, setIsNameInputFocused] = useState(false);
-  const [noteImageId, setNoteImageId] = useState<string>("");
+  const [noteImageId, setNoteImageId] = useState<string>(
+    startNoteImageData?.id || ""
+  );
 
   const nameInputRef = useRef<null | HTMLInputElement>(null);
 
@@ -56,13 +64,26 @@ export default function ImageUploader({
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;
       const file = acceptedFiles[0];
-      setFileName(file.name);
       (async function () {
         try {
+          if (fileName) {
+            await removeImageFromStorage(fileName);
+          }
+          setFileName(file.name);
+          if (noteImageId) {
+            const newImageUrl = await uploadImageToStorage(file);
+            updateNoteImage(noteImageId, {
+              url: newImageUrl,
+              storageFileName: file.name,
+            });
+            setImageUrl(newImageUrl);
+            return;
+          }
+
           const { imageUrl: createdImageUrl, noteImageId: createdNoteImageId } =
             await addNoteImage(file, noteId);
-          setNoteImageId(createdNoteImageId);
           setImageUrl(createdImageUrl);
+          setNoteImageId(createdNoteImageId);
           showToast("Zdjęcie zostało przesłane.", "success");
         } catch (err) {
           showToast("Błąd przesyłania zdjęcia", "error");
@@ -70,7 +91,7 @@ export default function ImageUploader({
         }
       })();
     },
-    [imageName, noteId, onImageUpload, showToast]
+    [imageName, noteId, showToast]
   );
 
   useEffect(() => {
@@ -101,10 +122,10 @@ export default function ImageUploader({
     if (!imageUrl || !fileName) return;
     try {
       removeImageFromStorage(fileName);
+      updateNoteImage(noteImageId, { storageFileName: "", url: "" });
       setImageUrl("");
       setFileName("");
       showToast("Obrazek został usunięty", "success");
-      onImageUpload && onImageUpload({ name: "", imageUrl: "", fileName: "" });
     } catch (error) {
       showToast("Błąd usuwania obrazka", "error");
       console.error("Błąd usuwania obrazka:", error);

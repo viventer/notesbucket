@@ -1,18 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import ImageUploader, { UploadedImage } from "./ImageUploader";
+import { useEffect, useState } from "react";
+import ImageUploader from "./ImageUploader";
+import { getAllNoteImages } from "@/lib/notesImages";
+import { useParams } from "next/navigation";
+import { NoteImageType } from "@/lib/dbSchemas";
 
-interface UploaderItem {
+type UploaderItem = {
   id: number;
-}
+  noteImageData?: NoteImageType;
+};
 
 export function AddImages() {
-  const [uploaders, setUploaders] = useState<UploaderItem[]>([{ id: 1 }]);
-  // Obiekt, w którym kluczem jest id uploadera, a wartością przesłany obraz
-  const [uploadedImages, setUploadedImages] = useState<{
-    [key: number]: UploadedImage;
-  }>({});
+  const [uploaders, setUploaders] = useState<UploaderItem[]>([]);
+  const { noteId }: { noteId: string } = useParams();
+
+  useEffect(() => {
+    (async function () {
+      const noteImages = await getAllNoteImages(noteId);
+      const noteImagesUploaders: UploaderItem[] = noteImages.map(
+        (noteImage, index) => ({
+          id: index,
+          noteImageData: { ...noteImage },
+        })
+      );
+      if (noteImagesUploaders.length > 0) {
+        setUploaders([...noteImagesUploaders]);
+      } else {
+        setUploaders([{ id: 0 }]);
+      }
+    })();
+  }, []);
 
   const addUploader = () => {
     setUploaders((prev) => [
@@ -23,19 +41,7 @@ export function AddImages() {
 
   const removeUploader = (id: number) => {
     setUploaders((prev) => prev.filter((item) => item.id !== id));
-    setUploadedImages((prev) => {
-      const newState = { ...prev };
-      delete newState[id];
-      return newState;
-    });
   };
-
-  // Callback wywoływany przez ImageUploader po przesłaniu obrazu
-  const handleImageUpload = (uploaderId: number, data: UploadedImage) => {
-    setUploadedImages((prev) => ({ ...prev, [uploaderId]: data }));
-  };
-
-  console.log(uploadedImages);
 
   return (
     <div className="flex flex-col gap-8">
@@ -44,7 +50,7 @@ export function AddImages() {
           key={uploader.id}
           index={index}
           onRemoveUploader={() => removeUploader(uploader.id)}
-          onImageUpload={(data) => handleImageUpload(uploader.id, data)}
+          startNoteImageData={uploader.noteImageData}
         />
       ))}
       <button
@@ -53,12 +59,6 @@ export function AddImages() {
       >
         Dodaj kolejny obrazek
       </button>
-
-      {/* Przykładowe wyświetlenie zapamiętanych obrazów */}
-      <div className="mt-4">
-        <h3>Przesłane obrazy:</h3>
-        <pre>{JSON.stringify(uploadedImages, null, 2)}</pre>
-      </div>
     </div>
   );
 }
