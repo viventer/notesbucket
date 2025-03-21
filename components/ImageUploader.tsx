@@ -1,7 +1,7 @@
 "use client";
 
 import { useToast } from "@/hooks/useToast";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   getStorage,
@@ -24,9 +24,12 @@ import Image from "next/image";
 import DeleteIcon from "@/icons/DeleteIcon";
 import ChangeIcon from "@/icons/ChangeIcon";
 import { Input } from "./ui/input";
+import { db } from "@/lib/firebase";
+import { DocumentData, DocumentReference } from "firebase/firestore";
+import { NoteImageSchema, NoteImageType } from "@/lib/dbSchemas";
 
 export interface UploadedImage {
-  imageName: string;
+  name: string;
   imageUrl: string;
   fileName: string;
 }
@@ -45,9 +48,15 @@ export default function ImageUploader({
   const [imageName, setImageName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [fileName, setFileName] = useState("");
+  const [oldImageName, setOldImageName] = useState("");
+  const [isNameInputFocused, setIsNameInputFocused] = useState(false);
+  const [noteImageRef, setNoteImageRef] =
+    useState<DocumentReference<DocumentData> | null>(null);
+
+  const nameInputRef = useRef<null | HTMLInputElement>(null);
 
   const { showToast } = useToast();
-  const { noteId } = useParams();
+  const { noteId }: { noteId: string } = useParams();
 
   const onDropRejected = useCallback(() => {
     showToast("Plik jest za duży! Maksymalny rozmiar to 5 MB.", "error");
@@ -85,16 +94,16 @@ export default function ImageUploader({
               const docRef = await addDoc(
                 collection(firestore, "notesImages"),
                 {
-                  title: imageName,
+                  name: imageName,
                   url: url,
                   noteRef: noteRef,
                 }
               );
-              // Aktualizacja pola id zgodnie ze schematem
+              setNoteImageRef(docRef);
               await updateDoc(docRef, { id: docRef.id });
               onImageUpload &&
                 onImageUpload({
-                  imageName,
+                  name: imageName,
                   imageUrl: url,
                   fileName: file.name,
                 });
@@ -108,6 +117,21 @@ export default function ImageUploader({
     },
     [imageName, noteId, onImageUpload, showToast]
   );
+
+  useEffect(() => {
+    if (isNameInputFocused || imageName === oldImageName || !noteImageRef)
+      return;
+    (async function () {
+      try {
+        await updateDoc(noteImageRef, { name: imageName });
+        setOldImageName(imageName);
+        showToast("Nazwa zdjęcia została zaktualizowana", "success");
+      } catch (err) {
+        showToast("Błąd zmiany nazwy zdjęcia", "error");
+        console.error(err);
+      }
+    })();
+  }, [isNameInputFocused]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -129,19 +153,12 @@ export default function ImageUploader({
       setFileName("");
       showToast("Obrazek został usunięty", "success");
       // Powiadomienie rodzica o usunięciu obrazu (np. reset danych)
-      onImageUpload &&
-        onImageUpload({ imageName: "", imageUrl: "", fileName: "" });
+      onImageUpload && onImageUpload({ name: "", imageUrl: "", fileName: "" });
     } catch (error) {
       console.error("Błąd usuwania obrazka:", error);
       showToast("Błąd usuwania obrazka", "error");
     }
   };
-
-  useEffect(() => {
-    if (imageUrl) {
-      onImageUpload && onImageUpload({ imageName, imageUrl, fileName });
-    }
-  }, [imageName]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -188,6 +205,9 @@ export default function ImageUploader({
           onChange={(e) => setImageName(e.target.value)}
           maxLength={48}
           placeholder="nazwa zdjęcia"
+          ref={nameInputRef}
+          onFocus={() => setIsNameInputFocused(true)}
+          onBlur={() => setIsNameInputFocused(false)}
         />
         {onRemoveUploader && index !== 0 && (
           <button

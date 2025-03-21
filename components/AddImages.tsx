@@ -36,13 +36,14 @@ export function AddImages() {
     setUploadedImages((prev) => ({ ...prev, [uploaderId]: data }));
   };
 
+  console.log(uploadedImages);
+
   return (
     <div className="flex flex-col gap-8">
       {uploaders.map((uploader, index) => (
         <ImageUploader
           key={uploader.id}
           index={index}
-          uploaderId={uploader.id}
           onRemoveUploader={() => removeUploader(uploader.id)}
           onImageUpload={(data) => handleImageUpload(uploader.id, data)}
         />

@@ -28,7 +28,7 @@ export const NoteSchema = z.object({
 
 export const NoteImageSchema = z.object({
   id: z.string(),
-  title: z
+  name: z
     .string()
     .min(3, "Nazwa obrazu musi zawierać min. 3 znaki")
     .max(24, "Nazwa obrazu może zawierać max. 24 znaki"),
