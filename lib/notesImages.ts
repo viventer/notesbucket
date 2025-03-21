@@ -1,5 +1,3 @@
-"use server";
-
 import {
   deleteDoc,
   doc,
@@ -16,53 +14,29 @@ import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytesResumable,
+  uploadBytes,
 } from "firebase/storage";
 import { db } from "./firebase";
 import { NoteImageType } from "./dbSchemas";
 
 export async function addNoteImage(
   file: File,
-  noteRef: DocumentReference
-): Promise<{ imageUrl: string; docRef: DocumentReference } | never> {
+  noteId: string
+): Promise<{ imageUrl: string; docRef: DocumentReference }> {
   const storage = getStorage();
   const storageRef = ref(storage, `images/${file.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-  let imageUrl = "";
-  let docRef: DocumentReference | null = null;
+  const snapshot = await uploadBytes(storageRef, file);
+  const imageUrl = await getDownloadURL(snapshot.ref);
 
-  uploadTask.on(
-    "state_changed",
-    () => {},
-    () => {},
-    async () => {
-      getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-        imageUrl = url;
-      });
+  const noteRef = doc(db, "notes", noteId);
+  const docRef = await addDoc(collection(db, "notesImages"), {
+    name: "",
+    url: imageUrl,
+    noteRef: noteRef,
+  });
+  await updateDoc(docRef, { id: docRef.id });
 
-      docRef = await addDoc(collection(db, "notesImages"), {
-        name: "",
-        url: imageUrl,
-        noteRef: noteRef,
-      });
-      await updateNoteImage(docRef.id, { id: docRef.id });
-    }
-  );
-
-  if (imageUrl && docRef) {
-    return { imageUrl, docRef };
-  }
-
-  throw new Error("Błąd dodawania obrazu do notatki");
-}
-
-export async function updateNoteImage(
-  id: string,
-  data: Partial<NoteImageType>
-) {
-  const docRef = doc(db, "notesImages", id);
-
-  await updateDoc(docRef, { ...data });
+  return { imageUrl, docRef };
 }
 
 export async function removeImageFromStorage(fileName: string) {

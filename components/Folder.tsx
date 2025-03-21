@@ -27,7 +27,6 @@ export default function Folder({ folder }: FolderProps) {
   const [selectedNote, setSelectedNote] = useState("");
   const truncatedFolderName = truncateString(folder.name, 24);
   const pathname = usePathname();
-  console.log(pathname);
 
   useEffect(() => {
     async function fetchNotes() {

@@ -27,6 +27,7 @@ import { Input } from "./ui/input";
 import { db } from "@/lib/firebase";
 import { DocumentData, DocumentReference } from "firebase/firestore";
 import { NoteImageSchema, NoteImageType } from "@/lib/dbSchemas";
+import { addNoteImage } from "@/lib/notesImages";
 
 export interface UploadedImage {
   name: string;
@@ -67,53 +68,16 @@ export default function ImageUploader({
       if (acceptedFiles.length === 0) return;
       const file = acceptedFiles[0];
       setFileName(file.name);
-      const storage = getStorage();
-      const storageRef = ref(storage, `images/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        () => {},
-        (error) => {
-          console.error("Błąd przesyłania:", error);
-          showToast("Błąd przesyłania obrazka", "error");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setImageUrl(url);
-            showToast("Obrazek został przesłany", "success");
-
-            // Zapis do Firestore
-            if (!noteId) {
-              console.error("Brak id notatki w URL");
-              return;
-            }
-            const firestore = getFirestore();
-            const noteRef = doc(firestore, "notes", noteId);
-            try {
-              const docRef = await addDoc(
-                collection(firestore, "notesImages"),
-                {
-                  name: imageName,
-                  url: url,
-                  noteRef: noteRef,
-                }
-              );
-              setNoteImageRef(docRef);
-              await updateDoc(docRef, { id: docRef.id });
-              onImageUpload &&
-                onImageUpload({
-                  name: imageName,
-                  imageUrl: url,
-                  fileName: file.name,
-                });
-            } catch (error) {
-              console.error("Błąd zapisywania obrazu w Firestore:", error);
-              showToast("Błąd zapisywania obrazu w bazie", "error");
-            }
-          });
+      (async function () {
+        try {
+          const { imageUrl: createdImageUrl, docRef: createNoteImageRef } =
+            await addNoteImage(file, noteId);
+          setImageUrl(createdImageUrl);
+          showToast("Zdjęcie zostało przesłane.", "success");
+        } catch (err) {
+          showToast("Błąd przesyłania zdjęcia", "error");
         }
-      );
+      })();
     },
     [imageName, noteId, onImageUpload, showToast]
   );
