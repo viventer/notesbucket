@@ -23,7 +23,6 @@ export function AddImages() {
 
   const removeUploader = (id: number) => {
     setUploaders((prev) => prev.filter((item) => item.id !== id));
-    // Usuwamy obraz z pamięci, jeśli istnieje
     setUploadedImages((prev) => {
       const newState = { ...prev };
       delete newState[id];

@@ -3,20 +3,8 @@
 import { useToast } from "@/hooks/useToast";
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { getStorage, ref, deleteObject } from "firebase/storage";
+import { updateDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 
 import ImageIcon from "@/icons/ImageIcon";
@@ -24,10 +12,12 @@ import Image from "next/image";
 import DeleteIcon from "@/icons/DeleteIcon";
 import ChangeIcon from "@/icons/ChangeIcon";
 import { Input } from "./ui/input";
-import { db } from "@/lib/firebase";
-import { DocumentData, DocumentReference } from "firebase/firestore";
-import { NoteImageSchema, NoteImageType } from "@/lib/dbSchemas";
-import { addNoteImage } from "@/lib/notesImages";
+import {
+  addNoteImage,
+  deleteNoteImage,
+  removeImageFromStorage,
+  updateNoteImage,
+} from "@/lib/notesImages";
 
 export interface UploadedImage {
   name: string;
@@ -36,7 +26,7 @@ export interface UploadedImage {
 }
 
 interface ImageUploaderProps {
-  onRemoveUploader?: () => void;
+  onRemoveUploader: () => void;
   index: number;
   onImageUpload?: (data: UploadedImage) => void;
 }
@@ -51,8 +41,7 @@ export default function ImageUploader({
   const [fileName, setFileName] = useState("");
   const [oldImageName, setOldImageName] = useState("");
   const [isNameInputFocused, setIsNameInputFocused] = useState(false);
-  const [noteImageRef, setNoteImageRef] =
-    useState<DocumentReference<DocumentData> | null>(null);
+  const [noteImageId, setNoteImageId] = useState<string>("");
 
   const nameInputRef = useRef<null | HTMLInputElement>(null);
 
@@ -70,12 +59,14 @@ export default function ImageUploader({
       setFileName(file.name);
       (async function () {
         try {
-          const { imageUrl: createdImageUrl, docRef: createNoteImageRef } =
+          const { imageUrl: createdImageUrl, noteImageId: createdNoteImageId } =
             await addNoteImage(file, noteId);
+          setNoteImageId(createdNoteImageId);
           setImageUrl(createdImageUrl);
           showToast("Zdjęcie zostało przesłane.", "success");
         } catch (err) {
           showToast("Błąd przesyłania zdjęcia", "error");
+          console.error(err);
         }
       })();
     },
@@ -83,11 +74,11 @@ export default function ImageUploader({
   );
 
   useEffect(() => {
-    if (isNameInputFocused || imageName === oldImageName || !noteImageRef)
+    if (isNameInputFocused || imageName === oldImageName || !noteImageId)
       return;
     (async function () {
       try {
-        await updateDoc(noteImageRef, { name: imageName });
+        await updateNoteImage(noteImageId, { name: imageName });
         setOldImageName(imageName);
         showToast("Nazwa zdjęcia została zaktualizowana", "success");
       } catch (err) {
@@ -105,22 +96,32 @@ export default function ImageUploader({
     maxSize: 3 * 1024 * 1024,
   });
 
-  // Usuwanie obrazka z Firebase Storage i ewentualne usuwanie zapisu w Firestore można rozszerzyć analogicznie.
   const handleDeleteImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (!imageUrl || !fileName) return;
-    const storage = getStorage();
-    const storageRef = ref(storage, `images/${fileName}`);
     try {
-      await deleteObject(storageRef);
+      removeImageFromStorage(fileName);
       setImageUrl("");
       setFileName("");
       showToast("Obrazek został usunięty", "success");
-      // Powiadomienie rodzica o usunięciu obrazu (np. reset danych)
       onImageUpload && onImageUpload({ name: "", imageUrl: "", fileName: "" });
     } catch (error) {
-      console.error("Błąd usuwania obrazka:", error);
       showToast("Błąd usuwania obrazka", "error");
+      console.error("Błąd usuwania obrazka:", error);
+    }
+  };
+
+  const handleDeleteUploader = async () => {
+    onRemoveUploader();
+    if (noteImageId) {
+      try {
+        deleteNoteImage(noteImageId);
+        removeImageFromStorage(fileName);
+        showToast("Obraz został usunięty z notatki", "success");
+      } catch (err) {
+        showToast("Błąd usuwania obrazu z notatki", "error");
+        console.error(err);
+      }
     }
   };
 
@@ -173,10 +174,10 @@ export default function ImageUploader({
           onFocus={() => setIsNameInputFocused(true)}
           onBlur={() => setIsNameInputFocused(false)}
         />
-        {onRemoveUploader && index !== 0 && (
+        {index !== 0 && (
           <button
             className="transition-all ease-in-out hover:text-destructive"
-            onClick={onRemoveUploader}
+            onClick={handleDeleteUploader}
           >
             <DeleteIcon className="size-6" />
           </button>

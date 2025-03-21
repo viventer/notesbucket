@@ -22,7 +22,7 @@ import { NoteImageType } from "./dbSchemas";
 export async function addNoteImage(
   file: File,
   noteId: string
-): Promise<{ imageUrl: string; docRef: DocumentReference }> {
+): Promise<{ imageUrl: string; noteImageId: string }> {
   const storage = getStorage();
   const storageRef = ref(storage, `images/${file.name}`);
   const snapshot = await uploadBytes(storageRef, file);
@@ -34,9 +34,18 @@ export async function addNoteImage(
     url: imageUrl,
     noteRef: noteRef,
   });
-  await updateDoc(docRef, { id: docRef.id });
+  await updateNoteImage(docRef.id, { id: docRef.id });
 
-  return { imageUrl, docRef };
+  return { imageUrl, noteImageId: docRef.id };
+}
+
+export async function updateNoteImage(
+  id: string,
+  data: Partial<NoteImageType>
+) {
+  const docRef = doc(db, "notesImages", id);
+
+  await updateDoc(docRef, { ...data });
 }
 
 export async function removeImageFromStorage(fileName: string) {
