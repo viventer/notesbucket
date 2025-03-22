@@ -1,23 +1,27 @@
 "use client";
 
+import { useToast } from "@/hooks/useToast";
 import AddFolder from "@/icons/AddFolder";
 import { FolderType } from "@/lib/dbSchemas";
 import { createFolder, CreateFolderData, getFolderData } from "@/lib/folders";
-import { SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useFormContext } from "react-hook-form";
 
 export default function CreateFolderButton({
   setUpdatedFolders,
   isSubFolder,
   parentFolderId,
+  setNewFolderIds,
 }: {
   setUpdatedFolders: (value: SetStateAction<FolderType[]>) => void;
   isSubFolder: boolean;
   parentFolderId?: string;
+  setNewFolderIds: Dispatch<SetStateAction<string[]>>;
 }) {
   const form = useFormContext();
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
+  const { showToast } = useToast();
 
   const handleFolderCreate = async () => {
     if (isSubFolder && !parentFolderId) {
@@ -30,9 +34,15 @@ export default function CreateFolderButton({
       subject: selectedSubject,
       parentFolderId: parentFolderId || undefined,
     };
-    const newFolderId = await createFolder(newFolderCreateData);
-    const newFolderData = await getFolderData(newFolderId);
-    setUpdatedFolders((prev) => [...prev, newFolderData]);
+    try {
+      const newFolderId = await createFolder(newFolderCreateData);
+      const newFolderData = await getFolderData(newFolderId);
+      setUpdatedFolders((prev) => [...prev, newFolderData]);
+      setNewFolderIds((prev) => [...prev, newFolderId]);
+      showToast("Nowy folder został utworzony", "success");
+    } catch (err) {
+      showToast(`Błąd tworzenia folderu: ${err}`, "error");
+    }
   };
 
   const buttonText = `Utwórz ${isSubFolder ? "pod" : ""}folder`;

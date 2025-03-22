@@ -4,9 +4,7 @@ import { useFormContext } from "react-hook-form";
 import Folder from "./Folder";
 import { useEffect, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
-import AddFolder from "@/icons/AddFolder";
 import { usePathname } from "next/navigation";
-import { createFolder, CreateFolderData, getFolderData } from "@/lib/folders";
 import CreateFolderButton from "./CreateFolderButton";
 
 export default function NoteSelector({ folders }: { folders: FolderType[] }) {
@@ -15,6 +13,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const selectedSubject = form.watch("subject");
 
   const [updatedFolders, setUpdatedFolders] = useState<FolderType[]>(folders);
+  const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
 
   useEffect(() => {
     let filteredFoldersArray;
@@ -42,10 +41,15 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
         <CreateFolderButton
           setUpdatedFolders={setUpdatedFolders}
           isSubFolder={false}
+          setNewFolderIds={setNewFolderIds}
         />
       )}
       {updatedFolders.map((folder) => (
-        <Folder key={folder.id} folder={folder} />
+        <Folder
+          key={folder.id}
+          folder={folder}
+          isNew={newFolderIds.includes(folder.id)}
+        />
       ))}
     </>
   );

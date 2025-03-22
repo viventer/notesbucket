@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { FolderType } from "@/lib/dbSchemas";
@@ -22,22 +22,25 @@ import CreateFolderButton from "./CreateFolderButton";
 
 interface FolderProps {
   folder: FolderType;
+  isNew: boolean;
 }
 
-export default function Folder({ folder }: FolderProps) {
+export default function Folder({ folder, isNew }: FolderProps) {
   const [notes, setNotes] = useState<NoteMetadata[]>([]);
   const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedNote, setSelectedNote] = useState("");
-  const [showNameInput, setShowNameInput] = useState(false);
+  const [showNameInput, setShowNameInput] = useState(isNew);
   const [newFolderName, setNewFolderName] = useState(folder.name);
   const [previousFolderName, setPreviousFolderName] = useState(folder.name);
   const [isDeleted, setIsDeleted] = useState(false);
   const [subFolders, setSubFolders] = useState(folder?.children || []);
+  const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
   const truncatedFolderName = truncateString(newFolderName, 24);
   const pathname = usePathname();
   const { showToast } = useToast();
   const { showDialog } = useConfirmDialog();
+  const nameInputRef = useRef<null | HTMLInputElement>(null);
 
   useEffect(() => {
     async function fetchNotes() {
@@ -54,6 +57,10 @@ export default function Folder({ folder }: FolderProps) {
       setLoading(false);
     }
     fetchNotes();
+
+    if (isNew && nameInputRef.current) {
+      nameInputRef.current.focus();
+    }
   }, []);
 
   const isEditView = pathname.includes("edit");
@@ -101,11 +108,14 @@ export default function Folder({ folder }: FolderProps) {
   return (
     <div className={`${folder.parentFolderRef ? "ml-4" : ""}`}>
       <div className="flex items-center gap-2 text-base">
-        <button onClick={() => setIsExpanded((prev) => !prev)}>
+        <button
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className={`${isNew ? "text-success" : "text-secondary"}`}
+        >
           {isExpanded ? (
-            <OpenedFolder className="size-4 text-secondary" />
+            <OpenedFolder className="size-4" />
           ) : (
-            <ClosedFolder className="size-4 text-secondary" />
+            <ClosedFolder className="size-4" />
           )}
         </button>
         {showNameInput ? (
@@ -114,6 +124,7 @@ export default function Folder({ folder }: FolderProps) {
               value={newFolderName}
               className="p-0 h-fit"
               onChange={handleNameChange}
+              ref={nameInputRef}
             />
             <button onClick={saveNameChange}>
               <Save className="size-4 transition-all ease-in-out hover:text-success" />
@@ -140,13 +151,18 @@ export default function Folder({ folder }: FolderProps) {
           {isEditView && (
             <CreateFolderButton
               setUpdatedFolders={setSubFolders}
+              setNewFolderIds={setNewFolderIds}
               isSubFolder={true}
               parentFolderId={folder.id}
             />
           )}
           <div>
             {subFolders?.map((subFolder: FolderType) => (
-              <Folder key={subFolder.id} folder={subFolder} />
+              <Folder
+                key={subFolder.id}
+                folder={subFolder}
+                isNew={newFolderIds.includes(subFolder.id)}
+              />
             ))}
           </div>
 
