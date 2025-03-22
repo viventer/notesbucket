@@ -4,6 +4,8 @@ import { useFormContext } from "react-hook-form";
 import Folder from "./Folder";
 import { useEffect, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
+import AddFolder from "@/icons/AddFolder";
+import { Input } from "./ui/input";
 
 export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const form = useFormContext();
@@ -11,6 +13,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const selectedSubject = form.watch("subject");
 
   const [filteredFolders, setFilteredFolders] = useState(folders);
+  const [newFolderName, setNewFolderName] = useState("nowy folder");
 
   useEffect(() => {
     let filteredFoldersArray;
@@ -33,5 +36,15 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
     <Folder key={folder.id} folder={folder} />
   ));
 
-  return foldersElements;
+  const handleFolderCreate = () => {};
+
+  return (
+    <>
+      <button className="flex items-center gap-2" onClick={handleFolderCreate}>
+        <AddFolder className="size-4 text-success" />
+        <p>Utwórz folder</p>
+      </button>
+      {foldersElements}
+    </>
+  );
 }

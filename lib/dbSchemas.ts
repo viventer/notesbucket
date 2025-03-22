@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DocumentReference } from "@firebase/firestore-types";
+import { DocumentReference } from "firebase/firestore";
 
 export const FolderSchema = z.object({
   id: z.string(),

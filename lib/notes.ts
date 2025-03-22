@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { NoteSchema, NoteType } from "./dbSchemas";
+import { NoteType } from "./dbSchemas";
 
 export async function getNoteById(noteId: string): Promise<NoteType | null> {
   const noteDocument = await getDoc(doc(db, "notes", noteId));
