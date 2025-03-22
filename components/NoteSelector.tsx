@@ -5,9 +5,9 @@ import Folder from "./Folder";
 import { useEffect, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
 import AddFolder from "@/icons/AddFolder";
-import { Input } from "./ui/input";
 import { usePathname } from "next/navigation";
 import { createFolder, CreateFolderData, getFolderData } from "@/lib/folders";
+import CreateFolderButton from "./CreateFolderButton";
 
 export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const form = useFormContext();
@@ -36,27 +36,13 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const pathname = usePathname();
   const isEditView = pathname.includes("edit");
 
-  const handleFolderCreate = async () => {
-    const newFolderCreateData: CreateFolderData = {
-      name: "nowy folder",
-      category: selectedCategory,
-      subject: selectedSubject,
-    };
-    const newFolderId = await createFolder(newFolderCreateData);
-    const newFolderData = await getFolderData(newFolderId);
-    setUpdatedFolders((prev) => [...prev, newFolderData]);
-  };
-
   return (
     <>
       {isEditView && (
-        <button
-          className="flex items-center gap-2"
-          onClick={handleFolderCreate}
-        >
-          <AddFolder className="size-4 text-success" />
-          <p>Utwórz folder</p>
-        </button>
+        <CreateFolderButton
+          setUpdatedFolders={setUpdatedFolders}
+          isSubFolder={false}
+        />
       )}
       {updatedFolders.map((folder) => (
         <Folder key={folder.id} folder={folder} />

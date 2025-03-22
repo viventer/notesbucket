@@ -24,7 +24,6 @@ export default function HeaderNav({
   });
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const rotationClass = `rotate-${isExpanded ? "0" : "180"}`;
 
   const selectedCategory = form.watch("category");
 
@@ -42,7 +41,9 @@ export default function HeaderNav({
               <Logo className="size-[2rem] text-secondary" />
               <h1 className="text-[1.5rem]">NotesBucket</h1>
             </div>
-            <Chevron className={`size-8 text-text ${rotationClass}`} />
+            <Chevron
+              className={`size-8 text-text ${isExpanded ? "rotate-180" : ""}`}
+            />
           </button>
         </section>
         <section

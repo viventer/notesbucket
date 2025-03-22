@@ -18,6 +18,7 @@ import { deleteFolder, updateFolder } from "@/lib/folders";
 import { useToast } from "@/hooks/useToast";
 import DeleteIcon from "@/icons/DeleteIcon";
 import { useConfirmDialog } from "./ConfirmDialogProvider";
+import CreateFolderButton from "./CreateFolderButton";
 
 interface FolderProps {
   folder: FolderType;
@@ -32,6 +33,7 @@ export default function Folder({ folder }: FolderProps) {
   const [newFolderName, setNewFolderName] = useState(folder.name);
   const [previousFolderName, setPreviousFolderName] = useState(folder.name);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [subFolders, setSubFolders] = useState(folder?.children || []);
   const truncatedFolderName = truncateString(newFolderName, 24);
   const pathname = usePathname();
   const { showToast } = useToast();
@@ -135,8 +137,15 @@ export default function Folder({ folder }: FolderProps) {
       </div>
       {isExpanded && (
         <>
+          {isEditView && (
+            <CreateFolderButton
+              setUpdatedFolders={setSubFolders}
+              isSubFolder={true}
+              parentFolderId={folder.id}
+            />
+          )}
           <div>
-            {folder.children?.map((subFolder: FolderType) => (
+            {subFolders?.map((subFolder: FolderType) => (
               <Folder key={subFolder.id} folder={subFolder} />
             ))}
           </div>
