@@ -14,9 +14,10 @@ import { usePathname } from "next/navigation";
 import { Input } from "./ui/input";
 import Save from "@/icons/Save";
 import CancelIcon from "@/icons/CancelIcon";
-import { updateFolder } from "@/lib/folders";
+import { deleteFolder, updateFolder } from "@/lib/folders";
 import { useToast } from "@/hooks/useToast";
 import DeleteIcon from "@/icons/DeleteIcon";
+import { useConfirmDialog } from "./ConfirmDialogProvider";
 
 interface FolderProps {
   folder: FolderType;
@@ -30,9 +31,11 @@ export default function Folder({ folder }: FolderProps) {
   const [showNameInput, setShowNameInput] = useState(false);
   const [newFolderName, setNewFolderName] = useState(folder.name);
   const [previousFolderName, setPreviousFolderName] = useState(folder.name);
+  const [isDeleted, setIsDeleted] = useState(false);
   const truncatedFolderName = truncateString(newFolderName, 24);
   const pathname = usePathname();
   const { showToast } = useToast();
+  const { showDialog } = useConfirmDialog();
 
   useEffect(() => {
     async function fetchNotes() {
@@ -56,14 +59,14 @@ export default function Folder({ folder }: FolderProps) {
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewFolderName(e.target.value);
   };
-  const saveNameChange = () => {
+  const saveNameChange = async () => {
     if (previousFolderName === newFolderName) {
       showToast("Nowa nazwa folderu jest taka sama jak stara.", "error");
       return;
     }
 
     try {
-      updateFolder(folder.id, { name: newFolderName });
+      await updateFolder(folder.id, { name: newFolderName });
       showToast("Nazwa folderu została zmieniona.", "success");
       setShowNameInput(false);
       setPreviousFolderName(newFolderName);
@@ -72,7 +75,24 @@ export default function Folder({ folder }: FolderProps) {
       console.error(err);
     }
   };
-  const handleDeleteFolder = () => {};
+  const handleDeleteFolder = () => {
+    showDialog({
+      message: "Czy na pewno chcesz usunąć folder?",
+      confirmText: "Tak",
+      cancelText: "Nie",
+      onConfirm: async () => {
+        try {
+          await deleteFolder(folder.id);
+          setIsDeleted(true);
+          showToast("Folder został usunięty.", "success");
+        } catch (err) {
+          showToast(`Błąd usuwania folderu: ${err}`, "error");
+        }
+      },
+    });
+  };
+
+  if (isDeleted) return;
 
   return (
     <div className={`${folder.parentFolderRef ? "ml-4" : ""}`}>

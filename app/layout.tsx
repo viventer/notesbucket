@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Ubuntu, Ubuntu_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { ConfirmDialogProvider } from "@/components/ConfirmDialogProvider";
 
 const ubuntuSans = Ubuntu({
   variable: "--font-ubuntu-sans",
@@ -22,25 +23,27 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="pl"
-      className="scrollbar scrollbar-track-transparent scrollbar-thumb-primary overflow-hidden "
+      className="scrollbar scrollbar-track-transparent scrollbar-thumb-primary overflow-hidden"
     >
       <body
         className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background`}
       >
-        {children}
-        <Toaster
-          toastOptions={{
-            unstyled: true,
-            className:
-              "bg-background flex gap-2 backdrop-blur-[0.2rem] items-center border-[0.1rem]  px-4 py-3 rounded-lg",
-          }}
-        />
+        <ConfirmDialogProvider>
+          {children}
+          <Toaster
+            toastOptions={{
+              unstyled: true,
+              className:
+                "bg-background flex gap-2 backdrop-blur-[0.2rem] items-center border-[0.1rem]  px-4 py-3 rounded-lg",
+            }}
+          />
+        </ConfirmDialogProvider>
       </body>
     </html>
   );
