@@ -1,12 +1,12 @@
 import HeaderNav from "@/components/HeaderNav";
-import { fetchFolders } from "@/lib/fetchFolders";
+import { getAllFolders } from "@/lib/folders";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const rootFolders = await fetchFolders();
+  const rootFolders = await getAllFolders();
 
   return (
     <div>

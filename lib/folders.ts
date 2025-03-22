@@ -39,22 +39,39 @@ export async function getAllFolders() {
   return rootFolders as FolderType[];
 }
 
-export async function createFolder(
-  folderName: string,
-  category: Category,
-  subject: Subject,
-  parentFolderId: string
-): Promise<string> {
+export async function getFolderData(folderId: string): Promise<FolderType> {
+  const folderRef = doc(db, "folders", folderId);
+  const folderSnapshot = await getDoc(folderRef);
+  const folderData = folderSnapshot.data() as FolderType;
+  if (!folderData) {
+    throw new Error("Nie znaleziono folderu o podanym id.");
+  }
+
+  return folderData;
+}
+
+export type CreateFolderData = Pick<
+  FolderType,
+  "name" | "category" | "subject"
+> & {
+  parentFolderId?: string;
+};
+
+export async function createFolder(data: CreateFolderData): Promise<string> {
   const collectionRef = collection(db, "folders");
   const newDocRef = doc(collectionRef);
   const folderId = newDocRef.id;
+  const { name, category, subject, parentFolderId } = data;
 
-  const parentFolderRef = doc(db, "folders", parentFolderId);
+  let parentFolderRef;
+  if (parentFolderId) {
+    parentFolderRef = doc(db, "folders", parentFolderId);
+  }
 
   const newFolderData: FolderType = {
     id: folderId,
-    name: folderName,
-    parentFolderRef,
+    name,
+    parentFolderRef: parentFolderRef || null,
     subFoldersRefs: [],
     notesRefs: [],
     category,

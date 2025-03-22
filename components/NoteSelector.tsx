@@ -6,14 +6,16 @@ import { useEffect, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
 import AddFolder from "@/icons/AddFolder";
 import { Input } from "./ui/input";
+import { usePathname } from "next/navigation";
+import { createFolder, CreateFolderData, getFolderData } from "@/lib/folders";
 
 export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const form = useFormContext();
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
 
-  const [filteredFolders, setFilteredFolders] = useState(folders);
   const [newFolderName, setNewFolderName] = useState("nowy folder");
+  const [updatedFolders, setUpdatedFolders] = useState<FolderType[]>(folders);
 
   useEffect(() => {
     let filteredFoldersArray;
@@ -29,22 +31,37 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
     }
     filteredFoldersArray.sort((a, b) => a.name.localeCompare(b.name));
 
-    setFilteredFolders(filteredFoldersArray);
+    setUpdatedFolders(filteredFoldersArray);
   }, [selectedCategory, selectedSubject]);
 
-  const foldersElements = filteredFolders.map((folder) => (
-    <Folder key={folder.id} folder={folder} />
-  ));
+  const pathname = usePathname();
+  const isEditView = pathname.includes("edit");
 
-  const handleFolderCreate = () => {};
+  const handleFolderCreate = async () => {
+    const newFolderCreateData: CreateFolderData = {
+      name: newFolderName,
+      category: selectedCategory,
+      subject: selectedSubject,
+    };
+    const newFolderId = await createFolder(newFolderCreateData);
+    const newFolderData = await getFolderData(newFolderId);
+    setUpdatedFolders((prev) => [...prev, newFolderData]);
+  };
 
   return (
     <>
-      <button className="flex items-center gap-2" onClick={handleFolderCreate}>
-        <AddFolder className="size-4 text-success" />
-        <p>Utwórz folder</p>
-      </button>
-      {foldersElements}
+      {isEditView && (
+        <button
+          className="flex items-center gap-2"
+          onClick={handleFolderCreate}
+        >
+          <AddFolder className="size-4 text-success" />
+          <p>Utwórz folder</p>
+        </button>
+      )}
+      {updatedFolders.map((folder) => (
+        <Folder key={folder.id} folder={folder} />
+      ))}
     </>
   );
 }
