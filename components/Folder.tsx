@@ -14,6 +14,9 @@ import { usePathname } from "next/navigation";
 import { Input } from "./ui/input";
 import Save from "@/icons/Save";
 import CancelIcon from "@/icons/CancelIcon";
+import { updateFolder } from "@/lib/folders";
+import { useToast } from "@/hooks/useToast";
+import DeleteIcon from "@/icons/DeleteIcon";
 
 interface FolderProps {
   folder: FolderType;
@@ -26,8 +29,10 @@ export default function Folder({ folder }: FolderProps) {
   const [selectedNote, setSelectedNote] = useState("");
   const [showNameInput, setShowNameInput] = useState(false);
   const [newFolderName, setNewFolderName] = useState(folder.name);
-  const truncatedFolderName = truncateString(folder.name, 24);
+  const [previousFolderName, setPreviousFolderName] = useState(folder.name);
+  const truncatedFolderName = truncateString(newFolderName, 24);
   const pathname = usePathname();
+  const { showToast } = useToast();
 
   useEffect(() => {
     async function fetchNotes() {
@@ -51,19 +56,34 @@ export default function Folder({ folder }: FolderProps) {
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewFolderName(e.target.value);
   };
-  const saveNameChange = () => {};
+  const saveNameChange = () => {
+    if (previousFolderName === newFolderName) {
+      showToast("Nowa nazwa folderu jest taka sama jak stara.", "error");
+      return;
+    }
+
+    try {
+      updateFolder(folder.id, { name: newFolderName });
+      showToast("Nazwa folderu została zmieniona.", "success");
+      setShowNameInput(false);
+      setPreviousFolderName(newFolderName);
+    } catch (err) {
+      showToast(`Błąd zmiany nazwy folderu: ${err}`, "error");
+      console.error(err);
+    }
+  };
+  const handleDeleteFolder = () => {};
 
   return (
     <div className={`${folder.parentFolderRef ? "ml-4" : ""}`}>
-      <button
-        className="flex items-center gap-2 text-base"
-        onClick={() => setIsExpanded((prev) => !prev)}
-      >
-        {isExpanded ? (
-          <OpenedFolder className="size-4 text-secondary" />
-        ) : (
-          <ClosedFolder className="size-4 text-secondary" />
-        )}
+      <div className="flex items-center gap-2 text-base">
+        <button onClick={() => setIsExpanded((prev) => !prev)}>
+          {isExpanded ? (
+            <OpenedFolder className="size-4 text-secondary" />
+          ) : (
+            <ClosedFolder className="size-4 text-secondary" />
+          )}
+        </button>
         {showNameInput ? (
           <div className="flex items-center gap-2">
             <Input
@@ -75,15 +95,22 @@ export default function Folder({ folder }: FolderProps) {
               <Save className="size-4 transition-all ease-in-out hover:text-success" />
             </button>
             <button onClick={() => setShowNameInput(false)}>
-              <CancelIcon className="size-4 transition-all ease-in-out hover:text-destructive" />
+              <CancelIcon className="size-4 transition-all ease-in-out hover:text-accent" />
+            </button>
+            <button onClick={handleDeleteFolder}>
+              <DeleteIcon className="size-4 transition-all ease-in-out hover:text-destructive" />
             </button>
           </div>
         ) : (
-          <p onDoubleClick={() => isEditView && setShowNameInput(true)}>
+          <p
+            onClick={() => setIsExpanded((prev) => !prev)}
+            onDoubleClick={() => isEditView && setShowNameInput(true)}
+            className="hover:cursor-pointer"
+          >
             {truncatedFolderName}
           </p>
         )}
-      </button>
+      </div>
       {isExpanded && (
         <>
           <div>
