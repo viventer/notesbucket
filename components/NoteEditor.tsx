@@ -6,9 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { updateNote } from "@/lib/notes";
 import { useToast } from "@/hooks/useToast";
-import { getAllNoteImages } from "@/lib/notesImages";
+import { getAllNoteImages, getNoteImageUrl } from "@/lib/notesImages";
 import { NoteImageType } from "@/lib/dbSchemas";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -52,33 +51,27 @@ export default function NoteEditor({
     })();
   }, [isInputFocused, title, startTitle, noteId, showToast]);
 
-  async function getImageUrl(storageFileName: string): Promise<string> {
-    const storage = getStorage();
-    const imageRef = ref(storage, `images/${storageFileName}`);
-    return await getDownloadURL(imageRef);
-  }
-
   async function fillImageUrls(
     content: string,
     noteImages: NoteImageType[]
   ): Promise<string> {
-    const regex = /!\[(.*?)\]\(\)/g;
-    const matches: { fullMatch: string; imageName: string }[] = [];
-
-    let match: RegExpExecArray | null;
-    while ((match = regex.exec(content)) !== null) {
-      matches.push({ fullMatch: match[0], imageName: match[1] });
-    }
-
+    const regex = /!\[(.*?)\]\((.*?)\)/g;
     let newContent = content;
-    for (const { fullMatch, imageName } of matches) {
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(content)) !== null) {
+      const fullMatch = match[0];
+      const imageName = match[1];
+      const currentUrl = match[2];
+
       const image = noteImages.find((img) => img.name === imageName);
-      let replacement = `[${imageName}]()`;
       if (image) {
-        const imageUrl = await getImageUrl(image.storageFileName);
-        replacement = `![${imageName}](${imageUrl})`;
+        const newImageUrl = await getNoteImageUrl(image.id);
+        if (newImageUrl !== currentUrl) {
+          const newMarkdown = `![${imageName}](${newImageUrl})`;
+          newContent = newContent.replace(fullMatch, newMarkdown);
+        }
       }
-      newContent = newContent.replace(fullMatch, replacement);
     }
     return newContent;
   }
@@ -88,7 +81,6 @@ export default function NoteEditor({
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
         try {
-          // Upewnij się, że noteImages zostały już załadowane
           const newContent = noteImages
             ? await fillImageUrls(content, noteImages)
             : content;

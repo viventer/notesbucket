@@ -101,3 +101,15 @@ export async function getAllNoteImages(
 
   return notesImages;
 }
+
+export async function getNoteImageUrl(noteImageId: string): Promise<string> {
+  const noteImageRef = doc(db, "notesImages", noteImageId);
+  const data = (await getDoc(noteImageRef)).data() as NoteImageType;
+  const storageFileName = data.storageFileName;
+
+  const storage = getStorage();
+  const imageRef = ref(storage, `images/${storageFileName}`);
+  const imageUrl = getDownloadURL(imageRef);
+
+  return imageUrl;
+}
