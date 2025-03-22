@@ -14,7 +14,6 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
 
-  const [newFolderName, setNewFolderName] = useState("nowy folder");
   const [updatedFolders, setUpdatedFolders] = useState<FolderType[]>(folders);
 
   useEffect(() => {
@@ -39,7 +38,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
 
   const handleFolderCreate = async () => {
     const newFolderCreateData: CreateFolderData = {
-      name: newFolderName,
+      name: "nowy folder",
       category: selectedCategory,
       subject: selectedSubject,
     };
