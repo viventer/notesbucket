@@ -78,6 +78,8 @@ export default function Folder({ folder }: FolderProps) {
   const handleDeleteFolder = () => {
     showDialog({
       message: "Czy na pewno chcesz usunąć folder?",
+      description:
+        "Wraz z folderem zniknie cała jego zawartość. Ta operacja jest nieodwracalna.",
       confirmText: "Tak",
       cancelText: "Nie",
       onConfirm: async () => {

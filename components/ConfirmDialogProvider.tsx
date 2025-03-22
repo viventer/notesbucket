@@ -5,6 +5,7 @@ import { ConfirmDialog } from "./ConfirmDialog";
 
 type DialogOptions = {
   message: string;
+  description?: string;
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
@@ -44,6 +45,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
       {dialogOptions && (
         <ConfirmDialog
           open={true}
+          description={dialogOptions?.description}
           message={dialogOptions.message}
           confirmText={dialogOptions.confirmText || "Tak"}
           cancelText={dialogOptions.cancelText || "Nie"}
