@@ -36,7 +36,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const isEditView = pathname.includes("edit");
 
   return (
-    <>
+    <div className="flex gap-2 flex-col">
       {isEditView && (
         <CreateFolderButton
           setUpdatedFolders={setUpdatedFolders}
@@ -51,6 +51,6 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
           isNew={newFolderIds.includes(folder.id)}
         />
       ))}
-    </>
+    </div>
   );
 }
