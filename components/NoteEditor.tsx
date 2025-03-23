@@ -21,7 +21,8 @@ export default function NoteEditor({
   startTitle: string;
 }) {
   const [content, setContent] = useState(startContent || "");
-  const [title, setTitle] = useState(startTitle || "");
+  const [newTitle, setNewTitle] = useState(startTitle || "");
+  const [previousTitle, setPreviousTitle] = useState(startTitle || "");
   const [isInputFocused, setIsInputfocused] = useState(false);
   const [noteImages, setNoteImages] = useState<null | NoteImageType[]>();
   const titleInputRef = useRef<HTMLInputElement | null>(null);
@@ -39,10 +40,11 @@ export default function NoteEditor({
   }, []);
 
   useEffect(() => {
-    if (isInputFocused || title === startTitle) return;
+    if (isInputFocused || newTitle === previousTitle) return;
     (async function () {
       try {
-        await updateNote(noteId, { title });
+        await updateNote(noteId, { title: newTitle });
+        setPreviousTitle(newTitle);
         showToast("Tytuł notatki został zaaktualizowany", "success");
       } catch (err) {
         showToast("Błąd aktualizacji tytułu", "error");
@@ -119,8 +121,8 @@ export default function NoteEditor({
       <Input
         type="text"
         placeholder="tytuł notatki"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        value={newTitle}
+        onChange={(e) => setNewTitle(e.target.value)}
         className="text-xl mb-4 mt-2 max-w-[500px] md:translate-y-[-100%] md:m-0"
         maxLength={48}
         onFocus={() => setIsInputfocused(true)}

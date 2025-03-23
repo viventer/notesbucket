@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   DocumentReference,
@@ -106,4 +107,10 @@ export async function createNote(
   await setDoc(newDocRef, newNoteData);
 
   return noteId;
+}
+
+export async function deleteNote(noteId: string) {
+  const docRef = doc(db, "notes", noteId);
+
+  await deleteDoc(docRef);
 }

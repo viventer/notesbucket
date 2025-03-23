@@ -26,6 +26,7 @@ import { useConfirmDialog } from "./ConfirmDialogProvider";
 import CreateFolderButton from "./CreateFolderButton";
 import EditIcon from "@/icons/EditIcon";
 import AddNote from "@/icons/AddNote";
+import { useDeleteNote } from "@/hooks/useDeleteNote";
 
 interface FolderProps {
   folder: FolderType;
@@ -49,6 +50,7 @@ export default function Folder({ folder, isNew }: FolderProps) {
   const { showDialog } = useConfirmDialog();
   const nameInputRef = useRef<null | HTMLInputElement>(null);
   const router = useRouter();
+  const { deleteNoteHandler } = useDeleteNote();
 
   useEffect(() => {
     async function fetchNotes() {
@@ -211,21 +213,31 @@ export default function Folder({ folder, isNew }: FolderProps) {
           <div className="ml-4 flex flex-col gap-1 mt-1">
             {loading && <span>Ładowanie notatek...</span>}
             {notes.map((note) => (
-              <button key={note.id} onClick={() => setSelectedNote(note.id)}>
-                <Link
-                  href={`/notes/${isEditView ? "edit/" : ""}${note.id}`}
-                  className={`text-sm flex items-center gap-2 ${
-                    selectedNote == note.id ? "font-semibold" : ""
-                  }`}
-                >
-                  <NoteIcon
-                    className={`size-4 ${
-                      selectedNote == note.id ? "text-accent" : "text-primary"
+              <div key={note.id} className="flex items-center gap-4">
+                <button onClick={() => setSelectedNote(note.id)}>
+                  <Link
+                    href={`/notes/${isEditView ? "edit/" : ""}${note.id}`}
+                    className={`text-sm flex items-center gap-2 ${
+                      selectedNote == note.id ? "font-semibold" : ""
                     }`}
-                  />
-                  {truncateString(note.title, 24)}
-                </Link>
-              </button>
+                  >
+                    <NoteIcon
+                      className={`size-4 ${
+                        selectedNote == note.id ? "text-accent" : "text-primary"
+                      }`}
+                    />
+                    {truncateString(note.title, 24)}
+                  </Link>
+                </button>
+                {isEditView && (
+                  <button
+                    onClick={() => deleteNoteHandler(note.id)}
+                    className="hover:text-destructive"
+                  >
+                    <DeleteIcon className="size-4" />
+                  </button>
+                )}
+              </div>
             ))}
           </div>
         </>

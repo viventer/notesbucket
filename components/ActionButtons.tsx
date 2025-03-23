@@ -9,9 +9,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { AddImages } from "./AddImages";
+import DeleteIcon from "@/icons/DeleteIcon";
+
+import { useParams } from "next/navigation";
+import { useDeleteNote } from "@/hooks/useDeleteNote";
 
 type action = {
-  name: string;
+  name: "copy" | "downloadMd" | "save" | "addImage" | "delete";
   icon: ({ className }: { className?: string }) => JSX.Element;
   handler: () => void;
 };
@@ -25,6 +29,10 @@ export default function ActionButtons({
 }) {
   const { showToast } = useToast();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const { noteId }: { noteId: string } = useParams();
+
+  const { deleteNoteHandler } = useDeleteNote();
 
   const addImage = () => {
     setIsSheetOpen(true);
@@ -65,6 +73,10 @@ export default function ActionButtons({
     window.dispatchEvent(event);
   };
 
+  const deleteNote = () => {
+    deleteNoteHandler(noteId);
+  };
+
   const actions: action[] = [
     { name: "copy", icon: Copy, handler: copy },
     { name: "downloadMd", icon: DownloadDoc, handler: downloadMd },
@@ -72,7 +84,10 @@ export default function ActionButtons({
   ];
 
   if (mode == "edit") {
-    actions.push({ name: "addImage", icon: AddImage, handler: addImage });
+    actions.push(
+      { name: "addImage", icon: AddImage, handler: addImage },
+      { name: "delete", icon: DeleteIcon, handler: deleteNote }
+    );
   }
 
   return (
@@ -82,7 +97,11 @@ export default function ActionButtons({
           <button
             key={action.name}
             onClick={action.handler}
-            className="text-text transition-all ease-in-out hover:text-accent"
+            className={`text-text transition-all ease-in-out ${
+              action.name == "delete"
+                ? "hover:text-destructive"
+                : "hover:text-accent"
+            }`}
           >
             <action.icon className="size-6 md:size-8" />
           </button>
