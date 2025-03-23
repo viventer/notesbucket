@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -83,4 +84,26 @@ export async function updateNote(
   if (Object.keys(updateData).length > 0) {
     await updateDoc(noteRef, updateData);
   }
+}
+
+export async function createNote(
+  parentFolderId: string,
+  noteTitle?: string
+): Promise<string> {
+  const collectionRef = collection(db, "notes");
+  const newDocRef = doc(collectionRef);
+  const noteId = newDocRef.id;
+
+  const parentFolderRef = doc(db, "folders", parentFolderId);
+
+  const newNoteData: NoteType = {
+    id: noteId,
+    title: noteTitle || "nowa notatka",
+    mdContent: "",
+    parentFolderRef,
+  };
+
+  await setDoc(newDocRef, newNoteData);
+
+  return noteId;
 }

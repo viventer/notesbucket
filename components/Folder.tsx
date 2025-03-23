@@ -9,8 +9,13 @@ import OpenedFolder from "@/icons/OpenedFolder";
 import NoteIcon from "@/icons/NoteIcon";
 import { truncateString } from "@/lib/utils";
 import Link from "next/link";
-import { getNotesFromFolderMetadata, NoteMetadata } from "@/lib/notes";
-import { usePathname } from "next/navigation";
+import {
+  createNote,
+  getNoteById,
+  getNotesFromFolderMetadata,
+  NoteMetadata,
+} from "@/lib/notes";
+import { usePathname, useRouter } from "next/navigation";
 import { Input } from "./ui/input";
 import Save from "@/icons/Save";
 import CancelIcon from "@/icons/CancelIcon";
@@ -20,6 +25,7 @@ import DeleteIcon from "@/icons/DeleteIcon";
 import { useConfirmDialog } from "./ConfirmDialogProvider";
 import CreateFolderButton from "./CreateFolderButton";
 import EditIcon from "@/icons/EditIcon";
+import AddNote from "@/icons/AddNote";
 
 interface FolderProps {
   folder: FolderType;
@@ -42,6 +48,7 @@ export default function Folder({ folder, isNew }: FolderProps) {
   const { showToast } = useToast();
   const { showDialog } = useConfirmDialog();
   const nameInputRef = useRef<null | HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchNotes() {
@@ -104,6 +111,22 @@ export default function Folder({ folder, isNew }: FolderProps) {
     });
   };
 
+  const handleCreateNote = async () => {
+    try {
+      const createdNoteId = await createNote(folder.id);
+      const createdNote = await getNoteById(createdNoteId);
+      if (!createdNote) {
+        throw new Error("Nie znaleziono nowej notatki w bazie.");
+      }
+      setNotes((prev) => [...prev, createdNote]);
+      setSelectedNote(createdNoteId);
+      router.push(`/notes/edit/${createdNoteId}`);
+      showToast("Nowa notatka została utworzona.", "success");
+    } catch (err) {
+      showToast(`Błąd tworzenia notatki: ${err}`, "error");
+    }
+  };
+
   if (isDeleted) return;
 
   return (
@@ -147,12 +170,20 @@ export default function Folder({ folder, isNew }: FolderProps) {
               {truncatedFolderName}
             </p>
             {isEditView && (
-              <button
-                onClick={() => setShowNameInput(true)}
-                className="hover:text-accent"
-              >
-                <EditIcon className="size-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowNameInput(true)}
+                  className="hover:text-accent"
+                >
+                  <EditIcon className="size-4" />
+                </button>
+                <button
+                  onClick={handleCreateNote}
+                  className="hover:text-success"
+                >
+                  <AddNote className="size-4" />
+                </button>
+              </div>
             )}
           </div>
         )}
@@ -182,9 +213,7 @@ export default function Folder({ folder, isNew }: FolderProps) {
             {notes.map((note) => (
               <button key={note.id} onClick={() => setSelectedNote(note.id)}>
                 <Link
-                  href={`/notes/${pathname.includes("edit") ? "edit/" : ""}${
-                    note.id
-                  }`}
+                  href={`/notes/${isEditView ? "edit/" : ""}${note.id}`}
                   className={`text-sm flex items-center gap-2 ${
                     selectedNote == note.id ? "font-semibold" : ""
                   }`}

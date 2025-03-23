@@ -2,13 +2,12 @@
 
 import Chevron from "@/icons/Chevron";
 import Logo from "@/icons/Logo";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
 import { FormProvider, useForm } from "react-hook-form";
 import { FolderType } from "@/lib/dbSchemas";
-import { seedContent } from "@/lib/seedContent";
 import { AdminNav } from "./AdminNav";
 
 export default function HeaderNav({
