@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/useToast";
 import DeleteIcon from "@/icons/DeleteIcon";
 import { useConfirmDialog } from "./ConfirmDialogProvider";
 import CreateFolderButton from "./CreateFolderButton";
+import EditIcon from "@/icons/EditIcon";
 
 interface FolderProps {
   folder: FolderType;
@@ -125,25 +126,35 @@ export default function Folder({ folder, isNew }: FolderProps) {
               className="p-0 h-fit"
               onChange={handleNameChange}
               ref={nameInputRef}
+              maxLength={48}
             />
             <button onClick={saveNameChange}>
               <Save className="size-4 transition-all ease-in-out hover:text-success" />
             </button>
-            <button onClick={() => setShowNameInput(false)}>
-              <CancelIcon className="size-4 transition-all ease-in-out hover:text-accent" />
-            </button>
             <button onClick={handleDeleteFolder}>
               <DeleteIcon className="size-4 transition-all ease-in-out hover:text-destructive" />
             </button>
+            <button onClick={() => setShowNameInput(false)}>
+              <CancelIcon className="size-4 transition-all ease-in-out hover:text-accent" />
+            </button>
           </div>
         ) : (
-          <p
-            onClick={() => setIsExpanded((prev) => !prev)}
-            onDoubleClick={() => isEditView && setShowNameInput(true)}
-            className="hover:cursor-pointer"
-          >
-            {truncatedFolderName}
-          </p>
+          <div className="flex items-center gap-4">
+            <p
+              onClick={() => setIsExpanded((prev) => !prev)}
+              className="hover:cursor-pointer select-none"
+            >
+              {truncatedFolderName}
+            </p>
+            {isEditView && (
+              <button
+                onClick={() => setShowNameInput(true)}
+                className="hover:text-accent"
+              >
+                <EditIcon className="size-4" />
+              </button>
+            )}
+          </div>
         )}
       </div>
       {isExpanded && (
