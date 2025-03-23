@@ -49,7 +49,7 @@ export default function NoteEditor({
         console.error(err);
       }
     })();
-  }, [isInputFocused, title, startTitle, noteId, showToast]);
+  }, [isInputFocused]);
 
   async function fillImageUrls(
     content: string,
