@@ -4,8 +4,8 @@ import { useFormContext } from "react-hook-form";
 import Folder from "./Folder";
 import { useEffect, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
-import { usePathname } from "next/navigation";
 import CreateFolderButton from "./CreateFolderButton";
+import { useIsEditView } from "@/hooks/useIsEditView";
 
 export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const form = useFormContext();
@@ -32,8 +32,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
     setUpdatedFolders(filteredFoldersArray);
   }, [selectedCategory, selectedSubject]);
 
-  const pathname = usePathname();
-  const isEditView = pathname.includes("edit");
+  const isEditView = useIsEditView();
 
   return (
     <div className="flex gap-2 flex-col">
