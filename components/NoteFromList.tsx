@@ -6,6 +6,7 @@ import { NoteMetadata } from "@/lib/notes";
 import { truncateString } from "@/lib/utils";
 import Link from "next/link";
 import React, { SetStateAction } from "react";
+import ChangeNoteLocation from "./ChangeNoteLocation";
 
 export default function NoteFromList({
   note,
@@ -44,6 +45,7 @@ export default function NoteFromList({
           <DeleteIcon className="size-4" />
         </button>
       )}
+      <ChangeNoteLocation noteTitle={note.title} />
     </div>
   );
 }
