@@ -12,6 +12,7 @@ type NotesListProps = {
   folderId: string;
   notes: NoteMetadata[];
   setNotes: (value: SetStateAction<NoteMetadata[]>) => void;
+  isVisible: boolean;
 };
 
 export default function NotesList({
@@ -20,6 +21,7 @@ export default function NotesList({
   folderId,
   notes,
   setNotes,
+  isVisible,
 }: NotesListProps) {
   const [loading, setLoading] = useState(false);
 
@@ -37,10 +39,12 @@ export default function NotesList({
       setNotes(notesData);
       setLoading(false);
     })();
-  }, []);
+  }, [folderId]);
 
   return (
-    <div className="ml-4 flex flex-col gap-1 mt-1">
+    <div
+      className={`ml-4 flex flex-col gap-1 mt-1 ${isVisible ? "" : "hidden"}`}
+    >
       {loading && <span>Ładowanie notatek...</span>}
       {notes.map((note) => (
         <NoteFromList

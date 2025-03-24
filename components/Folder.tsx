@@ -111,16 +111,16 @@ export default function Folder({ folder, isNew }: FolderProps) {
               />
             ))}
           </div>
-
-          <NotesList
-            setSelectedNote={setSelectedNote}
-            selectedNote={selectedNote}
-            folderId={folder.id}
-            notes={notes}
-            setNotes={setNotes}
-          />
         </>
       )}
+      <NotesList
+        setSelectedNote={setSelectedNote}
+        selectedNote={selectedNote}
+        folderId={folder.id}
+        notes={notes}
+        setNotes={setNotes}
+        isVisible={isExpanded}
+      />
     </div>
   );
 }
