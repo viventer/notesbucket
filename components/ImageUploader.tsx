@@ -172,12 +172,12 @@ export default function ImageUploader({
             />
             <div className="text-3xl z-10 w-full h-full bg-transparent backdrop-brightness-100 items-center justify-center flex relative transition-all ease-in-out opacity-0 hover:backdrop-brightness-[25%] hover:opacity-100">
               <button
-                className="transition-all ease-in-out absolute right-0 top-0 m-2 hover:text-destructive"
+                className="absolute right-0 top-0 m-2 hover:text-destructive"
                 onClick={handleDeleteImage}
               >
                 <DeleteIcon className="size-8 " />
               </button>
-              <button className="transition-all ease-in-out hover:text-accent">
+              <button className="hover:text-accent">
                 <ChangeIcon className="size-12 " />
               </button>
             </div>
@@ -197,7 +197,7 @@ export default function ImageUploader({
         />
         {index !== 0 && (
           <button
-            className="transition-all ease-in-out hover:text-destructive"
+            className="hover:text-destructive"
             onClick={handleDeleteUploader}
           >
             <DeleteIcon className="size-6" />

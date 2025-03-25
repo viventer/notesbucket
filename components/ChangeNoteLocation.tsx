@@ -1,11 +1,15 @@
 import LocationIcon from "@/icons/LocationIcon";
 import { Button } from "./ui/button";
-import { Dialog, DialogFooter, DialogHeader, DialogTrigger } from "./ui/dialog";
 import {
+  Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
-} from "@radix-ui/react-dialog";
+  DialogTrigger,
+} from "./ui/dialog";
+
 import FoldersList from "./FoldersList";
 
 export default function ChangeNoteLocation({
@@ -18,9 +22,9 @@ export default function ChangeNoteLocation({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="link">
+        <button className=" hover:text-accent">
           <LocationIcon className="size-4" />
-        </Button>
+        </button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

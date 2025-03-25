@@ -62,8 +62,11 @@ export default function Folder({ folder, isNew }: FolderProps) {
               folderId={folder.id}
               setIsDeleted={setIsDeleted}
             />
-            <button onClick={() => setShowNameInput(false)}>
-              <CancelIcon className="size-4 transition-all ease-in-out hover:text-accent" />
+            <button
+              onClick={() => setShowNameInput(false)}
+              className="hover:text-accent"
+            >
+              <CancelIcon className="size-4" />
             </button>
           </div>
         ) : (

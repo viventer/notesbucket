@@ -119,3 +119,9 @@ html {
 .editor * {
   font-family: var(--font-ubuntu-mono);
 }
+
+button {
+  transition: all;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in-out;
+}

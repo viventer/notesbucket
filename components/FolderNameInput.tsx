@@ -68,8 +68,8 @@ export default function FolderNameInput({
         ref={nameInputRef}
         maxLength={48}
       />
-      <button onClick={saveNameChange}>
-        <Save className="size-4 transition-all ease-in-out hover:text-success" />
+      <button onClick={saveNameChange} className="hover:text-success">
+        <Save className="size-4 " />
       </button>
     </div>
   );

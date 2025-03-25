@@ -97,7 +97,7 @@ export default function ActionButtons({
           <button
             key={action.name}
             onClick={action.handler}
-            className={`text-text transition-all ease-in-out ${
+            className={`text-text ${
               action.name == "delete"
                 ? "hover:text-destructive"
                 : "hover:text-accent"

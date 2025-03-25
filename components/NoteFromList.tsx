@@ -38,14 +38,16 @@ export default function NoteFromList({
         </Link>
       </button>
       {isEditView && (
-        <button
-          onClick={() => deleteNoteHandler(note.id)}
-          className="hover:text-destructive"
-        >
-          <DeleteIcon className="size-4" />
-        </button>
+        <div className="flex items-center gap-2">
+          <ChangeNoteLocation noteTitle={note.title} />
+          <button
+            onClick={() => deleteNoteHandler(note.id)}
+            className=" hover:text-destructive"
+          >
+            <DeleteIcon className="size-4" />
+          </button>
+        </div>
       )}
-      <ChangeNoteLocation noteTitle={note.title} />
     </div>
   );
 }

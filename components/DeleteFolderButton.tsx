@@ -34,8 +34,8 @@ export default function DeleteFolderButton({
   };
 
   return (
-    <button onClick={handleDeleteFolder}>
-      <DeleteIcon className="size-4 transition-all ease-in-out hover:text-destructive" />
+    <button onClick={handleDeleteFolder} className="hover:text-destructive">
+      <DeleteIcon className="size-4" />
     </button>
   );
 }
