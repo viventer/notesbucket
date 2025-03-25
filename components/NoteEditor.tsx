@@ -8,6 +8,8 @@ import { updateNote } from "@/lib/notes";
 import { useToast } from "@/hooks/useToast";
 import { getAllNoteImages, getNoteImageUrl } from "@/lib/notesImages";
 import { NoteImageType } from "@/lib/dbSchemas";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/lib/firebase";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,

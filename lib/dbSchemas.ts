@@ -37,6 +37,16 @@ export const NoteImageSchema = z.object({
   noteRef: z.custom<DocumentReference>(),
 });
 
+export const UserSchema = z.object({
+  id: z.string(),
+  email: z.string().email("Niepoprawny adres email"),
+  firstName: z.string(),
+  lastName: z.string(),
+  role: z.enum(["user", "admin"]),
+  availableCategories: z.array(z.string()).default([]),
+  createdAt: z.date(),
+});
+
 export type NoteType = z.infer<typeof NoteSchema>;
 
 export type FolderType = z.infer<typeof FolderSchema> & {
@@ -44,3 +54,5 @@ export type FolderType = z.infer<typeof FolderSchema> & {
 };
 
 export type NoteImageType = z.infer<typeof NoteImageSchema>;
+
+export type UserType = z.infer<typeof UserSchema>;

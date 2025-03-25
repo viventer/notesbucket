@@ -70,14 +70,10 @@ export default function ChangeNoteLocation({
           setSelectedFolder={setSelectedFolder}
         />
         <DialogFooter className="flex items-center gap-4 flex-row justify-end">
-          <Button className="border-[0.1rem] border-solid border-primary bg-transparent">
+          <Button variant={"outline"} onClick={() => setIsOpen(false)}>
             Anuluj
           </Button>
-          <Button
-            type="submit"
-            onClick={handleMoveNote}
-            className="bg-secondary"
-          >
+          <Button type="submit" onClick={handleMoveNote} variant="default">
             Przenieś
           </Button>
         </DialogFooter>
