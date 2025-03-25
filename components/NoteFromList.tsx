@@ -12,10 +12,12 @@ export default function NoteFromList({
   note,
   setSelectedNote,
   selectedNote,
+  folderId,
 }: {
   note: NoteMetadata;
   setSelectedNote: (value: SetStateAction<string>) => void;
   selectedNote: string;
+  folderId: string;
 }) {
   const { deleteNoteHandler } = useDeleteNote();
   const isEditView = useIsEditView();
@@ -39,7 +41,11 @@ export default function NoteFromList({
       </button>
       {isEditView && (
         <div className="flex items-center gap-2">
-          <ChangeNoteLocation noteTitle={note.title} />
+          <ChangeNoteLocation
+            noteTitle={note.title}
+            folderId={folderId}
+            noteId={note.id}
+          />
           <button
             onClick={() => deleteNoteHandler(note.id)}
             className=" hover:text-destructive"

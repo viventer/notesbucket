@@ -13,7 +13,7 @@ export default function CreateFolderButton({
   parentFolderId,
   setNewFolderIds,
 }: {
-  setUpdatedFolders: (value: SetStateAction<FolderType[]>) => void;
+  setUpdatedFolders: (value: SetStateAction<FolderType[] | null>) => void;
   isSubFolder: boolean;
   parentFolderId?: string;
   setNewFolderIds: Dispatch<SetStateAction<string[]>>;
@@ -37,7 +37,10 @@ export default function CreateFolderButton({
     try {
       const newFolderId = await createFolder(newFolderCreateData);
       const newFolderData = await getFolderData(newFolderId);
-      setUpdatedFolders((prev) => [...prev, newFolderData]);
+      setUpdatedFolders((prev) => {
+        if (!prev) return [newFolderData];
+        return [...prev, newFolderData];
+      });
       setNewFolderIds((prev) => [...prev, newFolderId]);
       showToast("Nowy folder został utworzony", "success");
     } catch (err) {

@@ -52,6 +52,7 @@ export default function NotesList({
           note={note}
           setSelectedNote={setSelectedNote}
           selectedNote={selectedNote}
+          folderId={folderId}
         />
       ))}
     </div>

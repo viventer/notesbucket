@@ -33,24 +33,23 @@ export function ConfirmDialog({
 }: AlertConfirmProps) {
   return (
     <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
-      <AlertDialogContent className="border-accent">
+      <AlertDialogContent className="border-primary max-w-[90%]">
         <AlertDialogHeader>
-          <AlertDialogTitle>{message}</AlertDialogTitle>
+          <AlertDialogTitle className="flex">{message}</AlertDialogTitle>
           {description && (
-            <AlertDialogDescription>{description}</AlertDialogDescription>
+            <AlertDialogDescription className="flex w-full justify-start text-left">
+              {description}
+            </AlertDialogDescription>
           )}
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex items-center flex-row gap-4">
           <AlertDialogCancel
             onClick={onCancel}
-            className="border-none bg-lighter hover:bg-lighter outline-[0.1rem] outline-secondary hover:outline"
+            className="border-[0.1rem] border-solid border-primary bg-transparent m-0 hover:bg-primary"
           >
             {cancelText}
           </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={onConfirm}
-            className="bg-transparent  outline-[0.1rem] outline-destructive bg-lighter hover:bg-lighter hover:border-none hover:outline"
-          >
+          <AlertDialogAction onClick={onConfirm} className="bg-secondary">
             {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>

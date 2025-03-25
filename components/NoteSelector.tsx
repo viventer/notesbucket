@@ -12,7 +12,9 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
 
-  const [updatedFolders, setUpdatedFolders] = useState<FolderType[]>(folders);
+  const [updatedFolders, setUpdatedFolders] = useState<FolderType[] | null>(
+    folders
+  );
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
           setNewFolderIds={setNewFolderIds}
         />
       )}
-      {updatedFolders.map((folder) => (
+      {updatedFolders?.map((folder) => (
         <Folder
           key={folder.id}
           folder={folder}

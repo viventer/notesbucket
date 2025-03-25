@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
 import ClosedFolder from "@/icons/ClosedFolder";
 import OpenedFolder from "@/icons/OpenedFolder";
@@ -18,16 +18,27 @@ import DeleteFolderButton from "./DeleteFolderButton";
 interface FolderProps {
   folder: FolderType;
   isNew: boolean;
+  isToSelect?: boolean;
+  setSelectedFolder?: Dispatch<SetStateAction<string>>;
+  selectedFolder?: string;
 }
 
-export default function Folder({ folder, isNew }: FolderProps) {
+export default function Folder({
+  folder,
+  isNew,
+  isToSelect,
+  setSelectedFolder,
+  selectedFolder,
+}: FolderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedNote, setSelectedNote] = useState("");
   const [showNameInput, setShowNameInput] = useState(isNew);
   const [newFolderName, setNewFolderName] = useState(folder.name);
 
   const [isDeleted, setIsDeleted] = useState(false);
-  const [subFolders, setSubFolders] = useState(folder?.children || []);
+  const [subFolders, setSubFolders] = useState<FolderType[] | null>(
+    folder?.children || null
+  );
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
   const [notes, setNotes] = useState<NoteMetadata[]>([]);
   const truncatedFolderName = truncateString(newFolderName, 24);
@@ -35,12 +46,26 @@ export default function Folder({ folder, isNew }: FolderProps) {
 
   if (isDeleted) return;
 
+  const handleFolderNameClick = () => {
+    if (isToSelect && setSelectedFolder) {
+      setSelectedFolder(folder.id);
+    } else {
+      setIsExpanded((prev) => !prev);
+    }
+  };
+
   return (
     <div className={`${folder.parentFolderRef ? "ml-4" : ""}`}>
       <div className="flex items-center gap-2 text-base">
         <button
           onClick={() => setIsExpanded((prev) => !prev)}
-          className={`${isNew ? "text-success" : "text-secondary"}`}
+          className={`${
+            selectedFolder == folder.id
+              ? "text-accent"
+              : isNew
+              ? "text-success"
+              : "text-secondary"
+          }`}
         >
           {isExpanded ? (
             <OpenedFolder className="size-4" />
@@ -72,8 +97,10 @@ export default function Folder({ folder, isNew }: FolderProps) {
         ) : (
           <div className="flex items-center gap-4">
             <p
-              onClick={() => setIsExpanded((prev) => !prev)}
-              className="hover:cursor-pointer select-none"
+              onClick={handleFolderNameClick}
+              className={`hover:cursor-pointer select-none ${
+                selectedFolder == folder.id ? "font-semibold" : ""
+              }`}
             >
               {truncatedFolderName}
             </p>
@@ -116,14 +143,16 @@ export default function Folder({ folder, isNew }: FolderProps) {
           </div>
         </>
       )}
-      <NotesList
-        setSelectedNote={setSelectedNote}
-        selectedNote={selectedNote}
-        folderId={folder.id}
-        notes={notes}
-        setNotes={setNotes}
-        isVisible={isExpanded}
-      />
+      {!isToSelect && (
+        <NotesList
+          setSelectedNote={setSelectedNote}
+          selectedNote={selectedNote}
+          folderId={folder.id}
+          notes={notes}
+          setNotes={setNotes}
+          isVisible={isExpanded}
+        />
+      )}
     </div>
   );
 }

@@ -66,6 +66,7 @@ export async function getNotesFromFolderMetadata(
 interface UpdateNoteData {
   title?: string;
   content?: string;
+  parentFolderRef?: DocumentReference<DocumentData, DocumentData>;
 }
 
 export async function updateNote(
@@ -73,13 +74,20 @@ export async function updateNote(
   data: UpdateNoteData
 ): Promise<void> {
   const noteRef = doc(db, "notes", noteId);
-  const updateData: { title?: string; mdContent?: string } = {};
+  const updateData: {
+    title?: string;
+    mdContent?: string;
+    parentFolderRef?: DocumentReference<DocumentData, DocumentData>;
+  } = {};
 
   if (data.title !== undefined) {
     updateData.title = data.title;
   }
   if (data.content !== undefined) {
     updateData.mdContent = data.content;
+  }
+  if (data.parentFolderRef !== undefined) {
+    updateData.parentFolderRef = data.parentFolderRef;
   }
 
   if (Object.keys(updateData).length > 0) {
