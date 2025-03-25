@@ -39,19 +39,19 @@ export default function SubjectSelector() {
             defaultValue="J. polski"
           >
             <FormControl>
-              <SelectTrigger className="text-base">
+              <SelectTrigger className="text-base border-primary">
                 <SelectValue
                   placeholder="Wybierz przedmiot"
                   className="text-base z-50"
                 />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="bg-background">
+            <SelectContent className="bg-card border-primary">
               {subjects.map((subject) => (
                 <SelectItem
                   key={subject}
                   value={subject}
-                  className="text-base z-50 "
+                  className="text-base z-50 focus:bg-secondary focus:text-text"
                 >
                   {subject}
                 </SelectItem>
