@@ -8,12 +8,14 @@ import { useToast } from "@/hooks/useToast";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import { updateUser } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function NameForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const { showToast } = useToast();
   const [user, loading] = useAuthState(auth);
+  const router = useRouter();
 
   const handleCompleteProfile = () => {
     if (!user) {
@@ -21,9 +23,15 @@ export default function NameForm() {
       return;
     }
 
+    if (!firstName || !lastName) {
+      showToast("Wypełnij wszystkie pola", "error");
+      return;
+    }
+
     try {
       updateUser(user.uid, { firstName, lastName });
       showToast("Profil został uzupełniony", "success");
+      router.replace("/auth/waiting-room");
     } catch (err) {
       showToast("Błąd uzupełniania profilu", "error");
       console.error(err);

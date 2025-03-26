@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/useToast";
 import GoogleLogo from "@/icons/GoogleLogo";
-import { createUser, signInWithGoogle } from "@/lib/auth";
+import {
+  createUser,
+  getUserName,
+  getUserPerms,
+  signInWithGoogle,
+} from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 export default function AuthForm() {
@@ -23,8 +28,23 @@ export default function AuthForm() {
 
       if (isNewUser) {
         await createUser(user);
-        router.push("/auth/complete-profile");
+        router.replace("/auth/complete-profile");
+        return;
       }
+
+      const { firstName, lastName } = await getUserName(user.uid);
+      if (!firstName || !lastName) {
+        router.replace("/auth/complete-profile");
+        return;
+      }
+
+      const { role } = await getUserPerms(user.uid);
+      if (role === "unverified") {
+        router.replace("/auth/waiting-room");
+        return;
+      }
+
+      router.replace("/notes");
     } catch (error) {
       showToast("Błąd logowania.", "error");
       console.error(error);
