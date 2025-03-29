@@ -40,7 +40,6 @@ export default function Folder({
     folder?.children || null
   );
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
-  const [notes, setNotes] = useState<NoteMetadata[]>([]);
   const truncatedFolderName = truncateString(newFolderName, 24);
   const isEditView = useIsEditView();
 
@@ -114,7 +113,6 @@ export default function Folder({
                 </button>
                 <CreateNoteButton
                   folderId={folder.id}
-                  setNotes={setNotes}
                   setSelectedNote={setSelectedNote}
                 />
               </div>
@@ -148,8 +146,6 @@ export default function Folder({
           setSelectedNote={setSelectedNote}
           selectedNote={selectedNote}
           folderId={folder.id}
-          notes={notes}
-          setNotes={setNotes}
           isVisible={isExpanded}
         />
       )}

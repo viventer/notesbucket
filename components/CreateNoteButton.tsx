@@ -9,11 +9,9 @@ import { Dispatch, SetStateAction } from "react";
 
 export default function CreateNoteButton({
   folderId,
-  setNotes,
   setSelectedNote,
 }: {
   folderId: string;
-  setNotes: Dispatch<SetStateAction<NoteMetadata[]>>;
   setSelectedNote: Dispatch<SetStateAction<string>>;
 }) {
   const router = useRouter();
@@ -28,7 +26,7 @@ export default function CreateNoteButton({
       if (!createdNote) {
         throw new Error("Nie znaleziono nowej notatki w bazie.");
       }
-      setNotes((prev) => [...prev, createdNote]);
+
       setSelectedNote(createdNoteId);
       router.push(`/notes/edit/${createdNoteId}`);
       showToast("Nowa notatka została utworzona.", "success");

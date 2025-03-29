@@ -3,6 +3,7 @@
 import { adminDB } from "./firebaseAdmin"; // Plik inicjalizacyjny Admin SDK
 import { NoteType, SerializedNoteType } from "./dbSchemas";
 import { DocumentData, DocumentReference } from "firebase/firestore";
+import { revalidatePath } from "next/cache";
 
 // Typ pomocniczy do metadanych notatki
 export type NoteMetadata = Pick<
@@ -104,6 +105,10 @@ export async function updateNote(
   if (Object.keys(updateData).length > 0) {
     await noteRef.update(updateData);
   }
+
+  if (data.title !== undefined) {
+    revalidatePath("/notes");
+  }
 }
 
 // Tworzenie notatki
@@ -130,9 +135,13 @@ export async function createNote(
   await noteRef.set(newNoteData);
 
   return noteId;
+
+  revalidatePath("/notes");
 }
 
 // Usuwanie notatki
 export async function deleteNote(noteId: string): Promise<void> {
   await adminDB.collection("notes").doc(noteId).delete();
+
+  revalidatePath("/notes");
 }
