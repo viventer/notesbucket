@@ -49,6 +49,10 @@ export const UserSchema = z.object({
 
 export type NoteType = z.infer<typeof NoteSchema>;
 
+export type SerializedNoteType = Omit<NoteType, "parentFolderRef"> & {
+  parentFolderId: string | null;
+};
+
 export type FolderType = z.infer<typeof FolderSchema> & {
   children?: FolderType[];
 };

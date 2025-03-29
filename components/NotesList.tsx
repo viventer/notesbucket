@@ -30,7 +30,7 @@ export default function NotesList({
       setLoading(true);
       const folderRef = doc(db, "folders", folderId);
 
-      const rawNotesData = await getNotesFromFolderMetadata(folderRef);
+      const rawNotesData = await getNotesFromFolderMetadata(folderRef.id);
 
       const notesData = rawNotesData.toSorted((a, b) =>
         a.title.localeCompare(b.title)

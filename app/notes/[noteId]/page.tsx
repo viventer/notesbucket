@@ -1,6 +1,6 @@
 import ActionButtons from "@/components/ActionButtons";
 import Note from "@/components/Note";
-import { NoteType } from "@/lib/dbSchemas";
+import { NoteType, SerializedNoteType } from "@/lib/dbSchemas";
 import { getNoteById } from "@/lib/notes";
 import { notFound } from "next/navigation";
 
@@ -15,7 +15,7 @@ type Props = {
 export async function generateMetadata(props: Props) {
   const { noteId } = await props.params;
 
-  const note: NoteType | null = await getNoteById(noteId);
+  const note: SerializedNoteType | null = await getNoteById(noteId);
 
   if (!note) {
     return {
@@ -30,7 +30,7 @@ export async function generateMetadata(props: Props) {
 
 export default async function page(props: Props) {
   const { noteId } = await props.params;
-  const note: NoteType | null = await getNoteById(noteId);
+  const note: SerializedNoteType | null = await getNoteById(noteId);
 
   if (!note) {
     notFound();

@@ -38,7 +38,7 @@ export default function ChangeNoteLocation({
     }
     try {
       const newFolderRef = doc(db, "folders", selectedFolder);
-      await updateNote(noteId, { parentFolderRef: newFolderRef });
+      await updateNote(noteId, { parentFolderId: newFolderRef.id });
       showToast("Notatka została przeniesiona", "success");
       setIsOpen(false);
       window.location.reload();

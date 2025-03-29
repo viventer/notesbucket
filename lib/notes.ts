@@ -1,79 +1,85 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  DocumentData,
-  DocumentReference,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "./firebase";
-import { NoteType } from "./dbSchemas";
+"use server";
 
-export async function getNoteById(noteId: string): Promise<NoteType | null> {
-  const noteDocument = await getDoc(doc(db, "notes", noteId));
+import { adminDB } from "./firebaseAdmin"; // Plik inicjalizacyjny Admin SDK
+import { NoteType, SerializedNoteType } from "./dbSchemas";
+import { DocumentData, DocumentReference } from "firebase/firestore";
 
-  if (!noteDocument.data()) {
+// Typ pomocniczy do metadanych notatki
+export type NoteMetadata = Pick<
+  SerializedNoteType,
+  "id" | "title" | "parentFolderId"
+>;
+
+// Pobieranie notatki po ID
+export async function getNoteById(
+  noteId: string
+): Promise<SerializedNoteType | null> {
+  console.log("getNoteById");
+  const noteDoc = await adminDB.collection("notes").doc(noteId).get();
+
+  if (!noteDoc.exists) {
     return null;
   }
 
-  const note = noteDocument.data() as NoteType;
+  const note = noteDoc.data() as NoteType;
 
   return {
-    id: note.id,
-    parentFolderRef: note.parentFolderRef,
+    id: noteDoc.id,
+    parentFolderId: note.parentFolderRef ? note.parentFolderRef.id : null,
     title: note.title,
     mdContent: note.mdContent,
   };
 }
 
-export type NoteMetadata = Pick<NoteType, "id" | "title" | "parentFolderRef">;
-
+// Pobieranie metadanych notatek
 export async function getNotesMetadata(): Promise<NoteMetadata[]> {
-  const notesSnapshot = await getDocs(collection(db, "notes"));
-  const notesMetadata = notesSnapshot.docs.map((doc) => ({
-    id: doc.id,
-    title: doc.data().title,
-    parentFolderRef: doc.data().parentFolderRef,
-  }));
+  console.log("getNotesMetadata");
 
-  return notesMetadata;
+  const snapshot = await adminDB.collection("notes").get();
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      title: data.title,
+      parentFolderId: data.parentFolderRef ? data.parentFolderRef.id : null,
+    };
+  });
 }
 
+// Pobieranie notatek na podstawie folderu
 export async function getNotesFromFolderMetadata(
-  folderRef: DocumentReference<DocumentData, DocumentData>
+  folderId: string
 ): Promise<NoteMetadata[]> {
-  const q = query(
-    collection(db, "notes"),
-    where("parentFolderRef", "==", folderRef)
-  );
+  console.log("getNotesFromFolderMetadata");
+  const folderRef = adminDB.collection("folders").doc(folderId);
 
-  const snapshot = await getDocs(q);
+  const snapshot = await adminDB
+    .collection("notes")
+    .where("parentFolderRef", "==", folderRef)
+    .get();
 
-  const notesMetadata = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    title: doc.data().title,
-    parentFolderRef: doc.data().parentFolderRef,
-  }));
-
-  return notesMetadata;
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      title: data.title,
+      parentFolderId: data.parentFolderRef ? data.parentFolderRef.id : null,
+    };
+  });
 }
 
 interface UpdateNoteData {
   title?: string;
   content?: string;
-  parentFolderRef?: DocumentReference<DocumentData, DocumentData>;
+  parentFolderId?: string;
 }
 
+// Aktualizacja notatki
 export async function updateNote(
   noteId: string,
   data: UpdateNoteData
 ): Promise<void> {
-  const noteRef = doc(db, "notes", noteId);
+  const noteRef = adminDB.collection("notes").doc(noteId);
   const updateData: {
     title?: string;
     mdContent?: string;
@@ -86,24 +92,33 @@ export async function updateNote(
   if (data.content !== undefined) {
     updateData.mdContent = data.content;
   }
-  if (data.parentFolderRef !== undefined) {
-    updateData.parentFolderRef = data.parentFolderRef;
+  if (data.parentFolderId !== undefined) {
+    updateData.parentFolderRef = adminDB
+      .collection("folders")
+      .doc(data.parentFolderId) as unknown as DocumentReference<
+      DocumentData,
+      DocumentData
+    >;
   }
 
   if (Object.keys(updateData).length > 0) {
-    await updateDoc(noteRef, updateData);
+    await noteRef.update(updateData);
   }
 }
 
+// Tworzenie notatki
 export async function createNote(
   parentFolderId: string,
   noteTitle?: string
 ): Promise<string> {
-  const collectionRef = collection(db, "notes");
-  const newDocRef = doc(collectionRef);
-  const noteId = newDocRef.id;
-
-  const parentFolderRef = doc(db, "folders", parentFolderId);
+  const noteRef = adminDB.collection("notes").doc();
+  const noteId = noteRef.id;
+  const parentFolderRef = adminDB
+    .collection("folders")
+    .doc(parentFolderId) as unknown as DocumentReference<
+    DocumentData,
+    DocumentData
+  >;
 
   const newNoteData: NoteType = {
     id: noteId,
@@ -112,13 +127,12 @@ export async function createNote(
     parentFolderRef,
   };
 
-  await setDoc(newDocRef, newNoteData);
+  await noteRef.set(newNoteData);
 
   return noteId;
 }
 
-export async function deleteNote(noteId: string) {
-  const docRef = doc(db, "notes", noteId);
-
-  await deleteDoc(docRef);
+// Usuwanie notatki
+export async function deleteNote(noteId: string): Promise<void> {
+  await adminDB.collection("notes").doc(noteId).delete();
 }
