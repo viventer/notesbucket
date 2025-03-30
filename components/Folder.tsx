@@ -38,7 +38,6 @@ export default function Folder({
   const [showNameInput, setShowNameInput] = useState(isNew);
   const [newFolderName, setNewFolderName] = useState(folder.name);
 
-  const [isDeleted, setIsDeleted] = useState(false);
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
   const truncatedFolderName = truncateString(newFolderName, 24);
   const isEditView = useIsEditView();
@@ -46,8 +45,6 @@ export default function Folder({
   const [serializedSubFolders, setSerializedSubFolders] = useState<
     SerializedFolderType[]
   >([]);
-
-  if (isDeleted) return;
 
   useEffect(() => {
     (async () => {
@@ -68,7 +65,7 @@ export default function Folder({
 
       setSerializedSubFolders(serializedSubFoldersData);
     })();
-  }, [folder.id]);
+  }, [folder.id, folder.subFoldersIds]);
 
   const handleFolderNameClick = () => {
     if (isToSelect && setSelectedFolder) {
@@ -111,10 +108,7 @@ export default function Folder({
               isNew={isNew}
               setShowNameInput={setShowNameInput}
             />
-            <DeleteFolderButton
-              folderId={folder.id}
-              setIsDeleted={setIsDeleted}
-            />
+            <DeleteFolderButton folderId={folder.id} />
             <button
               onClick={() => setShowNameInput(false)}
               className="hover:text-accent"

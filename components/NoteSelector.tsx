@@ -36,7 +36,7 @@ export default function NoteSelector({
     filteredFoldersArray.sort((a, b) => a.name.localeCompare(b.name));
 
     setFilteredFolders(filteredFoldersArray);
-  }, [selectedCategory, selectedSubject]);
+  }, [selectedCategory, selectedSubject, folders]);
 
   const isEditView = useIsEditView();
 

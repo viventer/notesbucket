@@ -1,16 +1,9 @@
 import { useToast } from "@/hooks/useToast";
 import DeleteIcon from "@/icons/DeleteIcon";
 import { useConfirmDialog } from "./ConfirmDialogProvider";
-import { Dispatch, SetStateAction } from "react";
 import { deleteFolder } from "@/lib/folders";
 
-export default function DeleteFolderButton({
-  folderId,
-  setIsDeleted,
-}: {
-  folderId: string;
-  setIsDeleted: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function DeleteFolderButton({ folderId }: { folderId: string }) {
   const { showToast } = useToast();
   const { showDialog } = useConfirmDialog();
 
@@ -24,7 +17,6 @@ export default function DeleteFolderButton({
       onConfirm: async () => {
         try {
           await deleteFolder(folderId);
-          setIsDeleted(true);
           showToast("Folder został usunięty.", "success");
         } catch (err) {
           showToast(`Błąd usuwania folderu: ${err}`, "error");
