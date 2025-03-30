@@ -41,7 +41,6 @@ export default function ChangeNoteLocation({
       await updateNote(noteId, { parentFolderId: newFolderRef.id });
       showToast("Notatka została przeniesiona", "success");
       setIsOpen(false);
-      window.location.reload();
     } catch (err) {
       showToast(`Błąd przenoszenia notatki: ${err}`, "error");
       console.error(err);

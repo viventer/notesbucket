@@ -16,9 +16,6 @@ export const useDeleteNote = () => {
         try {
           await deleteNote(noteId);
           router.push("/notes/edit");
-          setTimeout(() => {
-            window.location.reload();
-          }, 500);
           showToast("Notatka została usunięta.", "success");
         } catch (err) {
           showToast(`Błąd usuwania notakti: ${err}`, "error");

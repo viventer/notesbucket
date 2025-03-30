@@ -1,17 +1,15 @@
 "use server";
 
-import { adminDB } from "./firebaseAdmin"; // Plik inicjalizacyjny Admin SDK
+import { adminDB } from "./firebaseAdmin";
 import { NoteType, SerializedNoteType } from "./dbSchemas";
 import { DocumentData, DocumentReference } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 
-// Typ pomocniczy do metadanych notatki
 export type NoteMetadata = Pick<
   SerializedNoteType,
   "id" | "title" | "parentFolderId"
 >;
 
-// Pobieranie notatki po ID
 export async function getNoteById(
   noteId: string
 ): Promise<SerializedNoteType | null> {
@@ -32,7 +30,6 @@ export async function getNoteById(
   };
 }
 
-// Pobieranie metadanych notatek
 export async function getNotesMetadata(): Promise<NoteMetadata[]> {
   console.log("getNotesMetadata");
 
@@ -47,7 +44,6 @@ export async function getNotesMetadata(): Promise<NoteMetadata[]> {
   });
 }
 
-// Pobieranie notatek na podstawie folderu
 export async function getNotesFromFolderMetadata(
   folderId: string
 ): Promise<NoteMetadata[]> {
@@ -75,7 +71,6 @@ interface UpdateNoteData {
   parentFolderId?: string;
 }
 
-// Aktualizacja notatki
 export async function updateNote(
   noteId: string,
   data: UpdateNoteData
@@ -106,12 +101,11 @@ export async function updateNote(
     await noteRef.update(updateData);
   }
 
-  if (data.title !== undefined) {
+  if (data.title !== undefined || data.parentFolderId !== undefined) {
     revalidatePath("/notes");
   }
 }
 
-// Tworzenie notatki
 export async function createNote(
   parentFolderId: string,
   noteTitle?: string
@@ -139,7 +133,6 @@ export async function createNote(
   revalidatePath("/notes");
 }
 
-// Usuwanie notatki
 export async function deleteNote(noteId: string): Promise<void> {
   await adminDB.collection("notes").doc(noteId).delete();
 

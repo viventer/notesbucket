@@ -1,10 +1,8 @@
 "use client";
 
-import { getNotesFromFolderMetadata, NoteMetadata } from "@/lib/notes";
-import { SetStateAction, useEffect, useState } from "react";
+import { NoteMetadata } from "@/lib/notes";
+import { useEffect, useState } from "react";
 import NoteFromList from "./NoteFromList";
-import { doc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import { useNotesMetadata } from "@/context/NotesMetadataContext";
 
 type NotesListProps = {
