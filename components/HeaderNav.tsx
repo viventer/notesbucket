@@ -7,13 +7,13 @@ import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
 import { FormProvider, useForm } from "react-hook-form";
-import { FolderType } from "@/lib/dbSchemas";
+import { SerializedFolderType } from "@/lib/dbSchemas";
 import { AdminNav } from "./AdminNav";
 
 export default function HeaderNav({
   rootFolders,
 }: {
-  rootFolders: FolderType[];
+  rootFolders: SerializedFolderType[];
 }) {
   const form = useForm({
     defaultValues: {
@@ -54,7 +54,7 @@ export default function HeaderNav({
           <FormProvider {...form}>
             <CategorySelector />
             {selectedCategory == "Szkoła" && <SubjectSelector />}
-            <NoteSelector folders={JSON.parse(JSON.stringify(rootFolders))} />
+            <NoteSelector folders={rootFolders} />
           </FormProvider>
         </section>
       </nav>

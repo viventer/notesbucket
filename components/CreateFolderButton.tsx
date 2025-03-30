@@ -2,18 +2,15 @@
 
 import { useToast } from "@/hooks/useToast";
 import AddFolder from "@/icons/AddFolder";
-import { FolderType } from "@/lib/dbSchemas";
-import { createFolder, CreateFolderData, getFolderData } from "@/lib/folders";
+import { createFolder, CreateFolderData } from "@/lib/folders";
 import { Dispatch, SetStateAction } from "react";
 import { useFormContext } from "react-hook-form";
 
 export default function CreateFolderButton({
-  setUpdatedFolders,
   isSubFolder,
   parentFolderId,
   setNewFolderIds,
 }: {
-  setUpdatedFolders: (value: SetStateAction<FolderType[] | null>) => void;
   isSubFolder: boolean;
   parentFolderId?: string;
   setNewFolderIds: Dispatch<SetStateAction<string[]>>;
@@ -36,11 +33,6 @@ export default function CreateFolderButton({
     };
     try {
       const newFolderId = await createFolder(newFolderCreateData);
-      const newFolderData = await getFolderData(newFolderId);
-      setUpdatedFolders((prev) => {
-        if (!prev) return [newFolderData];
-        return [...prev, newFolderData];
-      });
       setNewFolderIds((prev) => [...prev, newFolderId]);
       showToast("Nowy folder został utworzony", "success");
     } catch (err) {

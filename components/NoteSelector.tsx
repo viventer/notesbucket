@@ -3,19 +3,23 @@
 import { useFormContext } from "react-hook-form";
 import Folder from "./Folder";
 import { useEffect, useState } from "react";
-import { FolderType } from "@/lib/dbSchemas";
+import { FolderType, SerializedFolderType } from "@/lib/dbSchemas";
 import CreateFolderButton from "./CreateFolderButton";
 import { useIsEditView } from "@/hooks/useIsEditView";
 
-export default function NoteSelector({ folders }: { folders: FolderType[] }) {
+export default function NoteSelector({
+  folders,
+}: {
+  folders: SerializedFolderType[];
+}) {
   const form = useFormContext();
   const selectedCategory = form.watch("category");
   const selectedSubject = form.watch("subject");
 
-  const [updatedFolders, setUpdatedFolders] = useState<FolderType[] | null>(
-    folders
-  );
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
+  const [filteredFolders, setFilteredFolders] = useState<
+    SerializedFolderType[]
+  >([]);
 
   useEffect(() => {
     let filteredFoldersArray;
@@ -31,7 +35,7 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
     }
     filteredFoldersArray.sort((a, b) => a.name.localeCompare(b.name));
 
-    setUpdatedFolders(filteredFoldersArray);
+    setFilteredFolders(filteredFoldersArray);
   }, [selectedCategory, selectedSubject]);
 
   const isEditView = useIsEditView();
@@ -40,12 +44,11 @@ export default function NoteSelector({ folders }: { folders: FolderType[] }) {
     <div className="flex gap-2 flex-col">
       {isEditView && (
         <CreateFolderButton
-          setUpdatedFolders={setUpdatedFolders}
           isSubFolder={false}
           setNewFolderIds={setNewFolderIds}
         />
       )}
-      {updatedFolders?.map((folder) => (
+      {filteredFolders?.map((folder) => (
         <Folder
           key={folder.id}
           folder={folder}

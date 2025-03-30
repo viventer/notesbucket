@@ -1,11 +1,10 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { FolderType } from "@/lib/dbSchemas";
+import { FolderType, SerializedFolderType } from "@/lib/dbSchemas";
 import ClosedFolder from "@/icons/ClosedFolder";
 import OpenedFolder from "@/icons/OpenedFolder";
 import { truncateString } from "@/lib/utils";
-import { NoteMetadata } from "@/lib/notes";
 import CancelIcon from "@/icons/CancelIcon";
 import CreateFolderButton from "./CreateFolderButton";
 import EditIcon from "@/icons/EditIcon";
@@ -14,13 +13,17 @@ import NotesList from "./NotesList";
 import CreateNoteButton from "./CreateNoteButton";
 import FolderNameInput from "./FolderNameInput";
 import DeleteFolderButton from "./DeleteFolderButton";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { serializeFolder } from "@/lib/serializing";
 
 interface FolderProps {
-  folder: FolderType;
+  folder: SerializedFolderType;
   isNew: boolean;
   isToSelect?: boolean;
   setSelectedFolder?: Dispatch<SetStateAction<string>>;
   selectedFolder?: string;
+  isParentFolderExpanded?: boolean;
 }
 
 export default function Folder({
@@ -29,20 +32,43 @@ export default function Folder({
   isToSelect,
   setSelectedFolder,
   selectedFolder,
+  isParentFolderExpanded,
 }: FolderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showNameInput, setShowNameInput] = useState(isNew);
   const [newFolderName, setNewFolderName] = useState(folder.name);
 
   const [isDeleted, setIsDeleted] = useState(false);
-  const [subFolders, setSubFolders] = useState<FolderType[] | null>(
-    folder?.children || null
-  );
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
   const truncatedFolderName = truncateString(newFolderName, 24);
   const isEditView = useIsEditView();
 
+  const [serializedSubFolders, setSerializedSubFolders] = useState<
+    SerializedFolderType[]
+  >([]);
+
   if (isDeleted) return;
+
+  useEffect(() => {
+    (async () => {
+      const rootFolderRef = doc(db, "folders", folder.id);
+
+      const q = query(
+        collection(db, "folders"),
+        where("parentFolderRef", "==", rootFolderRef)
+      );
+      const subFoldersSnapshot = await getDocs(q);
+      const subFolders = subFoldersSnapshot.docs.map((doc) =>
+        doc.data()
+      ) as FolderType[];
+
+      const serializedSubFoldersData = subFolders.map((folder) =>
+        serializeFolder(folder)
+      );
+
+      setSerializedSubFolders(serializedSubFoldersData);
+    })();
+  }, [folder.id]);
 
   const handleFolderNameClick = () => {
     if (isToSelect && setSelectedFolder) {
@@ -53,7 +79,11 @@ export default function Folder({
   };
 
   return (
-    <div className={`${folder.parentFolderRef ? "ml-4" : ""}`}>
+    <div
+      className={`${folder.parentFolderId ? "ml-4" : ""} ${
+        !isParentFolderExpanded && folder.parentFolderId ? "hidden" : ""
+      }`}
+    >
       <div className="flex items-center gap-2 text-base">
         <button
           onClick={() => setIsExpanded((prev) => !prev)}
@@ -120,23 +150,23 @@ export default function Folder({
         <>
           {isEditView && (
             <CreateFolderButton
-              setUpdatedFolders={setSubFolders}
               setNewFolderIds={setNewFolderIds}
               isSubFolder={true}
               parentFolderId={folder.id}
             />
           )}
-          <div>
-            {subFolders?.map((subFolder: FolderType) => (
-              <Folder
-                key={subFolder.id}
-                folder={subFolder}
-                isNew={newFolderIds.includes(subFolder.id)}
-              />
-            ))}
-          </div>
         </>
       )}
+      <div>
+        {serializedSubFolders?.map((subFolder: SerializedFolderType) => (
+          <Folder
+            key={subFolder.id}
+            folder={subFolder}
+            isParentFolderExpanded={isExpanded}
+            isNew={newFolderIds.includes(subFolder.id)}
+          />
+        ))}
+      </div>
       {!isToSelect && <NotesList folderId={folder.id} isVisible={isExpanded} />}
     </div>
   );

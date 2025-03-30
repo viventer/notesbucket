@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderType } from "@/lib/dbSchemas";
+import { FolderType, SerializedFolderType } from "@/lib/dbSchemas";
 import { getAllFolders } from "@/lib/folders";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import CreateFolderButton from "./CreateFolderButton";
@@ -13,10 +13,10 @@ export default function FoldersList({
   selectedFolder: string;
   setSelectedFolder: Dispatch<SetStateAction<string>>;
 }) {
-  const [updatedFolders, setUpdatedFolders] = useState<FolderType[] | null>(
-    null
-  );
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
+  const [sortedFolders, setSortedFolders] = useState<SerializedFolderType[]>(
+    []
+  );
 
   useEffect(() => {
     (async function () {
@@ -25,7 +25,8 @@ export default function FoldersList({
         const sortedFolders = fetchedFolders.toSorted((a, b) =>
           a.name.localeCompare(b.name)
         );
-        setUpdatedFolders(sortedFolders);
+
+        setSortedFolders(sortedFolders);
       } catch (err) {
         console.error(err);
       }
@@ -35,21 +36,19 @@ export default function FoldersList({
   return (
     <div className="flex gap-2 flex-col">
       <CreateFolderButton
-        setUpdatedFolders={setUpdatedFolders}
         isSubFolder={false}
         setNewFolderIds={setNewFolderIds}
       />
-      {updatedFolders &&
-        updatedFolders.map((folder) => (
-          <Folder
-            key={folder.id}
-            folder={folder}
-            isNew={newFolderIds.includes(folder.id)}
-            setSelectedFolder={setSelectedFolder}
-            selectedFolder={selectedFolder}
-            isToSelect={true}
-          />
-        ))}
+      {sortedFolders.map((folder) => (
+        <Folder
+          key={folder.id}
+          folder={folder}
+          isNew={newFolderIds.includes(folder.id)}
+          setSelectedFolder={setSelectedFolder}
+          selectedFolder={selectedFolder}
+          isToSelect={true}
+        />
+      ))}
     </div>
   );
 }

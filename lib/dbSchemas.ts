@@ -64,7 +64,6 @@ export type SerializedFolderType = Omit<
   notesIds: string[];
   subFoldersIds: string[];
   parentFolderId: string;
-  childrenIds?: string[];
 };
 
 export type NoteImageType = z.infer<typeof NoteImageSchema>;

@@ -9,6 +9,7 @@ import {
 import { adminDB } from "./firebaseAdmin";
 import { DocumentData, DocumentReference } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
+import { serializeFolder } from "./serializing";
 
 export async function getAllFolders(): Promise<SerializedFolderType[]> {
   console.log("getAllFolders");
@@ -67,6 +68,8 @@ export type CreateFolderData = Pick<
 };
 
 export async function createFolder(data: CreateFolderData): Promise<string> {
+  console.log("createFolder");
+
   const newDocRef = adminDB.collection("folders").doc();
   const folderId = newDocRef.id;
   const { name, category, subject, parentFolderId } = data;
@@ -102,6 +105,7 @@ export async function updateFolder(
   folderId: string,
   data: Partial<FolderType>
 ) {
+  console.log("updateFolder");
   const folderRef = adminDB.collection("folders").doc(folderId);
 
   await folderRef.update(data);
@@ -112,25 +116,4 @@ export async function deleteFolder(folderId: string) {
   await adminDB.collection("folders").doc(folderId).delete();
 
   revalidatePath("/notes");
-}
-
-function serializeFolder(folder: FolderType): SerializedFolderType {
-  const notesIds: string[] = folder.notesRefs.map((noteRef) => noteRef.id);
-  const subFoldersIds: string[] = folder.subFoldersRefs.map(
-    (subFolderRef) => subFolderRef.id
-  );
-  const parentFolderId: string = folder.parentFolderRef?.id || "";
-  const childrenIds: string[] =
-    folder?.children?.map((child) => child.id) || [];
-
-  return {
-    id: folder.id,
-    name: folder.name,
-    category: folder.category,
-    subject: folder.subject,
-    notesIds,
-    subFoldersIds,
-    parentFolderId,
-    childrenIds,
-  };
 }
