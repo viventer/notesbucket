@@ -3,8 +3,11 @@ import Note from "@/components/Note";
 import { SerializedNoteType } from "@/lib/dbSchemas";
 import { getNoteById } from "@/lib/notes";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 export const revalidate = 86400;
+
+const cachedGetNoteById = cache(getNoteById);
 
 type Props = {
   params: {
@@ -15,7 +18,7 @@ type Props = {
 export async function generateMetadata(props: Props) {
   const { noteId } = await props.params;
 
-  const note: SerializedNoteType | null = await getNoteById(noteId);
+  const note: SerializedNoteType | null = await cachedGetNoteById(noteId);
 
   if (!note) {
     return {
@@ -30,7 +33,7 @@ export async function generateMetadata(props: Props) {
 
 export default async function page(props: Props) {
   const { noteId } = await props.params;
-  const note: SerializedNoteType | null = await getNoteById(noteId);
+  const note: SerializedNoteType | null = await cachedGetNoteById(noteId);
 
   if (!note) {
     notFound();
