@@ -57,6 +57,16 @@ export type FolderType = z.infer<typeof FolderSchema> & {
   children?: FolderType[];
 };
 
+export type SerializedFolderType = Omit<
+  FolderType,
+  "notesRefs" | "subFoldersRefs" | "parentFolderRef" | "children"
+> & {
+  notesIds: string[];
+  subFoldersIds: string[];
+  parentFolderId: string;
+  childrenIds?: string[];
+};
+
 export type NoteImageType = z.infer<typeof NoteImageSchema>;
 
 export type UserType = z.infer<typeof UserSchema>;

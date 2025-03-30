@@ -128,9 +128,9 @@ export async function createNote(
 
   await noteRef.set(newNoteData);
 
-  return noteId;
-
   revalidatePath("/notes");
+
+  return noteId;
 }
 
 export async function deleteNote(noteId: string): Promise<void> {
