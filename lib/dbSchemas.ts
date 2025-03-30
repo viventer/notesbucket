@@ -68,6 +68,10 @@ export type SerializedFolderType = Omit<
 
 export type NoteImageType = z.infer<typeof NoteImageSchema>;
 
+export type SerializedNoteImageType = Omit<NoteImageType, "noteRef"> & {
+  noteId: string;
+};
+
 export type UserType = z.infer<typeof UserSchema>;
 
 export type UserRole = UserType["role"];

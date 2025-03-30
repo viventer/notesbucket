@@ -3,8 +3,6 @@
 import { useToast } from "@/hooks/useToast";
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import { getStorage, ref, deleteObject } from "firebase/storage";
-import { updateDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 
 import ImageIcon from "@/icons/ImageIcon";
