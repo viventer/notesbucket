@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FolderType } from "@/lib/dbSchemas";
 import ClosedFolder from "@/icons/ClosedFolder";
 import OpenedFolder from "@/icons/OpenedFolder";
@@ -31,7 +31,6 @@ export default function Folder({
   selectedFolder,
 }: FolderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedNote, setSelectedNote] = useState("");
   const [showNameInput, setShowNameInput] = useState(isNew);
   const [newFolderName, setNewFolderName] = useState(folder.name);
 
@@ -111,10 +110,7 @@ export default function Folder({
                 >
                   <EditIcon className="size-4" />
                 </button>
-                <CreateNoteButton
-                  folderId={folder.id}
-                  setSelectedNote={setSelectedNote}
-                />
+                <CreateNoteButton folderId={folder.id} />
               </div>
             )}
           </div>
@@ -141,14 +137,7 @@ export default function Folder({
           </div>
         </>
       )}
-      {!isToSelect && (
-        <NotesList
-          setSelectedNote={setSelectedNote}
-          selectedNote={selectedNote}
-          folderId={folder.id}
-          isVisible={isExpanded}
-        />
-      )}
+      {!isToSelect && <NotesList folderId={folder.id} isVisible={isExpanded} />}
     </div>
   );
 }

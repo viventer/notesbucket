@@ -7,13 +7,7 @@ import { createNote, getNoteById, NoteMetadata } from "@/lib/notes";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
-export default function CreateNoteButton({
-  folderId,
-  setSelectedNote,
-}: {
-  folderId: string;
-  setSelectedNote: Dispatch<SetStateAction<string>>;
-}) {
+export default function CreateNoteButton({ folderId }: { folderId: string }) {
   const router = useRouter();
   const { showToast } = useToast();
 
@@ -27,7 +21,6 @@ export default function CreateNoteButton({
         throw new Error("Nie znaleziono nowej notatki w bazie.");
       }
 
-      setSelectedNote(createdNoteId);
       router.push(`/notes/edit/${createdNoteId}`);
       showToast("Nowa notatka została utworzona.", "success");
     } catch (err) {

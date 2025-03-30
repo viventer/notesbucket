@@ -8,18 +8,11 @@ import { db } from "@/lib/firebase";
 import { useNotesMetadata } from "@/context/NotesMetadataContext";
 
 type NotesListProps = {
-  setSelectedNote: (value: SetStateAction<string>) => void;
-  selectedNote: string;
   folderId: string;
   isVisible: boolean;
 };
 
-export default function NotesList({
-  setSelectedNote,
-  selectedNote,
-  folderId,
-  isVisible,
-}: NotesListProps) {
+export default function NotesList({ folderId, isVisible }: NotesListProps) {
   const [loading, setLoading] = useState(false);
   const { notesMetadata }: { notesMetadata: NoteMetadata[] } =
     useNotesMetadata();
@@ -43,13 +36,7 @@ export default function NotesList({
       {loading && <span>Ładowanie notatek...</span>}
       {sortedNotes &&
         sortedNotes.map((note) => (
-          <NoteFromList
-            key={note.id}
-            note={note}
-            setSelectedNote={setSelectedNote}
-            selectedNote={selectedNote}
-            folderId={folderId}
-          />
+          <NoteFromList key={note.id} note={note} folderId={folderId} />
         ))}
     </div>
   );

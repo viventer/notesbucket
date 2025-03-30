@@ -36,7 +36,6 @@ export default function NoteEditor({
   useEffect(() => {
     (async function () {
       const uploadedNoteImages = await getAllNoteImages(noteId);
-      console.log(uploadedNoteImages);
       setNoteImages([...uploadedNoteImages]);
     })();
   }, []);

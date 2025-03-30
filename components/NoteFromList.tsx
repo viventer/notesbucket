@@ -7,33 +7,32 @@ import { truncateString } from "@/lib/utils";
 import Link from "next/link";
 import React, { SetStateAction } from "react";
 import ChangeNoteLocation from "./ChangeNoteLocation";
+import { useParams } from "next/navigation";
 
 export default function NoteFromList({
   note,
-  setSelectedNote,
-  selectedNote,
   folderId,
 }: {
   note: NoteMetadata;
-  setSelectedNote: (value: SetStateAction<string>) => void;
-  selectedNote: string;
   folderId: string;
 }) {
   const { deleteNoteHandler } = useDeleteNote();
   const isEditView = useIsEditView();
 
+  const { noteId: selectedNoteId }: { noteId: string } = useParams();
+
   return (
     <div key={note.id} className="flex items-center gap-4">
-      <button onClick={() => setSelectedNote(note.id)}>
+      <button>
         <Link
           href={`/notes/${isEditView ? "edit/" : ""}${note.id}`}
           className={`text-sm flex items-center gap-2 ${
-            selectedNote == note.id ? "font-semibold" : ""
+            selectedNoteId == note.id ? "font-semibold" : ""
           }`}
         >
           <NoteIcon
             className={`size-4 ${
-              selectedNote == note.id ? "text-accent" : "text-primary"
+              selectedNoteId == note.id ? "text-accent" : "text-primary"
             }`}
           />
           <p>{truncateString(note.title, 24)}</p>
