@@ -62,14 +62,23 @@ export default function ImageUploader({
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;
       const file = acceptedFiles[0];
+
       (async function () {
         try {
+          const arrayBuffer = await file.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+
           if (fileName) {
             await removeImageFromStorage(fileName);
           }
           setFileName(file.name);
+
           if (noteImageId) {
-            const newImageUrl = await uploadImageToStorage(file);
+            const newImageUrl = await uploadImageToStorage(
+              buffer,
+              file.name,
+              file.type
+            );
             updateNoteImage(noteImageId, {
               url: newImageUrl,
               storageFileName: file.name,
@@ -79,7 +88,7 @@ export default function ImageUploader({
           }
 
           const { imageUrl: createdImageUrl, noteImageId: createdNoteImageId } =
-            await addNoteImage(file, noteId);
+            await addNoteImage(buffer, file.name, file.type, noteId);
           setImageUrl(createdImageUrl);
           setNoteImageId(createdNoteImageId);
           showToast("Zdjęcie zostało przesłane.", "success");
@@ -89,7 +98,7 @@ export default function ImageUploader({
         }
       })();
     },
-    [imageName, noteId, showToast]
+    [fileName, noteImageId, noteId, showToast]
   );
 
   useEffect(() => {

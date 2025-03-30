@@ -1,9 +1,4 @@
-import {
-  FolderType,
-  NoteImageType,
-  SerializedFolderType,
-  SerializedNoteImageType,
-} from "./dbSchemas";
+import { FolderType, SerializedFolderType } from "./dbSchemas";
 
 export function serializeFolder(folder: FolderType): SerializedFolderType {
   const notesIds: string[] = folder.notesRefs.map((noteRef) => noteRef.id);

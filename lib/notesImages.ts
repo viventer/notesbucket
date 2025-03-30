@@ -1,15 +1,24 @@
 "use server";
 
-import { NoteImageType, SerializedNoteImageType } from "./dbSchemas";
+import { NoteImageType, NoteType, SerializedNoteImageType } from "./dbSchemas";
 import { adminDB, adminStorage } from "./firebaseAdmin";
-import { DocumentData, DocumentReference } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Dodaje obraz notatki – zapisuje plik w Storage i dodaje dokument do Firestore.
+ * @param buffer - zawartość pliku jako Buffer
+ * @param fileName - nazwa pliku (np. "obraz.png")
+ * @param contentType - typ MIME (np. "image/png")
+ * @param noteId - identyfikator notatki, do której obraz należy
+ * @returns obiekt zawierający URL obrazu oraz ID dokumentu obrazu
+ */
 export async function addNoteImage(
-  file: File,
+  buffer: Buffer,
+  fileName: string,
+  contentType: string,
   noteId: string
 ): Promise<{ imageUrl: string; noteImageId: string }> {
-  const imageUrl = await uploadImageToStorage(file);
+  const imageUrl = await uploadImageToStorage(buffer, fileName, contentType);
 
   const noteRef = adminDB.collection("notes").doc(noteId);
 
@@ -17,24 +26,33 @@ export async function addNoteImage(
     name: "",
     url: imageUrl,
     noteRef: noteRef,
-    storageFileName: file.name,
+    storageFileName: fileName,
   });
 
   await docRef.update({ id: docRef.id });
 
-  // Opcjonalnie możesz zarewalidować cache np. revalidatePath(`/notes/${noteId}`);
+  revalidatePath(`/notes/edit/${noteId}`);
   return { imageUrl, noteImageId: docRef.id };
 }
 
-export async function uploadImageToStorage(file: File): Promise<string> {
+/**
+ * Uploaduje obraz do Cloud Storage przy użyciu Firebase Admin SDK.
+ * @param buffer - zawartość pliku jako Buffer
+ * @param fileName - nazwa pliku (np. "obraz.png")
+ * @param contentType - typ MIME (np. "image/png")
+ * @returns publiczny URL obrazu
+ */
+export async function uploadImageToStorage(
+  buffer: Buffer,
+  fileName: string,
+  contentType: string
+): Promise<string> {
   const bucket = adminStorage.bucket();
-  const filePath = `images/${file.name}`;
+  const filePath = `images/${fileName}`;
   const fileRef = bucket.file(filePath);
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-
   await fileRef.save(buffer, {
-    metadata: { contentType: file.type },
+    metadata: { contentType },
   });
 
   await fileRef.makePublic();
@@ -48,6 +66,10 @@ export async function updateNoteImage(
 ) {
   const docRef = adminDB.collection("notesImages").doc(id);
   await docRef.update(data);
+
+  const note = (await docRef.get()).data() as NoteType;
+
+  revalidatePath(`/notes/edit/${note.id}`);
 }
 
 export async function removeImageFromStorage(fileName: string) {
@@ -58,7 +80,17 @@ export async function removeImageFromStorage(fileName: string) {
 }
 
 export async function deleteNoteImage(noteImageId: string) {
-  await adminDB.collection("notesImages").doc(noteImageId).delete();
+  const noteImageRef = adminDB.collection("notesImages").doc(noteImageId);
+  if (!noteImageRef) {
+    throw new Error("Nie ma obrazu do usunięcia.");
+  }
+
+  const noteImage = (await noteImageRef.get()).data() as NoteImageType;
+  const noteId = noteImage.noteRef.id;
+
+  await noteImageRef.delete();
+
+  revalidatePath(`/notes/edit/${noteId}`);
 }
 
 export async function getNoteImage(
