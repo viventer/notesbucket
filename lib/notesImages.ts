@@ -13,12 +13,16 @@ import { revalidatePath } from "next/cache";
  * @returns obiekt zawierający URL obrazu oraz ID dokumentu obrazu
  */
 export async function addNoteImage(
-  buffer: Buffer,
+  bufferString: string,
   fileName: string,
   contentType: string,
   noteId: string
 ): Promise<{ imageUrl: string; noteImageId: string }> {
-  const imageUrl = await uploadImageToStorage(buffer, fileName, contentType);
+  const imageUrl = await uploadImageToStorage(
+    bufferString,
+    fileName,
+    contentType
+  );
 
   const noteRef = adminDB.collection("notes").doc(noteId);
 
@@ -43,13 +47,17 @@ export async function addNoteImage(
  * @returns publiczny URL obrazu
  */
 export async function uploadImageToStorage(
-  buffer: Buffer,
+  bufferString: string,
   fileName: string,
   contentType: string
 ): Promise<string> {
-  const bucket = adminStorage.bucket();
+  const bucket = adminStorage.bucket(
+    "notesbucket-firebase.firebasestorage.app"
+  );
   const filePath = `images/${fileName}`;
   const fileRef = bucket.file(filePath);
+
+  const buffer = Buffer.from(bufferString, "base64");
 
   await fileRef.save(buffer, {
     metadata: { contentType },
@@ -73,7 +81,9 @@ export async function updateNoteImage(
 }
 
 export async function removeImageFromStorage(fileName: string) {
-  const bucket = adminStorage.bucket();
+  const bucket = adminStorage.bucket(
+    "notesbucket-firebase.firebasestorage.app"
+  );
   const filePath = `images/${fileName}`;
   const fileRef = bucket.file(filePath);
   await fileRef.delete();

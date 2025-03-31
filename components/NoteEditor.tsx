@@ -7,9 +7,7 @@ import { usePathname } from "next/navigation";
 import { updateNote } from "@/lib/notes";
 import { useToast } from "@/hooks/useToast";
 import { getAllNoteImages, getNoteImageUrl } from "@/lib/notesImages";
-import { NoteImageType } from "@/lib/dbSchemas";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/lib/firebase";
+import { NoteImageType, SerializedNoteImageType } from "@/lib/dbSchemas";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -18,15 +16,16 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 export default function NoteEditor({
   startContent,
   startTitle,
+  noteImages,
 }: {
   startContent: string;
   startTitle: string;
+  noteImages: SerializedNoteImageType[];
 }) {
   const [content, setContent] = useState(startContent || "");
   const [newTitle, setNewTitle] = useState(startTitle || "");
   const [previousTitle, setPreviousTitle] = useState(startTitle || "");
   const [isInputFocused, setIsInputfocused] = useState(false);
-  const [noteImages, setNoteImages] = useState<null | NoteImageType[]>();
   const titleInputRef = useRef<HTMLInputElement | null>(null);
   const vimStatusRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -34,11 +33,8 @@ export default function NoteEditor({
   const { showToast } = useToast();
 
   useEffect(() => {
-    (async function () {
-      const uploadedNoteImages = await getAllNoteImages(noteId);
-      setNoteImages([...uploadedNoteImages]);
-    })();
-  }, []);
+    setContent(startContent);
+  }, [startContent]);
 
   useEffect(() => {
     if (isInputFocused || newTitle === previousTitle) return;
@@ -56,7 +52,7 @@ export default function NoteEditor({
 
   async function fillImageUrls(
     content: string,
-    noteImages: NoteImageType[]
+    noteImages: SerializedNoteImageType[]
   ): Promise<string> {
     const regex = /!\[(.*?)\]\((.*?)\)/g;
     let newContent = content;

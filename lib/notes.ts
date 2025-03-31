@@ -103,6 +103,8 @@ export async function updateNote(
 
   if (data.title !== undefined || data.parentFolderId !== undefined) {
     revalidatePath("/notes");
+  } else {
+    revalidatePath(`/notes/edit/${noteId}`);
   }
 }
 

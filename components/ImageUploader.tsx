@@ -67,6 +67,7 @@ export default function ImageUploader({
         try {
           const arrayBuffer = await file.arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
+          const bufferString = buffer.toString("base64");
 
           if (fileName) {
             await removeImageFromStorage(fileName);
@@ -75,7 +76,7 @@ export default function ImageUploader({
 
           if (noteImageId) {
             const newImageUrl = await uploadImageToStorage(
-              buffer,
+              bufferString,
               file.name,
               file.type
             );
@@ -88,7 +89,7 @@ export default function ImageUploader({
           }
 
           const { imageUrl: createdImageUrl, noteImageId: createdNoteImageId } =
-            await addNoteImage(buffer, file.name, file.type, noteId);
+            await addNoteImage(bufferString, file.name, file.type, noteId);
           setImageUrl(createdImageUrl);
           setNoteImageId(createdNoteImageId);
           showToast("Zdjęcie zostało przesłane.", "success");
