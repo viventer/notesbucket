@@ -1,29 +1,27 @@
-import { signInWithPopup, User } from "firebase/auth";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db, googleAuthProvider } from "./firebase";
+"use server";
+
+import { User } from "firebase/auth";
 import { AvailableCategory, UserRole, UserType } from "./dbSchemas";
+import { adminDB } from "./firebaseAdmin";
 
-export const signInWithGoogle = async () => {
-  const result = await signInWithPopup(auth, googleAuthProvider);
-  const user = result.user;
+export const checkIfNewUser = async (userId: string): Promise<boolean> => {
+  console.log("checkIfNewUser");
+  const userDoc = await adminDB.collection("users").doc(userId).get();
 
-  if (!user) throw new Error("Wystąpił błąd podczas logowania.");
+  const isNewUser = !userDoc.exists;
 
-  const userRef = doc(db, "users", user.uid);
-  const userDoc = await getDoc(userRef);
-
-  const isNewUser = !userDoc.exists();
-
-  return { user, isNewUser };
+  return isNewUser;
 };
 
 export const updateUser = async (userId: string, data: Partial<UserType>) => {
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, data);
+  console.log("updateUser");
+  const userRef = adminDB.collection("users").doc(userId);
+  await userRef.update(data);
 };
 
 export const createUser = async (user: User) => {
-  const userRef = doc(db, "users", user.uid);
+  console.log("createUser");
+  const userRef = adminDB.collection("users").doc(user.uid);
   const userData: UserType = {
     id: user.uid,
     firstName: user.displayName?.split(" ")[0] || "",
@@ -34,7 +32,7 @@ export const createUser = async (user: User) => {
     createdAt: new Date(),
   };
 
-  await setDoc(userRef, userData);
+  await userRef.set(userData);
 };
 
 export type UserPerms = {
@@ -43,10 +41,10 @@ export type UserPerms = {
 };
 
 export const getUserPerms = async (userId: string): Promise<UserPerms> => {
-  const userRef = doc(db, "users", userId);
-  const userDoc = await getDoc(userRef);
+  console.log("getUserPerms");
+  const userDoc = await adminDB.collection("users").doc(userId).get();
 
-  if (!userDoc.exists()) {
+  if (!userDoc.exists) {
     throw new Error("Użytkownik nie istnieje");
   }
 
@@ -62,13 +60,15 @@ export const setUserAvailableCategories = async (
   userId: string,
   categories: AvailableCategory[]
 ) => {
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, { availableCategories: categories });
+  console.log("setUserAvailableCategories");
+  const userRef = adminDB.collection("users").doc(userId);
+  await userRef.update({ availableCategories: categories });
 };
 
 export const setUserRole = async (userId: string, role: UserRole) => {
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, { role });
+  console.log("setUserRole");
+  const userRef = adminDB.collection("users").doc(userId);
+  await userRef.update({ role });
 };
 
 export type UserName = {
@@ -77,10 +77,10 @@ export type UserName = {
 };
 
 export const getUserName = async (userId: string): Promise<UserName> => {
-  const userRef = doc(db, "users", userId);
-  const userDoc = await getDoc(userRef);
+  console.log("getUserName");
+  const userDoc = await adminDB.collection("users").doc(userId).get();
 
-  if (!userDoc.exists()) {
+  if (!userDoc.exists) {
     throw new Error("Użytkownik nie istnieje");
   }
 

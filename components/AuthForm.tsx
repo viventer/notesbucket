@@ -13,8 +13,10 @@ import {
   createUser,
   getUserName,
   getUserPerms,
-  signInWithGoogle,
+  checkIfNewUser,
 } from "@/lib/auth";
+import { auth, googleAuthProvider } from "@/lib/firebase";
+import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 export default function AuthForm() {
@@ -23,7 +25,12 @@ export default function AuthForm() {
 
   const handleGoogleSignIn = async () => {
     try {
-      const { isNewUser, user } = await signInWithGoogle();
+      const result = await signInWithPopup(auth, googleAuthProvider);
+      const user = result.user;
+
+      if (!user) throw new Error("Wystąpił błąd podczas logowania.");
+
+      const isNewUser = await checkIfNewUser(user.uid);
       showToast("Pomyślnie zalogowano.", "success");
 
       if (isNewUser) {
