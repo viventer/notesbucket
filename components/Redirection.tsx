@@ -2,13 +2,15 @@
 
 import { getUserPerms } from "@/lib/auth";
 import { auth } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Redirection() {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
+  const pathname = usePathname();
+
   useEffect(() => {
     if (loading || !user) {
       return;
@@ -16,7 +18,7 @@ export default function Redirection() {
 
     (async function () {
       const { role } = await getUserPerms(user.uid);
-      if (role === "unverified") {
+      if (role === "unverified" && pathname !== "/auth/waiting-room") {
         router.replace("/auth/waiting-room");
         return;
       } else {

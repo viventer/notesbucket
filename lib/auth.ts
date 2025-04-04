@@ -19,20 +19,11 @@ export const updateUser = async (userId: string, data: Partial<UserType>) => {
   await userRef.update(data);
 };
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: UserType) => {
   console.log("createUser");
-  const userRef = adminDB.collection("users").doc(user.uid);
-  const userData: UserType = {
-    id: user.uid,
-    firstName: user.displayName?.split(" ")[0] || "",
-    lastName: user.displayName?.split(" ")[1] || "",
-    email: user.email || "  ",
-    role: "unverified",
-    availableCategories: [],
-    createdAt: new Date(),
-  };
+  const userRef = adminDB.collection("users").doc(user.id);
 
-  await userRef.set(userData);
+  await userRef.set(user);
 };
 
 export type UserPerms = {
