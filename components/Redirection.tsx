@@ -12,24 +12,42 @@ export default function Redirection() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (loading || !user) {
+    if (loading) {
       return;
+    }
+
+    if (!user) {
+      router.replace("/auth/complete-profile");
+      return;
+    }
+
+    if (pathname === "/auth" || pathname === "/auth/complete-profile") {
+      router.replace("/");
     }
 
     (async function () {
       const { role } = await getUserPerms(user.uid);
+
+      if (pathname === "/auth/waiting-room" && role !== "unverified") {
+        router.replace("/");
+        return;
+      }
+
       if (
-        role === "unverified" &&
         pathname !== "/auth/waiting-room" &&
+        role === "unverified" &&
         pathname !== "/"
       ) {
-        router.replace("/auth/waiting-room");
+        router.replace("/");
         return;
-      } else if (
-        role !== "admin" &&
-        (pathname === "/users" || pathname.startsWith("/notes/edit"))
+      }
+
+      if (
+        (pathname.startsWith("/notes/edit") || pathname == "/users") &&
+        role !== "admin"
       ) {
         router.replace("/");
+        return;
       }
     })();
   }, [loading, pathname]);

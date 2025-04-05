@@ -2,6 +2,7 @@ import HeaderNav from "@/components/HeaderNav";
 import { getAllFolders } from "@/lib/folders";
 import { getNotesMetadata } from "@/lib/notes";
 import { NotesMetadataProvider } from "@/context/NotesMetadataContext";
+import Redirection from "@/components/Redirection";
 
 export default async function Layout({
   children,
