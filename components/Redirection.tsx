@@ -1,6 +1,6 @@
 "use client";
 
-import { getUserPerms } from "@/lib/auth";
+import { checkIfNewUser, getUserPerms } from "@/lib/auth";
 import { auth } from "@/lib/firebase";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,15 +17,27 @@ export default function Redirection() {
     }
 
     if (!user) {
-      router.replace("/auth/complete-profile");
+      router.replace("/auth");
       return;
     }
 
-    if (pathname === "/auth" || pathname === "/auth/complete-profile") {
+    if (pathname === "/auth") {
       router.replace("/");
+      return;
     }
 
     (async function () {
+      const isNewUser = await checkIfNewUser(user.uid);
+      if (isNewUser && pathname !== "/auth/complete-profile") {
+        router.replace("/auth/complete-profile");
+        return;
+      }
+
+      if (!isNewUser && pathname === "/auth/complete-profile") {
+        router.replace("/");
+        return;
+      }
+
       const { role } = await getUserPerms(user.uid);
 
       if (pathname === "/auth/waiting-room" && role !== "unverified") {
@@ -35,10 +47,10 @@ export default function Redirection() {
 
       if (
         pathname !== "/auth/waiting-room" &&
-        role === "unverified" &&
-        pathname !== "/"
+        pathname !== "/" &&
+        role === "unverified"
       ) {
-        router.replace("/");
+        router.replace("/auth/waiting-room");
         return;
       }
 

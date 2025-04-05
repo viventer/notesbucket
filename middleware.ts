@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { decodeJwt } from "jose";
+import { cookies } from "next/headers";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const token = req.cookies.get("firebaseIdToken")?.value;
+  const allCookies = await cookies();
+  const token = allCookies.get("firebaseIdToken")?.value;
 
   if (!token) {
     console.log("Brak tokena");
@@ -31,5 +33,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/notes/:path*", "/users/:path*", "/auth/:path*"],
+  matcher: ["/notes/:path*", "/users/:path*"],
 };

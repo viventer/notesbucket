@@ -14,8 +14,8 @@ import {
   getUserName,
   getUserPerms,
   checkIfNewUser,
+  setAuthToken,
 } from "@/lib/auth";
-import { setAuthToken } from "@/lib/authToken";
 import { UserType } from "@/lib/dbSchemas";
 import { auth, googleAuthProvider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
@@ -37,7 +37,7 @@ export default function AuthForm() {
       });
       const user = result.user;
       const token = await user.getIdToken();
-      setAuthToken(token);
+      await setAuthToken(token);
 
       if (!user) throw new Error("Wystąpił błąd podczas logowania.");
 

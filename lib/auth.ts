@@ -1,7 +1,8 @@
 "use server";
 
 import { AvailableCategory, UserRole, UserType } from "./dbSchemas";
-import { adminApp, adminAuth, adminDB } from "./firebaseAdmin";
+import { adminAuth, adminDB } from "./firebaseAdmin";
+import { cookies } from "next/headers";
 
 export const checkIfNewUser = async (userId: string): Promise<boolean> => {
   console.log("checkIfNewUser");
@@ -12,8 +13,26 @@ export const checkIfNewUser = async (userId: string): Promise<boolean> => {
   return isNewUser;
 };
 
-export const updateUser = async (userId: string, data: Partial<UserType>) => {
+export async function setAuthToken(token: string) {
+  (await cookies()).set("firebaseIdToken", token, {
+    httpOnly: true,
+    secure: false,
+    path: "/",
+  });
+}
+
+export async function removeAuthToken() {
+  (await cookies()).delete("firebaseIdToken");
+}
+
+export const updateUser = async (
+  userId: string,
+  data: Partial<UserType>,
+  token: string
+) => {
   console.log("updateUser");
+
+  const reqUserId = getUserIdFromToken(token);
   const userRef = adminDB.collection("users").doc(userId);
   await userRef.update(data);
 };
@@ -79,12 +98,20 @@ export const getUserName = async (userId: string): Promise<UserName> => {
   return { firstName: userData.firstName, lastName: userData.lastName };
 };
 
-export const verifyToken = async (token: string): Promise<string> => {
-  console.log("verifyToken");
-  const decodedToken = await adminAuth.verifyIdToken(token);
+export const isAuthorized = async (
+  reqUserId: string,
+  authorizedRoles: string[]
+): Promise<boolean> => {
+  console.log("authorize");
+  const { role } = await getUserPerms(reqUserId);
+  return authorizedRoles.includes(role);
+};
 
-  if (!decodedToken) {
-    throw new Error("Niepoprawny token.");
+export const getUserIdFromToken = async (token: string): Promise<string> => {
+  console.log("getUserIdFromToken");
+  const decodedToken = await adminAuth.verifyIdToken(token);
+  if (!decodedToken?.uid) {
+    throw new Error("Niepoprawny token");
   }
 
   return decodedToken.uid;

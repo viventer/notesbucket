@@ -5,7 +5,10 @@ export function getAuthToken(): string | undefined {
 }
 
 export function setAuthToken(token: string): string | undefined {
-  return Cookies.set("firebaseIdToken", token, { secure: true });
+  return Cookies.set("firebaseIdToken", token, {
+    secure: true,
+    httpOnly: true,
+  });
 }
 
 export function removeAuthToken(): void {
