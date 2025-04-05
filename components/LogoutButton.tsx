@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { auth } from "@/lib/firebase";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
+import { removeAuthToken } from "@/lib/authToken";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const { showToast } = useToast();
@@ -13,6 +14,7 @@ export default function LogoutButton({ className }: { className?: string }) {
   const handleLogout = () => {
     try {
       signOut(auth);
+      removeAuthToken();
       router.push("/");
       showToast("Zostałeś wylogowany", "success");
     } catch (err) {

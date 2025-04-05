@@ -1,8 +1,7 @@
 "use server";
 
-import { User } from "firebase/auth";
 import { AvailableCategory, UserRole, UserType } from "./dbSchemas";
-import { adminDB } from "./firebaseAdmin";
+import { adminApp, adminAuth, adminDB } from "./firebaseAdmin";
 
 export const checkIfNewUser = async (userId: string): Promise<boolean> => {
   console.log("checkIfNewUser");
@@ -78,4 +77,15 @@ export const getUserName = async (userId: string): Promise<UserName> => {
   const userData = userDoc.data() as UserType;
 
   return { firstName: userData.firstName, lastName: userData.lastName };
+};
+
+export const verifyToken = async (token: string): Promise<string> => {
+  console.log("verifyToken");
+  const decodedToken = await adminAuth.verifyIdToken(token);
+
+  if (!decodedToken) {
+    throw new Error("Niepoprawny token.");
+  }
+
+  return decodedToken.uid;
 };

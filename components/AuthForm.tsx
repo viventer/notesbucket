@@ -15,6 +15,7 @@ import {
   getUserPerms,
   checkIfNewUser,
 } from "@/lib/auth";
+import { setAuthToken } from "@/lib/authToken";
 import { UserType } from "@/lib/dbSchemas";
 import { auth, googleAuthProvider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
@@ -35,6 +36,8 @@ export default function AuthForm() {
         window.addEventListener("focus", handler);
       });
       const user = result.user;
+      const token = await user.getIdToken();
+      setAuthToken(token);
 
       if (!user) throw new Error("Wystąpił błąd podczas logowania.");
 

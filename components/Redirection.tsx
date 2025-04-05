@@ -18,14 +18,21 @@ export default function Redirection() {
 
     (async function () {
       const { role } = await getUserPerms(user.uid);
-      if (role === "unverified" && pathname !== "/auth/waiting-room") {
+      if (
+        role === "unverified" &&
+        pathname !== "/auth/waiting-room" &&
+        pathname !== "/"
+      ) {
         router.replace("/auth/waiting-room");
         return;
-      } else {
+      } else if (
+        role !== "admin" &&
+        (pathname === "/users" || pathname.startsWith("/notes/edit"))
+      ) {
         router.replace("/");
       }
     })();
-  }, [loading]);
+  }, [loading, pathname]);
 
   return null;
 }
