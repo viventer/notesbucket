@@ -10,6 +10,8 @@ import { adminDB } from "./firebaseAdmin";
 import { DocumentData, DocumentReference } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { serializeFolder } from "./serializing";
+import { checkIfAuthorized } from "./auth";
+import { redirect } from "next/navigation";
 
 export async function getAllFolders(): Promise<SerializedFolderType[]> {
   console.log("getAllFolders");
@@ -69,6 +71,10 @@ export type CreateFolderData = Pick<
 
 export async function createFolder(data: CreateFolderData): Promise<string> {
   console.log("createFolder");
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
 
   const newDocRef = adminDB.collection("folders").doc();
   const folderId = newDocRef.id;
@@ -106,6 +112,11 @@ export async function updateFolder(
   data: Partial<FolderType>
 ) {
   console.log("updateFolder");
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const folderRef = adminDB.collection("folders").doc(folderId);
 
   await folderRef.update(data);
