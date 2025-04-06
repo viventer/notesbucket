@@ -4,9 +4,19 @@ import { auth } from "@/lib/firebase";
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-export default function Button({ text }: { text: string }) {
+export default function Button({
+  text,
+  isVerified,
+}: {
+  text: string;
+  isVerified: boolean;
+}) {
   const [user, loading] = useAuthState(auth);
-  const destination = user ? "/notes" : "/auth";
+  const destination = isVerified
+    ? "/notes"
+    : user
+    ? "/auth/waiting-room"
+    : "/auth";
 
   const buttonContent = (
     <button

@@ -1,7 +1,10 @@
 import Logo from "@/icons/Logo";
+import { checkIfVerified } from "@/lib/auth";
 import HomePageButton from "@components/HomePageButton";
 
-export default function Home() {
+export default async function Home() {
+  const isVerified = await checkIfVerified();
+
   return (
     <div className="flex items-center justify-center h-[100svh] w-[100svw] ">
       <div className="flex items-center justify-center w-fit max-w-[90svw] gap-4">
@@ -17,7 +20,7 @@ export default function Home() {
             Wszystkie notatki w jednym miejscu
           </p>
           <div className="absolute bottom-0 right-0 translate-y-[150%] ">
-            <HomePageButton text="Przeglądaj" />
+            <HomePageButton text="Przeglądaj" isVerified={isVerified} />
           </div>
         </section>
       </div>

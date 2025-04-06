@@ -2,7 +2,7 @@
 
 import Chevron from "@/icons/Chevron";
 import Logo from "@/icons/Logo";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
@@ -10,6 +10,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { SerializedFolderType } from "@/lib/dbSchemas";
 import { AdminNav } from "./AdminNav";
 import LogoutButton from "./LogoutButton";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/lib/firebase";
+import { getUserPerms } from "@/lib/auth";
 
 export default function HeaderNav({
   rootFolders,
@@ -24,6 +27,21 @@ export default function HeaderNav({
   });
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [user, loading] = useAuthState(auth);
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      (async function () {
+        const { role } = await getUserPerms(user.uid);
+        if (role === "admin") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      })();
+    }
+  }, [loading]);
 
   const selectedCategory = form.watch("category");
 
@@ -51,7 +69,7 @@ export default function HeaderNav({
             isExpanded ? "" : "hidden"
           } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
         >
-          <AdminNav />
+          {isAdmin && <AdminNav />}
           <FormProvider {...form}>
             <CategorySelector />
             {selectedCategory == "Szkoła" && <SubjectSelector />}

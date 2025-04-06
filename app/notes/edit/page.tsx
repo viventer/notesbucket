@@ -1,8 +1,14 @@
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import NoteIcon from "@/icons/NoteIcon";
-import React from "react";
+import { checkIfAuthorized } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function page() {
+export default async function page() {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   return (
     <Card className="mt-[8rem] p-4 bg-background max-w-[500px] mx-auto">
       <CardTitle className="flex items-center gap-2">
