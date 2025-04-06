@@ -120,11 +120,11 @@ export async function updateNote(
     await noteRef.update(updateData);
   }
 
-  // if (data.title !== undefined || data.parentFolderId !== undefined) {
-  //   revalidatePath("/notes");
-  // } else {
-  //   revalidatePath(`/notes/edit/${noteId}`);
-  // }
+  if (data.title !== undefined || data.parentFolderId !== undefined) {
+    revalidatePath("/notes");
+  } else {
+    revalidatePath(`/notes/edit/${noteId}`);
+  }
 }
 
 export async function createNote(
@@ -153,7 +153,7 @@ export async function createNote(
 
   await noteRef.set(newNoteData);
 
-  // revalidatePath("/notes");
+  revalidatePath("/notes");
 
   return noteId;
 }
@@ -165,5 +165,5 @@ export async function deleteNote(noteId: string): Promise<void> {
   }
   await adminDB.collection("notes").doc(noteId).delete();
 
-  // revalidatePath("/notes");
+  revalidatePath("/notes");
 }
