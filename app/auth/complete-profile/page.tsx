@@ -6,8 +6,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import NameForm from "@/components/NameForm";
+import { checkIfNewUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function page() {
+export default async function page() {
+  const isNewUser = await checkIfNewUser();
+  if (!isNewUser) {
+    redirect("/");
+  }
+
   return (
     <Card>
       <CardHeader>

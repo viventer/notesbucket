@@ -4,9 +4,11 @@ import { AvailableCategory, UserRole, UserType } from "./dbSchemas";
 import { adminAuth, adminDB } from "./firebaseAdmin";
 import { cookies } from "next/headers";
 
-export const checkIfNewUser = async (userId: string): Promise<boolean> => {
+export const checkIfNewUser = async (): Promise<boolean> => {
   console.log("checkIfNewUser");
-  const userDoc = await adminDB.collection("users").doc(userId).get();
+  const token = await getAuthToken();
+  const reqUserId = await getUserIdFromToken(token);
+  const userDoc = await adminDB.collection("users").doc(reqUserId).get();
 
   const isNewUser = !userDoc.exists;
 
@@ -124,4 +126,12 @@ export const getUserIdFromToken = async (token: string): Promise<string> => {
   }
 
   return decodedToken.uid;
+};
+
+export const checkIfVerified = async (): Promise<boolean> => {
+  console.log("checkIfVerified");
+  const token = await getAuthToken();
+  const reqUserId = await getUserIdFromToken(token);
+  const { role } = await getUserPerms(reqUserId);
+  return role === "verified" || role === "admin";
 };

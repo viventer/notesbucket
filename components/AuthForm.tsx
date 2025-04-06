@@ -41,7 +41,7 @@ export default function AuthForm() {
 
       if (!user) throw new Error("Wystąpił błąd podczas logowania.");
 
-      const isNewUser = await checkIfNewUser(user.uid);
+      const isNewUser = await checkIfNewUser();
 
       if (isNewUser) {
         const userData: UserType = {
