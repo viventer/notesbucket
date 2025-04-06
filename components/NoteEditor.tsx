@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { updateNote } from "@/lib/notes";
 import { useToast } from "@/hooks/useToast";
-import { getAllNoteImages, getNoteImageUrl } from "@/lib/notesImages";
-import { NoteImageType, SerializedNoteImageType } from "@/lib/dbSchemas";
+import { getNoteImageUrl } from "@/lib/notesImages";
+import { SerializedNoteImageType } from "@/lib/dbSchemas";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,

@@ -1,5 +1,7 @@
 "use server";
 
+import { redirect } from "next/navigation";
+import { checkIfAuthorized } from "./auth";
 import { NoteImageType, NoteType, SerializedNoteImageType } from "./dbSchemas";
 import { adminDB, adminStorage } from "./firebaseAdmin";
 import { revalidatePath } from "next/cache";
@@ -18,6 +20,11 @@ export async function addNoteImage(
   contentType: string,
   noteId: string
 ): Promise<{ imageUrl: string; noteImageId: string }> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const imageUrl = await uploadImageToStorage(
     bufferString,
     fileName,
@@ -51,6 +58,11 @@ export async function uploadImageToStorage(
   fileName: string,
   contentType: string
 ): Promise<string> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const bucket = adminStorage.bucket(
     "notesbucket-firebase.firebasestorage.app"
   );
@@ -72,6 +84,11 @@ export async function updateNoteImage(
   id: string,
   data: Partial<NoteImageType>
 ) {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const docRef = adminDB.collection("notesImages").doc(id);
   await docRef.update(data);
 
@@ -81,6 +98,11 @@ export async function updateNoteImage(
 }
 
 export async function removeImageFromStorage(fileName: string) {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const bucket = adminStorage.bucket(
     "notesbucket-firebase.firebasestorage.app"
   );
@@ -90,6 +112,11 @@ export async function removeImageFromStorage(fileName: string) {
 }
 
 export async function deleteNoteImage(noteImageId: string) {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const noteImageRef = adminDB.collection("notesImages").doc(noteImageId);
   if (!noteImageRef) {
     throw new Error("Nie ma obrazu do usunięcia.");
@@ -106,6 +133,11 @@ export async function deleteNoteImage(noteImageId: string) {
 export async function getNoteImage(
   noteImageId: string
 ): Promise<SerializedNoteImageType> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const docSnapshot = await adminDB
     .collection("notesImages")
     .doc(noteImageId)
@@ -128,6 +160,11 @@ export async function getNoteImage(
 export async function getAllNoteImages(
   noteId: string
 ): Promise<SerializedNoteImageType[]> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const noteRef = adminDB.collection("notes").doc(noteId);
   const snapshot = await adminDB
     .collection("notesImages")
@@ -146,6 +183,11 @@ export async function getAllNoteImages(
 }
 
 export async function getNoteImageUrl(noteImageId: string): Promise<string> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const docSnapshot = await adminDB
     .collection("notesImages")
     .doc(noteImageId)
