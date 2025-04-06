@@ -4,6 +4,8 @@ import { adminDB } from "./firebaseAdmin";
 import { NoteType, SerializedNoteType } from "./dbSchemas";
 import { DocumentData, DocumentReference } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
+import { checkIfAuthorized } from "./auth";
+import { redirect } from "next/navigation";
 
 export type NoteMetadata = Pick<
   SerializedNoteType,
@@ -14,6 +16,11 @@ export async function getNoteById(
   noteId: string
 ): Promise<SerializedNoteType | null> {
   console.log("getNoteById");
+  const isAuthorized = await checkIfAuthorized(["verified", "admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
   const noteDoc = await adminDB.collection("notes").doc(noteId).get();
 
   if (!noteDoc.exists) {
@@ -32,6 +39,10 @@ export async function getNoteById(
 
 export async function getNotesMetadata(): Promise<NoteMetadata[]> {
   console.log("getNotesMetadata");
+  const isAuthorized = await checkIfAuthorized(["verified", "admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
 
   const snapshot = await adminDB.collection("notes").get();
   return snapshot.docs.map((doc) => {
@@ -48,6 +59,10 @@ export async function getNotesFromFolderMetadata(
   folderId: string
 ): Promise<NoteMetadata[]> {
   console.log("getNotesFromFolderMetadata");
+  const isAuthorized = await checkIfAuthorized(["verified", "admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
   const folderRef = adminDB.collection("folders").doc(folderId);
 
   const snapshot = await adminDB
@@ -75,6 +90,10 @@ export async function updateNote(
   noteId: string,
   data: UpdateNoteData
 ): Promise<void> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
   const noteRef = adminDB.collection("notes").doc(noteId);
   const updateData: {
     title?: string;
@@ -112,6 +131,10 @@ export async function createNote(
   parentFolderId: string,
   noteTitle?: string
 ): Promise<string> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
   const noteRef = adminDB.collection("notes").doc();
   const noteId = noteRef.id;
   const parentFolderRef = adminDB
@@ -136,6 +159,10 @@ export async function createNote(
 }
 
 export async function deleteNote(noteId: string): Promise<void> {
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
   await adminDB.collection("notes").doc(noteId).delete();
 
   revalidatePath("/notes");

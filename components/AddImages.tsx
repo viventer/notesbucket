@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import ImageUploader from "./ImageUploader";
 import { getAllNoteImages } from "@/lib/notesImages";
 import { useParams } from "next/navigation";
-import { NoteImageType } from "@/lib/dbSchemas";
+import { SerializedNoteImageType } from "@/lib/dbSchemas";
 
 type UploaderItem = {
   id: number;
-  noteImageData?: NoteImageType;
+  noteImageData?: SerializedNoteImageType;
 };
 
 export function AddImages() {

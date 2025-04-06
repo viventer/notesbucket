@@ -17,7 +17,7 @@ import {
   updateNoteImage,
   uploadImageToStorage,
 } from "@/lib/notesImages";
-import { NoteImageType } from "@/lib/dbSchemas";
+import { SerializedNoteImageType } from "@/lib/dbSchemas";
 
 export interface UploadedImage {
   name: string;
@@ -28,7 +28,7 @@ export interface UploadedImage {
 interface ImageUploaderProps {
   onRemoveUploader: () => void;
   index: number;
-  startNoteImageData?: NoteImageType;
+  startNoteImageData?: SerializedNoteImageType;
 }
 
 export default function ImageUploader({

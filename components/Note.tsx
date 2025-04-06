@@ -12,11 +12,11 @@ export default function Note({
   mode: "view" | "edit";
   title: string;
   content: string;
-  noteImages: SerializedNoteImageType[];
+  noteImages?: SerializedNoteImageType[];
 }) {
   return (
     <div className="z-0">
-      {mode === "edit" ? (
+      {mode === "edit" && noteImages ? (
         <NoteEditor
           startContent={content}
           startTitle={title}

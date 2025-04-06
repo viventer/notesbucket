@@ -4,7 +4,6 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "@/components/ConfirmDialogProvider";
 import AuthTokenUpdater from "@/components/AuthTokenUpdater";
-import Redirection from "@/components/Redirection";
 
 const ubuntuSans = Ubuntu({
   variable: "--font-ubuntu-sans",
@@ -36,7 +35,6 @@ export default function RootLayout({
       <body
         className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background`}
       >
-        <Redirection />
         <AuthTokenUpdater />
         <ConfirmDialogProvider>
           {children}

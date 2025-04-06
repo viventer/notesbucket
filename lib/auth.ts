@@ -25,6 +25,15 @@ export async function removeAuthToken() {
   (await cookies()).delete("firebaseIdToken");
 }
 
+export async function getAuthToken() {
+  const allCookies = await cookies();
+  const token = allCookies.get("firebaseIdToken")?.value;
+  if (!token) {
+    throw new Error("Brak tokena");
+  }
+  return token;
+}
+
 export const updateUser = async (
   userId: string,
   data: Partial<UserType>,
@@ -32,7 +41,6 @@ export const updateUser = async (
 ) => {
   console.log("updateUser");
 
-  const reqUserId = getUserIdFromToken(token);
   const userRef = adminDB.collection("users").doc(userId);
   await userRef.update(data);
 };
@@ -98,11 +106,12 @@ export const getUserName = async (userId: string): Promise<UserName> => {
   return { firstName: userData.firstName, lastName: userData.lastName };
 };
 
-export const isAuthorized = async (
-  reqUserId: string,
+export const checkIfAuthorized = async (
   authorizedRoles: string[]
 ): Promise<boolean> => {
   console.log("authorize");
+  const token = await getAuthToken();
+  const reqUserId = await getUserIdFromToken(token);
   const { role } = await getUserPerms(reqUserId);
   return authorizedRoles.includes(role);
 };

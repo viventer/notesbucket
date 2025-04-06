@@ -50,7 +50,7 @@ export default function Redirection() {
         pathname !== "/" &&
         role === "unverified"
       ) {
-        router.replace("/auth/waiting-room");
+        // router.replace("/auth/waiting-room");
         return;
       }
 
@@ -62,7 +62,7 @@ export default function Redirection() {
         return;
       }
     })();
-  }, [loading, pathname]);
+  }, [loading]);
 
   return null;
 }

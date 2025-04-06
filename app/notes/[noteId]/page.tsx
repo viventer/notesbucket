@@ -33,6 +33,7 @@ export async function generateMetadata(props: Props) {
 
 export default async function page(props: Props) {
   const { noteId } = await props.params;
+
   const note: SerializedNoteType | null = await cachedGetNoteById(noteId);
 
   if (!note) {
