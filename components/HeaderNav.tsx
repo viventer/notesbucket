@@ -9,6 +9,7 @@ import NoteSelector from "./NoteSelector";
 import { FormProvider, useForm } from "react-hook-form";
 import { SerializedFolderType } from "@/lib/dbSchemas";
 import { AdminNav } from "./AdminNav";
+import LogoutButton from "./LogoutButton";
 
 export default function HeaderNav({
   rootFolders,
@@ -56,6 +57,7 @@ export default function HeaderNav({
             {selectedCategory == "Szkoła" && <SubjectSelector />}
             <NoteSelector folders={rootFolders} />
           </FormProvider>
+          <LogoutButton />
         </section>
       </nav>
     </div>
