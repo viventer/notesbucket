@@ -2,7 +2,7 @@
 
 import Chevron from "@/icons/Chevron";
 import Logo from "@/icons/Logo";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
@@ -12,14 +12,14 @@ import { AdminNav } from "./AdminNav";
 import LogoutButton from "./LogoutButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
-import { getUserEmail, getUserName, getUserPerms } from "@/lib/auth";
 import VerifiedUserIcon from "@/icons/VerifiedUserIcon";
-import { truncateString } from "@/lib/utils";
 
 export default function HeaderNav({
   rootFolders,
+  isAdmin,
 }: {
   rootFolders: SerializedFolderType[];
+  isAdmin: boolean;
 }) {
   const form = useForm({
     defaultValues: {
@@ -30,32 +30,6 @@ export default function HeaderNav({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, loading] = useAuthState(auth);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  useEffect(() => {
-    if (loading) return;
-    if (user) {
-      (async function () {
-        const { role } = await getUserPerms(user.uid);
-        const fullEmail = await getUserEmail(user.uid);
-        const { firstName, lastName } = await getUserName(user.uid);
-        const fullUsername = `${firstName} ${lastName}`;
-        setUsername(fullUsername);
-
-        if (fullEmail) {
-          const truncatedEmail = truncateString(fullEmail, 32);
-          setEmail(truncatedEmail);
-        }
-
-        if (role === "admin") {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      })();
-    }
-  }, [loading]);
 
   const selectedCategory = form.watch("category");
 
@@ -92,7 +66,9 @@ export default function HeaderNav({
           <section className="mt-6 flex items-center gap-4 justify-between">
             <div className="flex items-center gap-2">
               <VerifiedUserIcon className="size-8 text-primary" />
-              <p className="hidden sm:inline">{email || username}</p>
+              <p className="hidden sm:inline">
+                {user?.email || user?.displayName || ""}
+              </p>
             </div>
             <LogoutButton />
           </section>
