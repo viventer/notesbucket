@@ -12,7 +12,9 @@ import { AdminNav } from "./AdminNav";
 import LogoutButton from "./LogoutButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
-import { getUserPerms } from "@/lib/auth";
+import { getUserEmail, getUserName, getUserPerms } from "@/lib/auth";
+import VerifiedUserIcon from "@/icons/VerifiedUserIcon";
+import { truncateString } from "@/lib/utils";
 
 export default function HeaderNav({
   rootFolders,
@@ -29,11 +31,23 @@ export default function HeaderNav({
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, loading] = useAuthState(auth);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   useEffect(() => {
     if (loading) return;
     if (user) {
       (async function () {
         const { role } = await getUserPerms(user.uid);
+        const fullEmail = await getUserEmail(user.uid);
+        const { firstName, lastName } = await getUserName(user.uid);
+        const fullUsername = `${firstName} ${lastName}`;
+        setUsername(fullUsername);
+
+        if (fullEmail) {
+          const truncatedEmail = truncateString(fullEmail, 32);
+          setEmail(truncatedEmail);
+        }
+
         if (role === "admin") {
           setIsAdmin(true);
         } else {
@@ -47,9 +61,9 @@ export default function HeaderNav({
 
   return (
     <div
-      className={`bg-card  h-fit w-full sm:w-fit sm:m-4 md:m-8 border-solid border-primary border-0 border-b-[0.1rem] fixed left-0 top-0 z-10`}
+      className={`bg-card  h-fit w-full sm:w-fit sm:m-4 md:m-8 border-solid border-primary border-0 border-b-[0.1rem] fixed left-0 top-0 z-10 max-h-[95svh] overflow-auto scrollbar-thin`}
     >
-      <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-3 max-w-[400px] sm:mx-3 relative">
+      <nav className="flex flex-col gap-4 w-[90svw] mx-auto my-3 max-w-[500px] sm:mx-3 relative ">
         <section>
           <button
             onClick={() => setIsExpanded((prev) => !prev)}
@@ -64,19 +78,25 @@ export default function HeaderNav({
             />
           </button>
         </section>
-        <section
-          className={`${
-            isExpanded ? "" : "hidden"
-          } flex flex-col gap-4 max-h-[75svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
-        >
-          {isAdmin && <AdminNav />}
-          <FormProvider {...form}>
-            <CategorySelector />
-            {selectedCategory == "Szkoła" && <SubjectSelector />}
-            <NoteSelector folders={rootFolders} />
-          </FormProvider>
-          <LogoutButton />
-        </section>
+        <div className={`${isExpanded ? "" : "hidden"} `}>
+          <section
+            className={`flex flex-col gap-4 max-h-[70svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
+          >
+            {isAdmin && <AdminNav />}
+            <FormProvider {...form}>
+              <CategorySelector />
+              {selectedCategory == "Szkoła" && <SubjectSelector />}
+              <NoteSelector folders={rootFolders} />
+            </FormProvider>
+          </section>
+          <section className="mt-6 flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-2">
+              <VerifiedUserIcon className="size-8 text-primary" />
+              <p className="hidden sm:inline">{email || username}</p>
+            </div>
+            <LogoutButton />
+          </section>
+        </div>
       </nav>
     </div>
   );

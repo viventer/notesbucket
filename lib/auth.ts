@@ -143,6 +143,25 @@ export const getUserName = async (userId: string): Promise<UserName> => {
   return { firstName: userData.firstName, lastName: userData.lastName };
 };
 
+export const getUserEmail = async (userId: string): Promise<string | null> => {
+  console.log("getUserName");
+  const isAuthorized = await checkIfAuthorized(["admin"], true, userId);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
+  const userDoc = await adminDB.collection("users").doc(userId).get();
+
+  if (!userDoc.exists) {
+    throw new Error("Użytkownik nie istnieje");
+  }
+
+  const userData = userDoc.data() as UserType;
+  const email = userData.email;
+
+  return email || null;
+};
+
 export const checkIfAuthorized = async (
   authorizedRoles: string[],
   ownerAccess: boolean = false,
