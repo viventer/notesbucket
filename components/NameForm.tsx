@@ -7,8 +7,8 @@ import { Button } from "./ui/button";
 import { useToast } from "@/hooks/useToast";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
-import { updateUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { updateUser } from "@/lib/users";
 
 export default function NameForm() {
   const [firstName, setFirstName] = useState("");

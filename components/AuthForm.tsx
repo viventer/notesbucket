@@ -9,15 +9,10 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/useToast";
 import GoogleLogo from "@/icons/GoogleLogo";
-import {
-  createUser,
-  getUserName,
-  getUserPerms,
-  checkIfNewUser,
-  setAuthToken,
-} from "@/lib/auth";
+import { checkIfNewUser, setAuthToken } from "@/lib/auth";
 import { UserType } from "@/lib/dbSchemas";
 import { auth, googleAuthProvider } from "@/lib/firebase";
+import { createUser, getUserName, getUserPerms } from "@/lib/users";
 import { onIdTokenChanged, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
