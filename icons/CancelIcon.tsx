@@ -1,4 +1,4 @@
-export default function CancelIcon({ className }: { className: string }) {
+export default function CancelIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
