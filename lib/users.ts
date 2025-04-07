@@ -125,3 +125,32 @@ export const setUserRole = async (userId: string, role: UserRole) => {
   const userRef = adminDB.collection("users").doc(userId);
   await userRef.update({ role });
 };
+
+export const getAllUsers = async (): Promise<UserType[]> => {
+  console.log("getAllUsers");
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
+  const users = await adminDB.collection("users").get();
+  const usersData: UserType[] = users.docs.map((user) => {
+    const userData = user.data() as UserType;
+    return userData;
+  });
+
+  return usersData;
+};
+
+export const getUser = async (userId: string): Promise<UserType> => {
+  console.log("getUser");
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
+  const user = await adminDB.collection("users").doc(userId).get();
+  const userData: UserType = user.data() as UserType;
+
+  return userData;
+};
