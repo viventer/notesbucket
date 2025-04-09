@@ -6,6 +6,7 @@ import { DocumentData, DocumentReference } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { checkIfAuthorized } from "./auth";
 import { redirect } from "next/navigation";
+import { checkRateLimit } from "./rateLimit";
 
 export type NoteMetadata = Pick<
   SerializedNoteType,
@@ -15,6 +16,8 @@ export type NoteMetadata = Pick<
 export async function getNoteById(
   noteId: string
 ): Promise<SerializedNoteType | null> {
+  checkRateLimit();
+
   console.log("getNoteById");
   const isAuthorized = await checkIfAuthorized(["verified", "admin"]);
   if (!isAuthorized) {
