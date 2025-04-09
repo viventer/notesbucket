@@ -25,8 +25,8 @@ export default function LogoutButton({ className }: { className?: string }) {
 
   return (
     <Button
-      variant={"destructive"}
-      className={className}
+      variant={"outline"}
+      className={`${className} border-destructive hover:border-primary`}
       onClick={handleLogout}
     >
       Wyloguj się
