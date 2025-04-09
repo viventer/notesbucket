@@ -6,10 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { checkIfVerified } from "@/lib/auth";
+import { checkIfVerified, getAuthToken } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function page() {
+  const token = await getAuthToken();
+  if (!token) {
+    redirect("/auth");
+  }
   const isVerified = await checkIfVerified();
   if (isVerified) {
     redirect("/notes");

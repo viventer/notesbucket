@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { checkIfAuthorized } from "./auth";
 import { AvailableCategory, UserRole, UserType } from "./dbSchemas";
 import { adminDB } from "./firebaseAdmin";
+import { revalidatePath } from "next/cache";
 
 export const updateUser = async (userId: string, data: Partial<UserType>) => {
   console.log("updateUser");
@@ -14,6 +15,8 @@ export const updateUser = async (userId: string, data: Partial<UserType>) => {
 
   const userRef = adminDB.collection("users").doc(userId);
   await userRef.update(data);
+
+  revalidatePath("/users");
 };
 
 export const createUser = async (user: UserType) => {
@@ -113,6 +116,8 @@ export const setUserAvailableCategories = async (
 
   const userRef = adminDB.collection("users").doc(userId);
   await userRef.update({ availableCategories: categories });
+
+  revalidatePath("/users");
 };
 
 export const setUserRole = async (userId: string, role: UserRole) => {
@@ -123,7 +128,16 @@ export const setUserRole = async (userId: string, role: UserRole) => {
   }
 
   const userRef = adminDB.collection("users").doc(userId);
+  const userData = (await userRef.get()).data() as UserType;
+  if (userData.role == "admin") {
+    throw new Error(
+      "Zmiana roli admina możliwa jest tylko poprzez firebase console."
+    );
+  }
+
   await userRef.update({ role });
+
+  revalidatePath("/users");
 };
 
 export const getAllUsers = async (): Promise<UserType[]> => {
