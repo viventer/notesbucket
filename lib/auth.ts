@@ -3,8 +3,15 @@
 import { adminAuth, adminDB } from "./firebaseAdmin";
 import { cookies } from "next/headers";
 import { getUserPerms } from "./users";
+import { checkRateLimit } from "./rateLimit";
+import { redirect } from "next/navigation";
 
 export const checkIfNewUser = async (): Promise<boolean> => {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   console.log("checkIfNewUser");
   const token = await getAuthToken();
   if (!token) {
@@ -45,6 +52,11 @@ export const checkIfAuthorized = async (
   ownerAccess: boolean = false,
   ownerId: string = ""
 ): Promise<boolean> => {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   console.log("authorize");
   const token = await getAuthToken();
   if (!token) {

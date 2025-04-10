@@ -16,7 +16,10 @@ export type NoteMetadata = Pick<
 export async function getNoteById(
   noteId: string
 ): Promise<SerializedNoteType | null> {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("getNoteById");
   const isAuthorized = await checkIfAuthorized(["verified", "admin"]);
@@ -93,6 +96,11 @@ export async function updateNote(
   noteId: string,
   data: UpdateNoteData
 ): Promise<void> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -134,6 +142,11 @@ export async function createNote(
   parentFolderId: string,
   noteTitle?: string
 ): Promise<string> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -162,6 +175,11 @@ export async function createNote(
 }
 
 export async function deleteNote(noteId: string): Promise<void> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");

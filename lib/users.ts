@@ -8,7 +8,10 @@ import { revalidatePath } from "next/cache";
 import { checkRateLimit } from "./rateLimit";
 
 export const updateUser = async (userId: string, data: Partial<UserType>) => {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("updateUser");
   const isAuthorized = await checkIfAuthorized(["admin"], true, userId);
@@ -23,7 +26,10 @@ export const updateUser = async (userId: string, data: Partial<UserType>) => {
 };
 
 export const createUser = async (user: UserType) => {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("createUser");
   const isAuthorized = await checkIfAuthorized(["admin"], true, user.id);
@@ -47,8 +53,6 @@ export type UserPerms = {
 };
 
 export const getUserPerms = async (userId: string): Promise<UserPerms> => {
-  checkRateLimit();
-
   console.log("getUserPerms");
   const isAuthorized = await checkIfAuthorized(["admin"], true, userId);
   if (!isAuthorized) {
@@ -75,8 +79,6 @@ export type UserName = {
 };
 
 export const getUserName = async (userId: string): Promise<UserName> => {
-  checkRateLimit();
-
   console.log("getUserName");
   const isAuthorized = await checkIfAuthorized(["admin"], true, userId);
   if (!isAuthorized) {
@@ -95,8 +97,6 @@ export const getUserName = async (userId: string): Promise<UserName> => {
 };
 
 export const getUserEmail = async (userId: string): Promise<string | null> => {
-  checkRateLimit();
-
   console.log("getUserName");
   const isAuthorized = await checkIfAuthorized(["admin"], true, userId);
   if (!isAuthorized) {
@@ -119,7 +119,10 @@ export const setUserAvailableCategories = async (
   userId: string,
   categories: AvailableCategory[]
 ) => {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("setUserAvailableCategories");
   const isAuthorized = await checkIfAuthorized(["admin"]);
@@ -134,7 +137,10 @@ export const setUserAvailableCategories = async (
 };
 
 export const setUserRole = async (userId: string, role: UserRole) => {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("setUserRole");
   const isAuthorized = await checkIfAuthorized(["admin"]);
@@ -156,7 +162,10 @@ export const setUserRole = async (userId: string, role: UserRole) => {
 };
 
 export const getAllUsers = async (): Promise<UserType[]> => {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("getAllUsers");
   const isAuthorized = await checkIfAuthorized(["admin"]);
@@ -174,7 +183,10 @@ export const getAllUsers = async (): Promise<UserType[]> => {
 };
 
 export const getUser = async (userId: string): Promise<UserType> => {
-  checkRateLimit();
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
 
   console.log("getUser");
   const isAuthorized = await checkIfAuthorized(["admin"]);

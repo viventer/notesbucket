@@ -11,16 +11,17 @@ const redis = new Redis({
 
 const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(10, "10 s"),
+  limiter: Ratelimit.slidingWindow(50, "30 s"),
 });
 
-export async function checkRateLimit() {
+export async function checkRateLimit(): Promise<boolean> {
   const allHeaders = await headers();
   const ip = allHeaders.get("x-forwarded-for") ?? "anonymous";
   const result = await ratelimit.limit(ip);
+  console.log(result.remaining);
 
   if (!result.success) {
-    throw new Error("Too many requests.");
+    return false;
   }
   return true;
 }

@@ -5,6 +5,7 @@ import { checkIfAuthorized } from "./auth";
 import { NoteImageType, NoteType, SerializedNoteImageType } from "./dbSchemas";
 import { adminDB, adminStorage } from "./firebaseAdmin";
 import { revalidatePath } from "next/cache";
+import { checkRateLimit } from "./rateLimit";
 
 /**
  * Dodaje obraz notatki – zapisuje plik w Storage i dodaje dokument do Firestore.
@@ -20,6 +21,11 @@ export async function addNoteImage(
   contentType: string,
   noteId: string
 ): Promise<{ imageUrl: string; noteImageId: string }> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -58,6 +64,11 @@ export async function uploadImageToStorage(
   fileName: string,
   contentType: string
 ): Promise<string> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -84,6 +95,11 @@ export async function updateNoteImage(
   id: string,
   data: Partial<NoteImageType>
 ) {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -98,6 +114,11 @@ export async function updateNoteImage(
 }
 
 export async function removeImageFromStorage(fileName: string) {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -112,6 +133,11 @@ export async function removeImageFromStorage(fileName: string) {
 }
 
 export async function deleteNoteImage(noteImageId: string) {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -133,6 +159,11 @@ export async function deleteNoteImage(noteImageId: string) {
 export async function getNoteImage(
   noteImageId: string
 ): Promise<SerializedNoteImageType> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -160,6 +191,11 @@ export async function getNoteImage(
 export async function getAllNoteImages(
   noteId: string
 ): Promise<SerializedNoteImageType[]> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -183,6 +219,11 @@ export async function getAllNoteImages(
 }
 
 export async function getNoteImageUrl(noteImageId: string): Promise<string> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");

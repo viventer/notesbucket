@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { serializeFolder } from "./serializing";
 import { checkIfAuthorized } from "./auth";
 import { redirect } from "next/navigation";
+import { checkRateLimit } from "./rateLimit";
 
 export async function getAllFolders(): Promise<SerializedFolderType[]> {
   console.log("getAllFolders");
@@ -70,6 +71,11 @@ export type CreateFolderData = Pick<
 };
 
 export async function createFolder(data: CreateFolderData): Promise<string> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   console.log("createFolder");
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
@@ -111,6 +117,11 @@ export async function updateFolder(
   folderId: string,
   data: Partial<FolderType>
 ) {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   console.log("updateFolder");
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
@@ -124,6 +135,11 @@ export async function updateFolder(
 }
 
 export async function deleteFolder(folderId: string) {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   await adminDB.collection("folders").doc(folderId).delete();
 
   revalidatePath("/notes");
