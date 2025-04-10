@@ -15,10 +15,14 @@ export const checkIfNewUser = async (): Promise<boolean> => {
   console.log("checkIfNewUser");
   const token = await getAuthToken();
   if (!token) {
-    throw new Error("Niepoprawny token");
+    throw new Error("Brak tokenu");
   }
 
   const reqUserId = await getUserIdFromToken(token);
+  if (!reqUserId) {
+    throw new Error("Niepoprawny token");
+  }
+
   const userDoc = await adminDB.collection("users").doc(reqUserId).get();
 
   const isNewUser = !userDoc.exists;
@@ -75,9 +79,16 @@ export const checkIfAuthorized = async (
   return authorizedRoles.includes(role);
 };
 
-export const getUserIdFromToken = async (token: string): Promise<string> => {
+export const getUserIdFromToken = async (
+  token: string
+): Promise<string | null> => {
   console.log("getUserIdFromToken");
-  const decodedToken = await adminAuth.verifyIdToken(token);
+  let decodedToken;
+  try {
+    decodedToken = await adminAuth.verifyIdToken(token);
+  } catch (err) {
+    return null;
+  }
   if (!decodedToken?.uid) {
     throw new Error("Niepoprawny token");
   }
