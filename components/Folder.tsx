@@ -63,7 +63,11 @@ export default function Folder({
         serializeFolder(folder)
       );
 
-      setSerializedSubFolders(serializedSubFoldersData);
+      const sortedFolders = serializedSubFoldersData.toSorted((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+      setSerializedSubFolders(sortedFolders);
     })();
   }, [folder.id, folder.subFoldersIds]);
 
