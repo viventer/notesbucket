@@ -6,20 +6,34 @@ async function seedFromLocalFolder() {
   const folderPath = "/home/viventer/nauka/szkola";
   const tree: FileNode[] = buildFileTree(folderPath);
 
-  for (const node of tree) {
-    if (node.type === "folder") {
-      const key = node.name.toLowerCase();
+  // Iterujemy po wszystkich elementach znajdujących się bezpośrednio w folderPath.
+  for (const subjectFolder of tree) {
+    if (subjectFolder.type === "folder") {
+      const key = subjectFolder.name.toLowerCase();
+      console.log(key);
       if (subjectMapping.hasOwnProperty(key)) {
         const subject = subjectMapping[key];
-        await seedNode(node, null, subject);
+        console.log(subject);
+        // Przetwarzamy wszystkie elementy (foldery oraz pliki) wewnątrz folderu przedmiotowego.
+        if (subjectFolder.children && subjectFolder.children.length > 0) {
+          for (const child of subjectFolder.children) {
+            // Dla każdego elementu przekazujemy subject odziedziczony z głównego folderu.
+            await seedNode(child, null, subject);
+          }
+        } else {
+          console.log(`Folder ${subjectFolder.name} jest pusty.`);
+        }
       } else {
         console.log(
-          `Pominięto folder ${node.name} – brak zgodności z mapowaniem subject.`
+          `Pominięto folder ${subjectFolder.name} – brak zgodności z mapowaniem subject.`
         );
       }
     } else {
-      // Pomijamy pliki znajdujące się na najwyższym poziomie.
-      console.log(`Pominięto plik ${node.name} na najwyższym poziomie.`);
+      // Jeśli w folderze głównym (folderPath) znajdują się pliki, możesz zdecydować,
+      // czy je przetwarzać czy pominąć. W tym przykładzie je pomijamy.
+      console.log(
+        `Pominięto plik ${subjectFolder.name} spoza folderu przedmiotowego.`
+      );
     }
   }
 }

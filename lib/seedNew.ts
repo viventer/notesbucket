@@ -36,7 +36,7 @@ export const subjectMapping: { [key: string]: string } = {
   angielski: "J. angielski",
   historia: "Historia",
   pai: "PAI",
-  polski: "J. Polski",
+  polski: "J. polski",
   psi: "PSI",
 };
 
@@ -76,8 +76,12 @@ export async function seedNode(
       subject: subject || "",
     };
 
-    const validFolderData = FolderSchema.parse(folderData);
-    await setDoc(folderDocRef, validFolderData);
+    try {
+      const validFolderData = FolderSchema.parse(folderData);
+      await setDoc(folderDocRef, validFolderData);
+    } catch (err) {
+      console.error(err);
+    }
 
     const subFoldersRefs: DocumentReference[] = [];
     const notesRefs: DocumentReference[] = [];
@@ -103,6 +107,10 @@ export async function seedNode(
     const noteId = uuidv4();
     const noteDocRef = doc(collection(db, "notes"), noteId);
     // Wyodrębniamy tytuł – usuwając rozszerzenie .txt lub .md
+    if (!node.name.includes("md") && !node.name.includes("txt")) {
+      console.log(`Pomijam plik ${node.name}`);
+      return null;
+    }
     const title = node.name.replace(/\.(txt|md)$/, "");
 
     // Odczyt zawartości pliku
@@ -120,8 +128,12 @@ export async function seedNode(
       parentFolderRef,
     };
 
-    const validNoteData = NoteSchema.parse(noteData);
-    await setDoc(noteDocRef, validNoteData);
+    try {
+      const validNoteData = NoteSchema.parse(noteData);
+      await setDoc(noteDocRef, validNoteData);
+    } catch (err) {
+      console.log(`Przekrocza ilość znaków w notatce: ${title} ${subject}`);
+    }
     return noteDocRef;
   }
   return null;
