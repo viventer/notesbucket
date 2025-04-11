@@ -2,7 +2,7 @@
 
 import Chevron from "@/icons/Chevron";
 import Logo from "@/icons/Logo";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategorySelector from "./CategorySelector";
 import SubjectSelector from "./SubjectSelector";
 import NoteSelector from "./NoteSelector";
@@ -13,6 +13,7 @@ import LogoutButton from "./LogoutButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import VerifiedUserIcon from "@/icons/VerifiedUserIcon";
+import { usePathname } from "next/navigation";
 
 export default function HeaderNav({
   rootFolders,
@@ -28,8 +29,13 @@ export default function HeaderNav({
     },
   });
 
+  const pathname = usePathname();
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [pathname]);
+
   const [isExpanded, setIsExpanded] = useState(false);
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
 
   const selectedCategory = form.watch("category");
 

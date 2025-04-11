@@ -1,3 +1,5 @@
+"use client";
+
 import { useDeleteNote } from "@/hooks/useDeleteNote";
 import { useIsEditView } from "@/hooks/useIsEditView";
 import DeleteIcon from "@/icons/DeleteIcon";
@@ -5,9 +7,9 @@ import NoteIcon from "@/icons/NoteIcon";
 import { NoteMetadata } from "@/lib/notes";
 import { truncateString } from "@/lib/utils";
 import Link from "next/link";
-import React, { SetStateAction } from "react";
 import ChangeNoteLocation from "./ChangeNoteLocation";
 import { useParams } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 
 export default function NoteFromList({
   note,

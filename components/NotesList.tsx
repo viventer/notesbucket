@@ -1,7 +1,7 @@
 "use client";
 
 import { NoteMetadata } from "@/lib/notes";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import NoteFromList from "./NoteFromList";
 import { useNotesMetadata } from "@/context/NotesMetadataContext";
 
@@ -11,7 +11,6 @@ type NotesListProps = {
 };
 
 export default function NotesList({ folderId, isVisible }: NotesListProps) {
-  const [loading, setLoading] = useState(false);
   const { notesMetadata }: { notesMetadata: NoteMetadata[] } =
     useNotesMetadata();
   const [sortedNotes, setSortedNotes] = useState<null | NoteMetadata[]>(null);
@@ -31,7 +30,6 @@ export default function NotesList({ folderId, isVisible }: NotesListProps) {
     <div
       className={`ml-4 flex flex-col gap-1 mt-1 ${isVisible ? "" : "hidden"}`}
     >
-      {loading && <span>Ładowanie notatek...</span>}
       {sortedNotes &&
         sortedNotes.map((note) => (
           <NoteFromList key={note.id} note={note} folderId={folderId} />
