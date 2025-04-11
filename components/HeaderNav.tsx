@@ -60,7 +60,7 @@ export default function HeaderNav({
         </section>
         <div className={`${isExpanded ? "" : "hidden"} `}>
           <section
-            className={`flex flex-col gap-4 max-h-[70svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
+            className={`flex flex-col gap-4 max-h-[60svh] overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary `}
           >
             {isAdmin && <AdminNav />}
             <FormProvider {...form}>
