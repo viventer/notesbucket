@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -42,14 +41,14 @@ export default function CategorySelector() {
                   Programowanie
                 </FormLabel>
               </FormItem>
-              <FormItem className="flex items-center gap-2 ">
+              {/* <FormItem className="flex items-center gap-2 ">
                 <FormControl>
                   <RadioGroupItem value="Inne"></RadioGroupItem>
                 </FormControl>
                 <FormLabel className="!mt-0 text-base font-normal">
                   Inne
                 </FormLabel>
-              </FormItem>
+              </FormItem> */}
             </RadioGroup>
           </FormControl>
         </FormItem>

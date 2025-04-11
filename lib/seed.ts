@@ -163,7 +163,7 @@ const tree: FileNode[] = [
  * @param parentFolderRef - referencja do folderu nadrzędnego (null, jeśli węzeł jest na najwyższym poziomie)
  * @returns referencja do utworzonego dokumentu (folderu lub notatki)
  */
-async function seedNode(
+export async function seedNode(
   node: FileNode,
   parentFolderRef: DocumentReference | null
 ): Promise<DocumentReference | null> {
