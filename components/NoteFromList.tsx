@@ -9,7 +9,6 @@ import { truncateString } from "@/lib/utils";
 import Link from "next/link";
 import ChangeNoteLocation from "./ChangeNoteLocation";
 import { useParams } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
 
 export default function NoteFromList({
   note,

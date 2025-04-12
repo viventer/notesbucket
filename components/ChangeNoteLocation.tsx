@@ -13,11 +13,12 @@ import {
 } from "./ui/dialog";
 
 import FoldersList from "./FoldersList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { db } from "@/lib/firebase";
-import { doc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { updateNote } from "@/lib/notes";
+import { FolderType } from "@/lib/dbSchemas";
 
 export default function ChangeNoteLocation({
   noteTitle,
@@ -29,6 +30,8 @@ export default function ChangeNoteLocation({
   noteId: string;
 }) {
   const [selectedFolder, setSelectedFolder] = useState(folderId);
+  const [noteCategory, setNoteCategory] = useState<Category | null>(null);
+  const [noteSubject, setNoteSubject] = useState<Subject | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { showToast } = useToast();
 
@@ -47,6 +50,18 @@ export default function ChangeNoteLocation({
     }
   };
 
+  useEffect(() => {
+    (async function () {
+      const oldFolderRef = doc(db, "folders", folderId);
+      const oldFolder = await getDoc(oldFolderRef);
+      const oldFolderData = oldFolder.data() as FolderType;
+      setNoteCategory(oldFolderData.category);
+      if (oldFolderData.category == "Szkoła") {
+        setNoteSubject(oldFolderData.subject);
+      }
+    })();
+  }, []);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -54,7 +69,7 @@ export default function ChangeNoteLocation({
           <LocationIcon className="size-4" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-[90%] border-primary">
+      <DialogContent className="max-w-[90%] border-primary max-h-[90svh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <LocationIcon className="size-6" />
@@ -67,6 +82,8 @@ export default function ChangeNoteLocation({
         <FoldersList
           selectedFolder={selectedFolder}
           setSelectedFolder={setSelectedFolder}
+          category={noteCategory as Category}
+          subject={noteSubject}
         />
         <DialogFooter className="flex items-center gap-4 flex-row justify-end">
           <Button variant={"outline"} onClick={() => setIsOpen(false)}>

@@ -9,9 +9,13 @@ import Folder from "./Folder";
 export default function FoldersList({
   selectedFolder,
   setSelectedFolder,
+  category,
+  subject,
 }: {
   selectedFolder: string;
   setSelectedFolder: Dispatch<SetStateAction<string>>;
+  category: Category;
+  subject: Subject | null;
 }) {
   const [newFolderIds, setNewFolderIds] = useState<string[]>([]);
   const [sortedFolders, setSortedFolders] = useState<SerializedFolderType[]>(
@@ -22,7 +26,12 @@ export default function FoldersList({
     (async function () {
       try {
         const fetchedFolders = await getAllFolders();
-        const sortedFolders = fetchedFolders.toSorted((a, b) =>
+        const filteredFolders = fetchedFolders.filter(
+          (folder) =>
+            folder.category === category &&
+            (!subject || folder.subject === subject)
+        );
+        const sortedFolders = filteredFolders.toSorted((a, b) =>
           a.name.localeCompare(b.name)
         );
 
@@ -34,21 +43,23 @@ export default function FoldersList({
   }, []);
 
   return (
-    <div className="flex gap-2 flex-col">
+    <div className="flex gap-2 flex-col overflow-auto max-h-full h-full">
       <CreateFolderButton
         isSubFolder={false}
         setNewFolderIds={setNewFolderIds}
       />
-      {sortedFolders.map((folder) => (
-        <Folder
-          key={folder.id}
-          folder={folder}
-          isNew={newFolderIds.includes(folder.id)}
-          setSelectedFolder={setSelectedFolder}
-          selectedFolder={selectedFolder}
-          isToSelect={true}
-        />
-      ))}
+      <div className="mb-4 overflow-auto h-full scrollbar">
+        {sortedFolders.map((folder) => (
+          <Folder
+            key={folder.id}
+            folder={folder}
+            isNew={newFolderIds.includes(folder.id)}
+            setSelectedFolder={setSelectedFolder}
+            selectedFolder={selectedFolder}
+            isToSelect={true}
+          />
+        ))}
+      </div>
     </div>
   );
 }
