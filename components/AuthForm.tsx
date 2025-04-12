@@ -33,9 +33,10 @@ export default function AuthForm() {
       const user = result.user;
       const token = await user.getIdToken();
       await setAuthToken(token);
-      onIdTokenChanged(auth, async () => {
-        if (token) {
-          await setAuthToken(token);
+      onIdTokenChanged(auth, async (user) => {
+        if (user) {
+          const newToken = await user.getIdToken();
+          await setAuthToken(newToken);
         } else {
           await setAuthToken("");
         }
