@@ -75,20 +75,24 @@ export default function NoteEditor({
     return newContent;
   }
 
+  const saveNote = async (content: string) => {
+    try {
+      const newContent = noteImages
+        ? await fillImageUrls(content, noteImages)
+        : content;
+      await updateNote(noteId, { content: newContent });
+      showToast("Zmiany w zawartości zostały zapisane", "success");
+    } catch (err) {
+      showToast("Błąd aktualizacji zawartości", "error");
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
-        try {
-          const newContent = noteImages
-            ? await fillImageUrls(content, noteImages)
-            : content;
-          await updateNote(noteId, { content: newContent });
-          showToast("Zmiany w zawartości zostały zapisane", "success");
-        } catch (err) {
-          showToast("Błąd aktualizacji zawartości", "error");
-          console.error(err);
-        }
+        await saveNote(content);
       }
     };
 
@@ -112,6 +116,23 @@ export default function NoteEditor({
       });
     }
   };
+
+  const contentRef = useRef(content);
+
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      await saveNote(contentRef.current);
+    }, 300000);
+
+    return () => {
+      clearInterval(intervalId);
+      saveNote(contentRef.current);
+    };
+  }, []);
 
   return (
     <>
