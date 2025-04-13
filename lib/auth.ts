@@ -13,7 +13,6 @@ export const checkIfNewUser = async (): Promise<boolean> => {
     redirect("/tooManyRequests");
   }
 
-  console.log("checkIfNewUser");
   const token = await getAuthToken();
   if (!token) {
     throw new Error("Brak tokenu");
@@ -57,7 +56,6 @@ export const checkIfAuthorized = async (
   ownerAccess: boolean = false,
   ownerId: string = ""
 ): Promise<boolean> => {
-  console.log("authorize");
   const token = await getAuthToken();
   if (!token) {
     await checkRateLimit();
@@ -80,7 +78,6 @@ export const checkIfAuthorized = async (
 export const getUserIdFromToken = async (
   token: string
 ): Promise<string | null> => {
-  console.log("getUserIdFromToken");
   let decodedToken;
   try {
     decodedToken = await adminAuth.verifyIdToken(token);
@@ -95,7 +92,6 @@ export const getUserIdFromToken = async (
 };
 
 export const checkIfVerified = async (): Promise<boolean> => {
-  console.log("checkIfVerified");
   const token = await getAuthToken();
   if (!token) {
     return false;
@@ -110,7 +106,6 @@ export const checkIfVerified = async (): Promise<boolean> => {
 };
 
 export const getCurrentUserRole = async (): Promise<UserRole> => {
-  console.log("getCurrentUserRole");
   const token = await getAuthToken();
   if (!token) {
     return "unverified";

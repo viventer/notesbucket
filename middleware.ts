@@ -10,7 +10,6 @@ export async function middleware(req: NextRequest) {
   const token = allCookies.get("firebaseIdToken")?.value;
 
   if (!token) {
-    console.log("Brak tokena");
     if (pathname !== "/auth") {
       return NextResponse.redirect(new URL("/auth", req.url));
     }
@@ -21,7 +20,6 @@ export async function middleware(req: NextRequest) {
     const decodedToken = decodeJwt(token) as { uid: string; exp: number };
 
     if (decodedToken.exp * 1000 < Date.now()) {
-      console.log("Token wygasł");
       return NextResponse.redirect(new URL("/auth", req.url));
     }
   } catch (err) {
