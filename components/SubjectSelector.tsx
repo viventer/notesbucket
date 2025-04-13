@@ -12,17 +12,17 @@ import { useFormContext } from "react-hook-form";
 
 export default function SubjectSelector() {
   const subjects = [
-    "Matematyka",
-    "J. angielski",
+    "ABD",
     "Fizyka",
+    "Geografia",
+    "Historia",
+    "J. angielski",
     "J. polski",
+    "Matematyka",
     "PBD",
     "PSI",
     "PAI",
-    "ABD",
-    "Historia",
     "WOS",
-    "Geografia",
   ];
 
   const form = useFormContext();
