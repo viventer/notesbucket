@@ -14,13 +14,12 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import VerifiedUserIcon from "@/icons/VerifiedUserIcon";
 import { usePathname } from "next/navigation";
+import { useUser } from "./UserContext";
 
 export default function HeaderNav({
   rootFolders,
-  isAdmin,
 }: {
   rootFolders: SerializedFolderType[];
-  isAdmin: boolean;
 }) {
   const form = useForm({
     defaultValues: {
@@ -36,6 +35,8 @@ export default function HeaderNav({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [user] = useAuthState(auth);
+  const { role } = useUser();
+  const isAdmin = role === "admin";
 
   const selectedCategory = form.watch("category");
 

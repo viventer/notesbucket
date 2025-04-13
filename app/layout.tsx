@@ -3,6 +3,8 @@ import { Ubuntu, Ubuntu_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "@/components/ConfirmDialogProvider";
+import { getCurrentUserRole } from "@/lib/auth";
+import { UserProvider } from "@/components/UserContext";
 
 const ubuntuSans = Ubuntu({
   variable: "--font-ubuntu-sans",
@@ -21,11 +23,13 @@ export const metadata: Metadata = {
   description: "Wszystkie notatki w jednym miejscu",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const role = await getCurrentUserRole();
+
   return (
     <html
       lang="pl"
@@ -34,16 +38,18 @@ export default function RootLayout({
       <body
         className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background`}
       >
-        <ConfirmDialogProvider>
-          {children}
-          <Toaster
-            toastOptions={{
-              unstyled: true,
-              className:
-                "bg-background flex gap-2 backdrop-blur-[0.2rem] items-center border-[0.1rem]  px-4 py-3 rounded-lg",
-            }}
-          />
-        </ConfirmDialogProvider>
+        <UserProvider role={role}>
+          <ConfirmDialogProvider>
+            {children}
+            <Toaster
+              toastOptions={{
+                unstyled: true,
+                className:
+                  "bg-background flex gap-2 backdrop-blur-[0.2rem] items-center border-[0.1rem]  px-4 py-3 rounded-lg",
+              }}
+            />
+          </ConfirmDialogProvider>
+        </UserProvider>
       </body>
     </html>
   );

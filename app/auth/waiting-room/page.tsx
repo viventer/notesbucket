@@ -1,3 +1,5 @@
+"use client";
+
 import LogoutButton from "@/components/LogoutButton";
 import {
   Card,
@@ -6,18 +8,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { checkIfVerified, getAuthToken } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { useUser } from "@/components/UserContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default async function page() {
-  const token = await getAuthToken();
-  if (!token) {
-    redirect("/auth");
-  }
-  const isVerified = await checkIfVerified();
-  if (isVerified) {
-    redirect("/notes");
-  }
+export default function page() {
+  const { role } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (role !== "unverified") {
+      router.replace("/notes");
+    }
+  }, [role]);
 
   return (
     <Card>

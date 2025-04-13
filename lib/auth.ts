@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { getUserPerms } from "./users";
 import { checkRateLimit } from "./rateLimit";
 import { redirect } from "next/navigation";
+import { UserRole } from "./dbSchemas";
 
 export const checkIfNewUser = async (): Promise<boolean> => {
   const isAllowed = await checkRateLimit();
@@ -56,18 +57,15 @@ export const checkIfAuthorized = async (
   ownerAccess: boolean = false,
   ownerId: string = ""
 ): Promise<boolean> => {
-  const isAllowed = await checkRateLimit();
-  if (!isAllowed) {
-    redirect("/tooManyRequests");
-  }
-
   console.log("authorize");
   const token = await getAuthToken();
   if (!token) {
+    await checkRateLimit();
     return false;
   }
   const reqUserId = await getUserIdFromToken(token);
   if (!reqUserId) {
+    await checkRateLimit();
     return false;
   }
 
@@ -109,4 +107,20 @@ export const checkIfVerified = async (): Promise<boolean> => {
 
   const { role } = await getUserPerms(reqUserId);
   return role === "verified" || role === "admin";
+};
+
+export const getCurrentUserRole = async (): Promise<UserRole> => {
+  console.log("getCurrentUserRole");
+  const token = await getAuthToken();
+  if (!token) {
+    return "unverified";
+  }
+  const reqUserId = await getUserIdFromToken(token);
+  if (!reqUserId) {
+    return "unverified";
+  }
+
+  const { role } = await getUserPerms(reqUserId);
+
+  return role;
 };

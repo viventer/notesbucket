@@ -54,10 +54,6 @@ export type UserPerms = {
 
 export const getUserPerms = async (userId: string): Promise<UserPerms> => {
   console.log("getUserPerms");
-  const isAuthorized = await checkIfAuthorized(["admin"], true, userId);
-  if (!isAuthorized) {
-    redirect("/unauthorized");
-  }
 
   const userDoc = await adminDB.collection("users").doc(userId).get();
 

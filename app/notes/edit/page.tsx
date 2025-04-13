@@ -1,12 +1,16 @@
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import NoteIcon from "@/icons/NoteIcon";
-import { checkIfAuthorized } from "@/lib/auth";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function page() {
-  const isAuthorized = await checkIfAuthorized(["admin"]);
-  if (!isAuthorized) {
-    redirect("/unauthorized");
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { useUser } from "@/components/UserContext";
+import NoteIcon from "@/icons/NoteIcon";
+import { useRouter } from "next/navigation";
+
+export default function page() {
+  const { role } = useUser();
+  const isAdmin = role === "admin";
+  const router = useRouter();
+  if (!isAdmin) {
+    router.replace("/unauthorized");
   }
 
   return (
