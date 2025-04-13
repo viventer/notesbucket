@@ -9,18 +9,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useUser } from "@/components/UserContext";
+import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function page() {
   const { role } = useUser();
+  const [user, loading] = useAuthState(auth);
   const router = useRouter();
 
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+
     if (role !== "unverified") {
       router.replace("/notes");
+    } else if (!user) {
+      router.replace("/auth");
     }
-  }, [role]);
+  }, [role, loading]);
 
   return (
     <Card>
