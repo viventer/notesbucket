@@ -17,7 +17,6 @@ if (!FIREBASE_PROJECT_ID || !FIREBASE_PRIVATE_KEY || !FIREBASE_CLIENT_EMAIL) {
   );
 }
 
-// Jeśli private_key zawiera dosłownie ciąg "\n", zamień go na prawdziwe nowe linie
 const formattedPrivateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n");
 
 const serviceAccount = {
