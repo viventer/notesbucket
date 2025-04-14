@@ -11,9 +11,8 @@ export const revalidate = 86400;
 const cachedGetNoteById = cache(getNoteById);
 
 type Props = {
-  params: {
-    noteId: string;
-  };
+  params: Promise<{ noteId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata(props: Props) {

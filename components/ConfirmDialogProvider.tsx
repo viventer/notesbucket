@@ -35,7 +35,9 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
   };
 
   const handleCancel = () => {
-    dialogOptions?.onCancel && dialogOptions.onCancel();
+    if (dialogOptions?.onCancel) {
+      dialogOptions.onCancel();
+    }
     setDialogOptions(null);
   };
 

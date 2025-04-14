@@ -5,6 +5,7 @@ export default function UsersList({ usersData }: { usersData: UserType[] }) {
   return (
     <ul className="flex flex-col gap-4">
       {usersData.map((user) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { createdAt: _createdAt, ...userData } = user;
         return <UserFromList userData={userData} key={user.id} />;
       })}

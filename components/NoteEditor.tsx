@@ -99,7 +99,7 @@ export default function NoteEditor({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [content, noteImages, noteId, showToast, saveNote]);
+  }, [content, noteImages, noteId, showToast]);
 
   const handleEditorMount = (editor: any) => {
     if (typeof window !== "undefined" && (window as any).require) {
@@ -133,7 +133,7 @@ export default function NoteEditor({
       clearInterval(intervalId);
       saveNote(contentRef.current);
     };
-  }, [saveNote]);
+  }, []);
 
   return (
     <>
