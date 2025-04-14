@@ -5,7 +5,7 @@ import { useUser } from "@/components/UserContext";
 import NoteIcon from "@/icons/NoteIcon";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function Page() {
   const { role } = useUser();
   const isAdmin = role === "admin";
   const router = useRouter();

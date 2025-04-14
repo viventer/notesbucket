@@ -9,7 +9,7 @@ import {
 import ErrorIcon from "@/icons/ErrorIcon";
 import Link from "next/link";
 
-export default function page() {
+export default function Page() {
   return (
     <main className="flex items-center justify-center h-screen">
       <Card className="flex flex-col gap-2 justify-center max-w-[500px] mx-auto border-destructive bg-background w-[90%]">

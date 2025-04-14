@@ -10,7 +10,7 @@ import UsersList from "@/components/UsersList";
 import { getAllUsers } from "@/lib/users";
 import Link from "next/link";
 
-export default async function page() {
+export default async function Page() {
   const usersData = await getAllUsers();
 
   return (

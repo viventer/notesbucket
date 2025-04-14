@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-export default function page() {
+export default function Page() {
   const { role } = useUser();
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
