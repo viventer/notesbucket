@@ -3,9 +3,8 @@
 import { useToast } from "@/hooks/useToast";
 import AddNote from "@/icons/AddNote";
 import { SerializedNoteType } from "@/lib/dbSchemas";
-import { createNote, getNoteById, NoteMetadata } from "@/lib/notes";
+import { createNote, getNoteById } from "@/lib/notes";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
 
 export default function CreateNoteButton({ folderId }: { folderId: string }) {
   const router = useRouter();

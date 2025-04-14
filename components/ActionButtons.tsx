@@ -42,7 +42,7 @@ export default function ActionButtons({
       await navigator.clipboard.writeText(noteContent);
       showToast("Zawartość została skopiowana", "success");
     } catch (err) {
-      showToast("Błąd kopiowania zawartości", "error");
+      showToast(`Błąd kopiowania zawartości: ${err}`, "error");
     }
   };
 
@@ -59,7 +59,7 @@ export default function ActionButtons({
       URL.revokeObjectURL(url);
       showToast("Notatka została pobrana", "success");
     } catch (err) {
-      showToast("Błąd pobierania notatki", "error");
+      showToast(`Błąd pobierania notatki: ${err}`, "error");
     }
   };
 

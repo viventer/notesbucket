@@ -3,7 +3,7 @@
 import { useFormContext } from "react-hook-form";
 import Folder from "./Folder";
 import { useEffect, useState } from "react";
-import { FolderType, SerializedFolderType } from "@/lib/dbSchemas";
+import { SerializedFolderType } from "@/lib/dbSchemas";
 import CreateFolderButton from "./CreateFolderButton";
 import { useIsEditView } from "@/hooks/useIsEditView";
 

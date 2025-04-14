@@ -82,6 +82,7 @@ export const getUserIdFromToken = async (
   try {
     decodedToken = await adminAuth.verifyIdToken(token);
   } catch (err) {
+    console.error(err);
     return null;
   }
   if (!decodedToken?.uid) {

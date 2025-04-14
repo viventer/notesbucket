@@ -42,7 +42,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
   return (
     <ConfirmDialogContext.Provider value={{ showDialog }}>
       {children}
-      {dialogOptions && (
+      {dialogOptions ? (
         <ConfirmDialog
           open={true}
           description={dialogOptions?.description}
@@ -52,7 +52,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />
-      )}
+      ) : null}
     </ConfirmDialogContext.Provider>
   );
 }

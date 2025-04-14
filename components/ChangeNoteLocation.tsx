@@ -60,7 +60,7 @@ export default function ChangeNoteLocation({
         setNoteSubject(oldFolderData.subject);
       }
     })();
-  }, []);
+  }, [folderId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

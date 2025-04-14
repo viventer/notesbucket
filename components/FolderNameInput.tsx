@@ -34,7 +34,7 @@ export default function FolderNameInput({
     if (isNew && nameInputRef.current) {
       nameInputRef.current.focus();
     }
-  }, []);
+  }, [isNew]);
 
   const { showToast } = useToast();
   const [previousFolderName, setPreviousFolderName] = useState(startFolderName);

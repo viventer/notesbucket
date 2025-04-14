@@ -29,7 +29,7 @@ export default function Page() {
     } else if (!user) {
       router.replace("/auth");
     }
-  }, [role, loading]);
+  }, [role, loading, router, user]);
 
   return (
     <Card>
