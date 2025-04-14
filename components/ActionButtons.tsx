@@ -6,7 +6,7 @@ import Copy from "@/icons/Copy";
 import DownloadDoc from "@/icons/DownloadDoc";
 import Save from "@/icons/Save";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, JSX } from "react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { AddImages } from "./AddImages";
 import DeleteIcon from "@/icons/DeleteIcon";
