@@ -6,8 +6,8 @@ export default function Page() {
   return (
     <Card className="mt-[8rem] p-4 bg-background max-w-[500px] mx-auto">
       <CardTitle className="flex items-center gap-2">
-        <NoteIcon className="size-[2rem] sm:size-[3rem]" />
-        <h2 className="text-[1.5rem] font-[500] sm:text-[2rem]">
+        <NoteIcon className="size-[2rem] sm:size-[3rem] text-text" />
+        <h2 className="text-[1.5rem] font-[500] sm:text-[2rem] text-text">
           Wybierz notatkę
         </h2>
       </CardTitle>

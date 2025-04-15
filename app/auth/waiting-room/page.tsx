@@ -34,7 +34,9 @@ export default function Page() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Twoje konto jest weryfikowane</CardTitle>
+        <CardTitle className="text-text">
+          Twoje konto jest weryfikowane
+        </CardTitle>
         <CardDescription>
           Aby przyśpieszyć i ułatwić weryfikację - napisz do mnie na
           messengerze.

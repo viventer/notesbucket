@@ -86,7 +86,7 @@ export default function AuthForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Zaloguj się</CardTitle>
+        <CardTitle className="text-text">Zaloguj się</CardTitle>
         <CardDescription>
           Logowanie jest wymagane aby uzyskać dostęp do notatek.
         </CardDescription>
@@ -94,7 +94,7 @@ export default function AuthForm() {
       <CardContent className="my-2">
         <button
           onClick={handleGoogleSignIn}
-          className="text-l border-[0.1rem] border-solid border-primary flex items-center gap-2 px-3 py-2 rounded-md hover:border-accent"
+          className="text-l border-[0.1rem] border-solid border-primary flex items-center gap-2 px-3 py-2 rounded-md hover:border-accent text-text"
         >
           <GoogleLogo className="size-4" />
           Kontynuuj przez Google

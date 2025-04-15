@@ -36,7 +36,7 @@ export default async function RootLayout({
       className="scrollbar scrollbar-track-transparent scrollbar-thumb-primary overflow-hidden"
     >
       <body
-        className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background`}
+        className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background text-text`}
       >
         <UserProvider role={role}>
           <ConfirmDialogProvider>

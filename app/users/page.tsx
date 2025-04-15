@@ -17,7 +17,7 @@ export default async function Page() {
     <main className="h-screen w-screen flex items-center">
       <Card className="w-[95%] max-w-[1024px] mx-auto">
         <CardHeader>
-          <CardTitle>Zarządzanie użytkownikami</CardTitle>
+          <CardTitle className="text-text">Zarządzanie użytkownikami</CardTitle>
         </CardHeader>
         <CardContent>
           <UsersList usersData={usersData} />

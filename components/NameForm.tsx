@@ -39,9 +39,11 @@ export default function NameForm() {
   };
 
   return (
-    <div className="flex flex-col items-start gap-8">
+    <div className="flex flex-col items-start gap-8 tex-text">
       <div>
-        <Label htmlFor="firstName">Imię</Label>
+        <Label htmlFor="firstName" className="text-text">
+          Imię
+        </Label>
         <Input
           type="text"
           value={firstName}
@@ -51,7 +53,9 @@ export default function NameForm() {
         />
       </div>
       <div>
-        <Label htmlFor="lastName">Nazwisko</Label>
+        <Label htmlFor="lastName" className="tex-text">
+          Nazwisko
+        </Label>
         <Input
           type="text"
           value={lastName}
@@ -65,6 +69,7 @@ export default function NameForm() {
           variant="default"
           onClick={handleCompleteProfile}
           disabled={loading}
+          className="text-text"
         >
           Dalej
         </Button>

@@ -18,7 +18,7 @@ export default async function Page() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Jak się nazywasz?</CardTitle>
+        <CardTitle className="tex-text">Jak się nazywasz?</CardTitle>
         <CardDescription>Prawdziwe dane ułatwią weryfikację.</CardDescription>
       </CardHeader>
       <CardContent>

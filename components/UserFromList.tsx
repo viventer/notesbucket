@@ -19,16 +19,18 @@ export default function UserFromList({
       <section className="flex items-center gap-4 w-full justify-between">
         <div className="flex items-center gap-2">
           <ChangeRoleButton oldRole={userData.role} userId={userData.id} />
-          <p>
+          <p className="text-text">
             {userData.firstName} {userData.lastName}
           </p>
         </div>
         <button onClick={() => setIsExpanded((prev) => !prev)}>
-          <ChevronDown className={`${isExpanded ? "rotate-180" : ""}`} />
+          <ChevronDown
+            className={`text-text ${isExpanded ? "rotate-180" : ""}`}
+          />
         </button>
       </section>
       {isExpanded && (
-        <section className="bg-black/20 px-3 py-2 rounded-lg">
+        <section className="bg-black/15 px-3 py-2 rounded-lg text-text">
           <p>
             <b>Rola:</b> {userData.role}
           </p>

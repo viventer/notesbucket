@@ -51,7 +51,7 @@ export default function SubjectSelector() {
                 <SelectItem
                   key={subject}
                   value={subject}
-                  className="text-base z-50 focus:bg-secondary focus:text-text"
+                  className="text-base z-50 focus:bg-secondary focus:text-background dark:focus:text-text hover:cursor-pointer"
                 >
                   {subject}
                 </SelectItem>
