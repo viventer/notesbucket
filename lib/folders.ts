@@ -15,8 +15,6 @@ import { redirect } from "next/navigation";
 import { checkRateLimit } from "./rateLimit";
 
 export async function getAllFolders(): Promise<SerializedFolderType[]> {
-  console.log("getAllFolders");
-
   const foldersSnapshot = await adminDB.collection("folders").get();
   const initialFolders = foldersSnapshot.docs.map((doc) => ({
     ...FolderSchema.parse(doc.data()),
@@ -49,7 +47,6 @@ export async function getAllFolders(): Promise<SerializedFolderType[]> {
 export async function getFolderData(
   folderId: string
 ): Promise<SerializedFolderType> {
-  console.log("getFolderData");
   const folderSnapshot = await adminDB
     .collection("folders")
     .doc(folderId)
@@ -76,7 +73,6 @@ export async function createFolder(data: CreateFolderData): Promise<string> {
     redirect("/tooManyRequests");
   }
 
-  console.log("createFolder");
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -122,7 +118,6 @@ export async function updateFolder(
     redirect("/tooManyRequests");
   }
 
-  console.log("updateFolder");
   const isAuthorized = await checkIfAuthorized(["admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");

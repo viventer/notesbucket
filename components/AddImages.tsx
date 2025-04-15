@@ -30,7 +30,7 @@ export function AddImages() {
         setUploaders([{ id: 0 }]);
       }
     })();
-  }, []);
+  }, [noteId]);
 
   const addUploader = () => {
     setUploaders((prev) => [

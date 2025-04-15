@@ -2,7 +2,7 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import NoteIcon from "@/icons/NoteIcon";
 import React from "react";
 
-export default function page() {
+export default function Page() {
   return (
     <Card className="mt-[8rem] p-4 bg-background max-w-[500px] mx-auto">
       <CardTitle className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderType, SerializedFolderType } from "@/lib/dbSchemas";
+import { SerializedFolderType } from "@/lib/dbSchemas";
 import { getAllFolders } from "@/lib/folders";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import CreateFolderButton from "./CreateFolderButton";
@@ -40,7 +40,7 @@ export default function FoldersList({
         console.error(err);
       }
     })();
-  }, []);
+  }, [category, subject]);
 
   return (
     <div className="flex gap-2 flex-col overflow-auto max-h-full h-full">

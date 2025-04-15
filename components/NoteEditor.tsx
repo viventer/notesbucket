@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import dynamic from "next/dynamic";
@@ -48,7 +49,7 @@ export default function NoteEditor({
         console.error(err);
       }
     })();
-  }, [isInputFocused]);
+  }, [isInputFocused, newTitle, noteId, previousTitle, showToast]);
 
   async function fillImageUrls(
     content: string,
@@ -100,7 +101,7 @@ export default function NoteEditor({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [content, noteImages, noteId, showToast]);
 
-  const handleEditorMount = (editor: any, monaco: any) => {
+  const handleEditorMount = (editor: any) => {
     if (typeof window !== "undefined" && (window as any).require) {
       (window as any).require.config({
         paths: {

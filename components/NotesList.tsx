@@ -1,7 +1,7 @@
 "use client";
 
 import { NoteMetadata } from "@/lib/notes";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NoteFromList from "./NoteFromList";
 import { useNotesMetadata } from "@/context/NotesMetadataContext";
 
@@ -24,7 +24,7 @@ export default function NotesList({ folderId, isVisible }: NotesListProps) {
       a.title.localeCompare(b.title)
     );
     setSortedNotes(notesData);
-  }, [notesMetadata]);
+  }, [notesMetadata, folderId]);
 
   return (
     <div

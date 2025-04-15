@@ -7,14 +7,6 @@ import { adminDB, adminStorage } from "./firebaseAdmin";
 import { revalidatePath } from "next/cache";
 import { checkRateLimit } from "./rateLimit";
 
-/**
- * Dodaje obraz notatki – zapisuje plik w Storage i dodaje dokument do Firestore.
- * @param buffer - zawartość pliku jako Buffer
- * @param fileName - nazwa pliku (np. "obraz.png")
- * @param contentType - typ MIME (np. "image/png")
- * @param noteId - identyfikator notatki, do której obraz należy
- * @returns obiekt zawierający URL obrazu oraz ID dokumentu obrazu
- */
 export async function addNoteImage(
   bufferString: string,
   fileName: string,
@@ -52,13 +44,6 @@ export async function addNoteImage(
   return { imageUrl, noteImageId: docRef.id };
 }
 
-/**
- * Uploaduje obraz do Cloud Storage przy użyciu Firebase Admin SDK.
- * @param buffer - zawartość pliku jako Buffer
- * @param fileName - nazwa pliku (np. "obraz.png")
- * @param contentType - typ MIME (np. "image/png")
- * @returns publiczny URL obrazu
- */
 export async function uploadImageToStorage(
   bufferString: string,
   fileName: string,

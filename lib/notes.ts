@@ -21,7 +21,6 @@ export async function getNoteById(
     redirect("/tooManyRequests");
   }
 
-  console.log("getNoteById");
   const isAuthorized = await checkIfAuthorized(["verified", "admin"]);
   if (!isAuthorized) {
     redirect("/unauthorized");
@@ -44,8 +43,6 @@ export async function getNoteById(
 }
 
 export async function getNotesMetadata(): Promise<NoteMetadata[]> {
-  console.log("getNotesMetadata");
-
   const snapshot = await adminDB.collection("notes").get();
   return snapshot.docs.map((doc) => {
     const data = doc.data();
@@ -60,7 +57,6 @@ export async function getNotesMetadata(): Promise<NoteMetadata[]> {
 export async function getNotesFromFolderMetadata(
   folderId: string
 ): Promise<NoteMetadata[]> {
-  console.log("getNotesFromFolderMetadata");
   const folderRef = adminDB.collection("folders").doc(folderId);
 
   const snapshot = await adminDB

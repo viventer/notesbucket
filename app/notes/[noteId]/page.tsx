@@ -10,9 +10,8 @@ export const revalidate = 86400;
 const cachedGetNoteById = cache(getNoteById);
 
 type Props = {
-  params: {
-    noteId: string;
-  };
+  params: Promise<{ noteId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata(props: Props) {
@@ -31,7 +30,7 @@ export async function generateMetadata(props: Props) {
   };
 }
 
-export default async function page(props: Props) {
+export default async function Page(props: Props) {
   const { noteId } = await props.params;
 
   const note: SerializedNoteType | null = await cachedGetNoteById(noteId);

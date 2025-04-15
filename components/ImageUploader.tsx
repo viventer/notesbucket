@@ -115,7 +115,7 @@ export default function ImageUploader({
         console.error(err);
       }
     })();
-  }, [isNameInputFocused]);
+  }, [isNameInputFocused, imageName, noteImageId, oldImageName, showToast]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

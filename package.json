@@ -29,7 +29,6 @@
     "firebase-functions": "^6.3.2",
     "firebase-tools": "^13.33.0",
     "jose": "^6.0.10",
-    "js-cookie": "^3.0.5",
     "lucide-react": "^0.477.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
     "monaco-vim": "^0.4.2",

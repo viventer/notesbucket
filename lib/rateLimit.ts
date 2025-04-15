@@ -18,7 +18,6 @@ export async function checkRateLimit(): Promise<boolean> {
   const allHeaders = await headers();
   const ip = allHeaders.get("x-forwarded-for") ?? "anonymous";
   const result = await ratelimit.limit(ip);
-  console.log(result.remaining);
 
   if (!result.success) {
     return false;
