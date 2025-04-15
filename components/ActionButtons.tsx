@@ -80,11 +80,11 @@ export default function ActionButtons({
   const actions: action[] = [
     { name: "copy", icon: Copy, handler: copy },
     { name: "downloadMd", icon: DownloadDoc, handler: downloadMd },
-    { name: "save", icon: Save, handler: saveNoteContent },
   ];
 
   if (mode == "edit") {
     actions.push(
+      { name: "save", icon: Save, handler: saveNoteContent },
       { name: "addImage", icon: AddImage, handler: addImage },
       { name: "delete", icon: DeleteIcon, handler: deleteNote }
     );
