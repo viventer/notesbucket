@@ -108,6 +108,7 @@ export const checkIfVerified = async (): Promise<boolean> => {
 
 export const getCurrentUserRole = async (): Promise<UserRole> => {
   const token = await getAuthToken();
+  console.log(token);
   if (!token) {
     return "unverified";
   }

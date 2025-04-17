@@ -16,6 +16,7 @@ export default function Button({ text }: { text: string }) {
     if (loading) {
       return;
     }
+    console.log(isVerified);
     const dest = isVerified ? "/notes" : user ? "/auth/waiting-room" : "/auth";
     setDestination(dest);
   }, [loading, user]);

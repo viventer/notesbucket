@@ -1,6 +1,9 @@
 "use client";
 
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useEffect } from "react";
+import { auth } from "@/lib/firebase";
+import { onIdTokenChanged } from "firebase/auth";
+import { setAuthToken } from "@/lib/auth";
 
 interface UserContextValue {
   role: string;
@@ -15,6 +18,19 @@ interface UserProviderProps {
 
 export const UserProvider = ({ children, role }: UserProviderProps) => {
   const value = { role };
+
+  useEffect(() => {
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        const token = await user.getIdToken();
+        await setAuthToken(token);
+      } else {
+        await setAuthToken("");
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
