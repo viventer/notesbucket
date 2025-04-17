@@ -4,17 +4,21 @@ import { auth } from "@/lib/firebase";
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useUser } from "./UserContext";
+import { useEffect, useState } from "react";
 
 export default function Button({ text }: { text: string }) {
   const [user, loading] = useAuthState(auth);
   const { role } = useUser();
   const isVerified = role !== "unverified";
+  const [destination, setDestination] = useState("/auth");
 
-  const destination = isVerified
-    ? "/notes"
-    : user
-    ? "/auth/waiting-room"
-    : "/auth";
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    const dest = isVerified ? "/notes" : user ? "/auth/waiting-room" : "/auth";
+    setDestination(dest);
+  }, [loading, user]);
 
   const buttonContent = (
     <button
