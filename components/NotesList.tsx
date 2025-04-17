@@ -4,6 +4,7 @@ import { getNotesFromFolderMetadata, NoteMetadata } from "@/lib/notes";
 import { useEffect, useState } from "react";
 import NoteFromList from "./NoteFromList";
 import { useToast } from "@/hooks/useToast";
+import MiniLoader from "./MiniLoader";
 
 type NotesListProps = {
   folderId: string;
@@ -30,11 +31,13 @@ export default function NotesList({
     <div
       className={`ml-4 flex flex-col gap-1 mt-1 ${isVisible ? "" : "hidden"}`}
     >
-      {sortedNotes
-        ? sortedNotes.map((note) => (
-            <NoteFromList key={note.id} note={note} folderId={folderId} />
-          ))
-        : "loading"}
+      {sortedNotes ? (
+        sortedNotes.map((note) => (
+          <NoteFromList key={note.id} note={note} folderId={folderId} />
+        ))
+      ) : (
+        <MiniLoader />
+      )}
     </div>
   );
 }
