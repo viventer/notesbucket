@@ -1,21 +1,22 @@
 "use client";
 
-import { getNotesFromFolderMetadata, NoteMetadata } from "@/lib/notes";
-import { useEffect, useState } from "react";
+import { NoteMetadata } from "@/lib/notes";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import NoteFromList from "./NoteFromList";
-import { useToast } from "@/hooks/useToast";
 import MiniLoader from "./MiniLoader";
 
 type NotesListProps = {
   folderId: string;
   isVisible: boolean;
   notesMetadata: NoteMetadata[] | null;
+  setNotesMetadata: Dispatch<SetStateAction<NoteMetadata[] | null>>;
 };
 
 export default function NotesList({
   folderId,
   isVisible,
   notesMetadata,
+  setNotesMetadata,
 }: NotesListProps) {
   const [sortedNotes, setSortedNotes] = useState<null | NoteMetadata[]>(null);
 
@@ -33,7 +34,12 @@ export default function NotesList({
     >
       {sortedNotes ? (
         sortedNotes.map((note) => (
-          <NoteFromList key={note.id} note={note} folderId={folderId} />
+          <NoteFromList
+            key={note.id}
+            note={note}
+            folderId={folderId}
+            setNotesMetadata={setNotesMetadata}
+          />
         ))
       ) : (
         <MiniLoader />

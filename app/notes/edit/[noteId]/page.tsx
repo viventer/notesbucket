@@ -22,7 +22,7 @@ export async function generateMetadata(props: Props) {
 
   if (!note) {
     return {
-      title: "Note not found",
+      title: "Nie znaleziono notatki",
     };
   }
 

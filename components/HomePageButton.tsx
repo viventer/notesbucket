@@ -9,14 +9,14 @@ import { useEffect, useState } from "react";
 export default function Button({ text }: { text: string }) {
   const [user, loading] = useAuthState(auth);
   const { role } = useUser();
-  const isVerified = role !== "unverified";
   const [destination, setDestination] = useState("/auth");
 
   useEffect(() => {
     if (loading) {
       return;
     }
-    const dest = isVerified ? "/notes" : user ? "/auth/waiting-room" : "/auth";
+    const dest =
+      role !== "unverified" ? "/notes" : user ? "/auth/waiting-room" : "/auth";
     setDestination(dest);
   }, [loading, user]);
 

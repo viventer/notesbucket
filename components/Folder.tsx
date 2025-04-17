@@ -192,6 +192,7 @@ export default function Folder({
           folderId={folder.id}
           isVisible={isExpanded}
           notesMetadata={notesMetadata}
+          setNotesMetadata={setNotesMetadata}
         />
       )}
     </div>

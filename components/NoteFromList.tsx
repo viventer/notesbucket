@@ -9,18 +9,29 @@ import { truncateString } from "@/lib/utils";
 import Link from "next/link";
 import ChangeNoteLocation from "./ChangeNoteLocation";
 import { useParams } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 
 export default function NoteFromList({
   note,
   folderId,
+  setNotesMetadata,
 }: {
   note: NoteMetadata;
   folderId: string;
+  setNotesMetadata: Dispatch<SetStateAction<NoteMetadata[] | null>>;
 }) {
   const { deleteNoteHandler } = useDeleteNote();
   const isEditView = useIsEditView();
 
   const { noteId: selectedNoteId }: { noteId: string } = useParams();
+
+  const handleDelete = () => {
+    deleteNoteHandler(selectedNoteId);
+    setNotesMetadata((prev) => {
+      if (!prev) return null;
+      return prev?.filter((noteMetadata) => noteMetadata.id !== selectedNoteId);
+    });
+  };
 
   return (
     <div key={note.id} className="flex items-center gap-4">
@@ -47,7 +58,7 @@ export default function NoteFromList({
             noteId={note.id}
           />
           <button
-            onClick={() => deleteNoteHandler(note.id)}
+            onClick={() => handleDelete()}
             className=" hover:text-destructive"
           >
             <DeleteIcon className="size-4" />
