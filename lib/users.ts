@@ -185,3 +185,20 @@ export const getUser = async (userId: string): Promise<UserType> => {
 
   return userData;
 };
+
+export const deleteUser = async (userId: string): Promise<void> => {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
+  const isAuthorized = await checkIfAuthorized(["admin"]);
+  if (!isAuthorized) {
+    redirect("/unauthorized");
+  }
+
+  const userRef = adminDB.collection("users").doc(userId);
+  userRef.delete();
+
+  revalidatePath("/users");
+};

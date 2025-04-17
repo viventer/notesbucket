@@ -33,7 +33,7 @@ export function ConfirmDialog({
 }: AlertConfirmProps) {
   return (
     <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
-      <AlertDialogContent className="border-primary max-w-[90%]">
+      <AlertDialogContent className="border-primary max-w-[90%] lg:max-w-[600px]">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex">{message}</AlertDialogTitle>
           {description && (

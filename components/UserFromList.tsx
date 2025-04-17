@@ -4,6 +4,8 @@ import { UserType } from "@/lib/dbSchemas";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import ChangeRoleButton from "./ChangeRoleButton";
+import DeleteIcon from "@/icons/DeleteIcon";
+import DeleteUserButton from "./DeleteUserButton";
 
 type UserWithoutCategories = Omit<UserType, "createdAt">;
 
@@ -18,6 +20,7 @@ export default function UserFromList({
     <li className="flex flex-col gap-2">
       <section className="flex items-center gap-4 w-full justify-between">
         <div className="flex items-center gap-2">
+          <DeleteUserButton userId={userData.id} />
           <ChangeRoleButton oldRole={userData.role} userId={userData.id} />
           <p className="text-text">
             {userData.firstName} {userData.lastName}
