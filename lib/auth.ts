@@ -120,3 +120,16 @@ export const getCurrentUserRole = async (): Promise<UserRole> => {
 
   return role;
 };
+
+export const getCurrentUserId = async (): Promise<string | null> => {
+  const token = await getAuthToken();
+  if (!token) {
+    return null;
+  }
+  const reqUserId = await getUserIdFromToken(token);
+  if (!reqUserId) {
+    return null;
+  }
+
+  return reqUserId;
+};

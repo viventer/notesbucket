@@ -6,12 +6,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import NameForm from "@/components/NameForm";
-import { checkIfNewUser } from "@/lib/auth";
+import { getCurrentUserId } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getUserName } from "@/lib/users";
 
 export default async function Page() {
-  const isNewUser = await checkIfNewUser();
-  if (!isNewUser) {
+  const userId = await getCurrentUserId();
+  if (!userId) {
+    redirect("/auth");
+  }
+  const { firstName, lastName } = await getUserName(userId);
+  if (firstName && lastName) {
     redirect("/");
   }
 
