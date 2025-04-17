@@ -13,11 +13,15 @@ import { checkIfNewUser, setAuthToken } from "@/lib/auth";
 import { UserType } from "@/lib/dbSchemas";
 import { auth, googleAuthProvider } from "@/lib/firebase";
 import { createUser, getUserName, getUserPerms } from "@/lib/users";
-import { onIdTokenChanged, signInWithPopup } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import Loader from "./Loader";
 
 export default function AuthForm() {
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
@@ -30,6 +34,9 @@ export default function AuthForm() {
         };
         window.addEventListener("focus", handler);
       });
+
+      setIsLoading(true);
+
       const user = result.user;
       const token = await user.getIdToken();
       await setAuthToken(token);
@@ -72,8 +79,13 @@ export default function AuthForm() {
     } catch (error) {
       showToast("Błąd logowania.", "error");
       console.error(error);
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Card>

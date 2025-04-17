@@ -12,9 +12,6 @@ const { FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL } =
   process.env;
 
 if (!FIREBASE_PROJECT_ID || !FIREBASE_PRIVATE_KEY || !FIREBASE_CLIENT_EMAIL) {
-  console.log("projectid: ", !FIREBASE_PROJECT_ID);
-  console.log("private key: ", !FIREBASE_PRIVATE_KEY);
-  console.log("client email: ", !FIREBASE_CLIENT_EMAIL);
   throw new Error(
     "Brakuje jednej lub więcej zmiennych środowiskowych Firebase!"
   );

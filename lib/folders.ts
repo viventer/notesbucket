@@ -15,6 +15,7 @@ import { redirect } from "next/navigation";
 import { checkRateLimit } from "./rateLimit";
 
 export async function getAllFolders(): Promise<SerializedFolderType[]> {
+  console.log("getAllFolders");
   const foldersSnapshot = await adminDB.collection("folders").get();
   const initialFolders = foldersSnapshot.docs.map((doc) => ({
     ...FolderSchema.parse(doc.data()),

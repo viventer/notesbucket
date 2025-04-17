@@ -43,6 +43,7 @@ export async function getNoteById(
 }
 
 export async function getNotesMetadata(): Promise<NoteMetadata[]> {
+  console.log("getNotesMetadata");
   const snapshot = await adminDB.collection("notes").get();
   return snapshot.docs.map((doc) => {
     const data = doc.data();

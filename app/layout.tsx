@@ -29,7 +29,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const role = await getCurrentUserRole();
-  console.log(role);
 
   return (
     <html
