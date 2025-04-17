@@ -4,7 +4,6 @@ import { UserType } from "@/lib/dbSchemas";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import ChangeRoleButton from "./ChangeRoleButton";
-import DeleteIcon from "@/icons/DeleteIcon";
 import DeleteUserButton from "./DeleteUserButton";
 
 type UserWithoutCategories = Omit<UserType, "createdAt">;

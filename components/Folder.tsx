@@ -99,7 +99,7 @@ export default function Folder({
         showToast(`Błąd pobierania: ${err}`, "error");
       }
     })();
-  }, [isExpanded]);
+  }, [isExpanded, folder.id, showToast]);
 
   return (
     <div

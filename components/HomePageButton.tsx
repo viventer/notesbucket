@@ -18,7 +18,7 @@ export default function Button({ text }: { text: string }) {
     const dest =
       role !== "unverified" ? "/notes" : user ? "/auth/waiting-room" : "/auth";
     setDestination(dest);
-  }, [loading, user]);
+  }, [loading, user, role]);
 
   const buttonContent = (
     <button
