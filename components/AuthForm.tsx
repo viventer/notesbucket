@@ -63,7 +63,6 @@ export default function AuthForm() {
 
       const { firstName, lastName } = await getUserName(user.uid);
       if (!firstName || !lastName) {
-        console.log("srututu");
         router.replace("/auth/complete-profile");
         return;
       }
