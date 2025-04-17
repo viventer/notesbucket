@@ -160,7 +160,10 @@ export default function Folder({
                 >
                   <EditIcon className="size-4" />
                 </button>
-                <CreateNoteButton folderId={folder.id} />
+                <CreateNoteButton
+                  folderId={folder.id}
+                  setNotesMetadata={setNotesMetadata}
+                />
               </div>
             )}
           </div>

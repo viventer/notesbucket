@@ -26,10 +26,10 @@ export default function NoteFromList({
   const { noteId: selectedNoteId }: { noteId: string } = useParams();
 
   const handleDelete = () => {
-    deleteNoteHandler(selectedNoteId);
+    deleteNoteHandler(note.id);
     setNotesMetadata((prev) => {
       if (!prev) return null;
-      return prev?.filter((noteMetadata) => noteMetadata.id !== selectedNoteId);
+      return prev?.filter((noteMetadata) => noteMetadata.id !== note.id);
     });
   };
 

@@ -3,10 +3,17 @@
 import { useToast } from "@/hooks/useToast";
 import AddNote from "@/icons/AddNote";
 import { SerializedNoteType } from "@/lib/dbSchemas";
-import { createNote, getNoteById } from "@/lib/notes";
+import { createNote, getNoteById, NoteMetadata } from "@/lib/notes";
 import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 
-export default function CreateNoteButton({ folderId }: { folderId: string }) {
+export default function CreateNoteButton({
+  folderId,
+  setNotesMetadata,
+}: {
+  folderId: string;
+  setNotesMetadata: Dispatch<SetStateAction<NoteMetadata[] | null>>;
+}) {
   const router = useRouter();
   const { showToast } = useToast();
 
@@ -19,6 +26,18 @@ export default function CreateNoteButton({ folderId }: { folderId: string }) {
       if (!createdNote) {
         throw new Error("Nie znaleziono nowej notatki w bazie.");
       }
+      const createdNoteMetadata: NoteMetadata = {
+        id: createdNote.id,
+        title: createdNote.title,
+        parentFolderId: createdNote.parentFolderId,
+      };
+
+      setNotesMetadata((prev) => {
+        if (prev) {
+          return [...prev, createdNoteMetadata];
+        }
+        return null;
+      });
 
       router.push(`/notes/edit/${createdNoteId}`);
       showToast("Nowa notatka została utworzona.", "success");
