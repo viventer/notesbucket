@@ -163,7 +163,7 @@ export default function NoteEditor({
             lineNumbers: "on",
             lineNumbersMinChars: 4,
             padding: { top: 16, bottom: 16 },
-            fontSize: 16,
+            fontSize: 18,
             fontFamily: "Ubuntu mono, monospace",
           }}
         />
