@@ -16,6 +16,8 @@ import DeleteFolderButton from "./DeleteFolderButton";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { serializeFolder } from "@/lib/serializing";
+import { getNotesFromFolderMetadata, NoteMetadata } from "@/lib/notes";
+import { useToast } from "@/hooks/useToast";
 
 interface FolderProps {
   folder: SerializedFolderType;
@@ -78,6 +80,26 @@ export default function Folder({
       setIsExpanded((prev) => !prev);
     }
   };
+
+  const { showToast } = useToast();
+
+  const [notesMetadata, setNotesMetadata] = useState<null | NoteMetadata[]>(
+    null
+  );
+
+  useEffect(() => {
+    if (!isExpanded || notesMetadata) {
+      return;
+    }
+    (async () => {
+      try {
+        const data = await getNotesFromFolderMetadata(folder.id);
+        setNotesMetadata(data);
+      } catch (err) {
+        showToast(`Błąd pobierania: ${err}`, "error");
+      }
+    })();
+  }, [isExpanded]);
 
   return (
     <div
@@ -165,7 +187,13 @@ export default function Folder({
           />
         ))}
       </div>
-      {!isToSelect && <NotesList folderId={folder.id} isVisible={isExpanded} />}
+      {!isToSelect && isExpanded && (
+        <NotesList
+          folderId={folder.id}
+          isVisible={isExpanded}
+          notesMetadata={notesMetadata}
+        />
+      )}
     </div>
   );
 }
