@@ -43,6 +43,11 @@ export async function getNoteById(
 }
 
 export async function getNotesMetadata(): Promise<NoteMetadata[]> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const snapshot = await adminDB.collection("notes").get();
   return snapshot.docs.map((doc) => {
     const data = doc.data();
@@ -57,6 +62,11 @@ export async function getNotesMetadata(): Promise<NoteMetadata[]> {
 export async function getNotesFromFolderMetadata(
   folderId: string
 ): Promise<NoteMetadata[]> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const folderRef = adminDB.collection("folders").doc(folderId);
 
   const snapshot = await adminDB

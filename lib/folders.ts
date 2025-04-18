@@ -15,6 +15,11 @@ import { redirect } from "next/navigation";
 import { checkRateLimit } from "./rateLimit";
 
 export async function getAllFolders(): Promise<SerializedFolderType[]> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const foldersSnapshot = await adminDB.collection("folders").get();
   const initialFolders = foldersSnapshot.docs.map((doc) => ({
     ...FolderSchema.parse(doc.data()),
@@ -45,6 +50,11 @@ export async function getAllFolders(): Promise<SerializedFolderType[]> {
 }
 
 export async function getRootFolders(): Promise<SerializedFolderType[]> {
+  const isAllowed = await checkRateLimit();
+  if (!isAllowed) {
+    redirect("/tooManyRequests");
+  }
+
   const snapshot = await adminDB
     .collection("folders")
     .where("parentFolderRef", "==", null)
