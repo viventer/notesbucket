@@ -6,8 +6,6 @@ import { getAllNoteImages } from "@/lib/notesImages";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
-export const revalidate = 86400;
-
 const cachedGetNoteById = cache(getNoteById);
 
 type Props = {

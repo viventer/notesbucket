@@ -5,8 +5,6 @@ import { getNoteById } from "@/lib/notes";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
-export const revalidate = 86400;
-
 const cachedGetNoteById = cache(getNoteById);
 
 type Props = {
