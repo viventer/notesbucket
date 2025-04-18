@@ -44,6 +44,20 @@ export async function getAllFolders(): Promise<SerializedFolderType[]> {
   return serializedRootFolders;
 }
 
+export async function getRootFolders(): Promise<SerializedFolderType[]> {
+  const snapshot = await adminDB
+    .collection("folders")
+    .where("parentFolderRef", "==", null)
+    .get();
+
+  const rootFolders = snapshot.docs.map((doc) => {
+    const folder = FolderSchema.parse(doc.data());
+    return serializeFolder(folder);
+  });
+
+  return rootFolders;
+}
+
 export async function getFolderData(
   folderId: string
 ): Promise<SerializedFolderType> {

@@ -22,6 +22,7 @@ export const UserProvider = ({ children, role }: UserProviderProps) => {
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
       if (user) {
+        console.log("teraz");
         const token = await user.getIdToken();
         await setAuthToken(token);
       } else {
