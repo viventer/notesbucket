@@ -127,7 +127,7 @@ export default function NoteEditor({
   useEffect(() => {
     const intervalId = setInterval(async () => {
       await saveNote(contentRef.current);
-    }, 300000);
+    }, 900000);
 
     return () => {
       clearInterval(intervalId);
