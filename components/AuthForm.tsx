@@ -25,32 +25,24 @@ export default function AuthForm() {
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
+    setIsLoading(true);
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
-      await new Promise((resolve) => {
-        const handler = () => {
-          resolve(null);
-          window.removeEventListener("focus", handler);
-        };
-        window.addEventListener("focus", handler);
-      });
-
-      setIsLoading(true);
-
       const user = result.user;
+      if (!user) throw new Error("Brak użytkownika po logowaniu");
+
       const token = await user.getIdToken();
       await setAuthToken(token);
 
-      if (!user) throw new Error("Wystąpił błąd podczas logowania.");
-
       const isNewUser = await checkIfNewUser();
-
       if (isNewUser) {
+        const [firstName = "", lastName = ""] =
+          user.displayName?.split(" ") || [];
         const userData: UserType = {
           id: user.uid,
-          firstName: user.displayName?.split(" ")[0] || "",
-          lastName: user.displayName?.split(" ")[1] || "",
-          email: user.email || "  ",
+          firstName,
+          lastName,
+          email: user.email || "",
           role: "unverified",
           availableCategories: [],
           createdAt: new Date(),
@@ -74,11 +66,13 @@ export default function AuthForm() {
       }
 
       router.replace("/notes");
-
       showToast("Pomyślnie zalogowano.", "success");
+
+      setIsLoading(false);
     } catch (error) {
-      showToast("Błąd logowania.", "error");
       console.error(error);
+      showToast("Błąd logowania.", "error");
+
       setIsLoading(false);
     }
   };
