@@ -116,9 +116,13 @@ export const getCurrentUserRole = async (): Promise<UserRole> => {
     return "unverified";
   }
 
-  const { role } = await getUserPerms(reqUserId);
-
-  return role;
+  try {
+    const { role } = await getUserPerms(reqUserId);
+    return role;
+  } catch (err) {
+    console.error(err);
+    return "unverified";
+  }
 };
 
 export const getCurrentUserId = async (): Promise<string | null> => {

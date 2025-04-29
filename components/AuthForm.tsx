@@ -25,9 +25,9 @@ export default function AuthForm() {
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true);
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
+      setIsLoading(true);
       const user = result.user;
       if (!user) throw new Error("Brak użytkownika po logowaniu");
 
