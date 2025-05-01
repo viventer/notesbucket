@@ -12,7 +12,7 @@ export default function Button({ text }: { text: string }) {
   const [destination, setDestination] = useState("/auth");
 
   useEffect(() => {
-    if (loading) {
+    if (loading || !role) {
       return;
     }
     const dest =
@@ -24,7 +24,7 @@ export default function Button({ text }: { text: string }) {
     <button
       className="bg-opacity-0 text-center w-fit rounded-sm relative text-text font-semibold group overflow-hidden text-xl pr-2 h-8 sm:text-2xl sm:h-10 sm:pr-4 sm:rounded-lg md:h-12 md:pr-7 md:text-3xl xl:text-4xl xl:h-14 xl:pr-9 disabled:cursor-not-allowed"
       type="button"
-      disabled={loading}
+      disabled={loading || !role}
     >
       <p className="mr-[2rem] ml-[2rem]">{text}</p>
       <div className="bg-secondary rounded-sm h-full w-8 flex items-center justify-center absolute right-0 top-0 group-hover:w-full z-10 duration-500 text-background sm:rounded-lg sm:w-10 md:w-12 xl:w-14">
