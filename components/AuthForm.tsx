@@ -31,7 +31,7 @@ export default function AuthForm() {
       const user = result.user;
       if (!user) throw new Error("Brak użytkownika po logowaniu");
 
-      const token = await user.getIdToken();
+      const token = await user.getIdToken(true);
       await setAuthToken(token);
 
       const isNewUser = await checkIfNewUser();

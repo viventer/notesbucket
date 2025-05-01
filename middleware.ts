@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     const decodedToken = decodeJwt(token) as { uid: string; exp: number };
 
     if (decodedToken.exp * 1000 < Date.now()) {
-      return NextResponse.redirect(new URL("/auth", req.url));
+      return NextResponse.redirect(new URL("/auth/refresh-token", req.url));
     }
   } catch (err) {
     console.error("Token nieprawidłowy lub brak:", err);

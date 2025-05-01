@@ -20,7 +20,7 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    if (loading) {
+    if (loading || !role) {
       return;
     }
 
