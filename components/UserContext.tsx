@@ -1,22 +1,51 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
+import { auth } from "@/lib/firebase";
+import { onIdTokenChanged } from "firebase/auth";
+import { getCurrentUserRole, setAuthToken } from "@/lib/auth";
+import { UserRole } from "@/lib/dbSchemas";
 
 interface UserContextValue {
-  role: string;
+  role: UserRole;
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined);
 
 interface UserProviderProps {
   children: ReactNode;
-  role: string;
 }
 
-export const UserProvider = ({ children, role }: UserProviderProps) => {
-  const value = { role };
+export const UserProvider = ({ children }: UserProviderProps) => {
+  const [role, setRole] = useState<UserRole>("unverified");
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  useEffect(() => {
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        const token = await user.getIdToken();
+        await setAuthToken(token);
+
+        const value = await getCurrentUserRole();
+        if (value) {
+          setRole(value);
+        }
+      } else {
+        await setAuthToken("");
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  return (
+    <UserContext.Provider value={{ role }}>{children}</UserContext.Provider>
+  );
 };
 
 export const useUser = () => {

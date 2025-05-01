@@ -73,7 +73,7 @@ export default function AuthForm() {
         return;
       }
 
-      router.replace("/notes");
+      await router.replace("/notes");
       showToast("Pomyślnie zalogowano.", "success");
 
       setIsLoading(false);

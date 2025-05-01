@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 export default async function Auth() {
   const token = await getAuthToken();
   if (token) {
-    redirect("/notes");
+    redirect("/");
   }
 
   return <AuthForm />;

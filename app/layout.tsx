@@ -3,7 +3,6 @@ import { Ubuntu, Ubuntu_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "@/components/ConfirmDialogProvider";
-import { getCurrentUserRole } from "@/lib/auth";
 import { UserProvider } from "@/components/UserContext";
 
 const ubuntuSans = Ubuntu({
@@ -28,8 +27,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const role = await getCurrentUserRole();
-
   return (
     <html
       lang="pl"
@@ -38,7 +35,7 @@ export default async function RootLayout({
       <body
         className={`${ubuntuSans.variable} ${ubuntuMono.variable} antialiased font-sans bg-background text-text`}
       >
-        <UserProvider role={role}>
+        <UserProvider>
           <ConfirmDialogProvider>
             {children}
             <Toaster

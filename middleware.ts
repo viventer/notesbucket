@@ -6,21 +6,22 @@ import { cookies } from "next/headers";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  if (pathname === "/auth") {
+    return NextResponse.next();
+  }
+
   const allCookies = await cookies();
   const token = allCookies.get("firebaseIdToken")?.value;
 
   if (!token) {
-    if (pathname !== "/auth") {
-      return NextResponse.redirect(new URL("/auth", req.url));
-    }
-    return NextResponse.next();
+    return NextResponse.redirect(new URL("/auth", req.url));
   }
 
   try {
     const decodedToken = decodeJwt(token) as { uid: string; exp: number };
 
     if (decodedToken.exp * 1000 < Date.now()) {
-      return NextResponse.redirect(new URL("/auth/refresh-token", req.url));
+      return NextResponse.redirect(new URL("/auth", req.url));
     }
   } catch (err) {
     console.error("Token nieprawidłowy lub brak:", err);
