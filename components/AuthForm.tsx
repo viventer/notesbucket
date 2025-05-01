@@ -53,15 +53,23 @@ export default function AuthForm() {
         return;
       }
 
-      const { firstName, lastName } = await getUserName(user.uid);
-      if (!firstName || !lastName) {
-        router.replace("/auth/complete-profile");
-        return;
-      }
+      try {
+        const { firstName, lastName } = await getUserName(user.uid);
+        if (!firstName || !lastName) {
+          router.replace("/auth/complete-profile");
+          return;
+        }
 
-      const { role } = await getUserPerms(user.uid);
-      if (role === "unverified") {
-        router.replace("/auth/waiting-room");
+        const { role } = await getUserPerms(user.uid);
+
+        if (role === "unverified") {
+          router.replace("/auth/waiting-room");
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Błąd pobierania danych nowego użytkownika.", "error");
+        setIsLoading(false);
         return;
       }
 

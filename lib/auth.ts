@@ -71,8 +71,13 @@ export const checkIfAuthorized = async (
     return true;
   }
 
-  const { role } = await getUserPerms(reqUserId);
-  return authorizedRoles.includes(role);
+  try {
+    const { role } = await getUserPerms(reqUserId);
+    return authorizedRoles.includes(role);
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
 
 export const getUserIdFromToken = async (
@@ -102,8 +107,13 @@ export const checkIfVerified = async (): Promise<boolean> => {
     return false;
   }
 
-  const { role } = await getUserPerms(reqUserId);
-  return role === "verified" || role === "admin";
+  try {
+    const { role } = await getUserPerms(reqUserId);
+    return role === "verified" || role === "admin";
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
 
 export const getCurrentUserRole = async (): Promise<UserRole> => {

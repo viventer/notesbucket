@@ -15,9 +15,14 @@ export default async function Page() {
   if (!userId) {
     redirect("/auth");
   }
-  const { firstName, lastName } = await getUserName(userId);
-  if (firstName && lastName) {
-    redirect("/");
+  try {
+    const { firstName, lastName } = await getUserName(userId);
+    if (firstName && lastName) {
+      redirect("/");
+    }
+  } catch (err) {
+    console.error("Błąd podczas pobierania nazwy użytkownika.", err);
+    redirect("/auth");
   }
 
   return (
