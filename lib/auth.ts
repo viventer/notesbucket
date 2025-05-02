@@ -75,7 +75,7 @@ export const checkIfAuthorized = async (
     const { role } = await getUserPerms(reqUserId);
     return authorizedRoles.includes(role);
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return false;
   }
 };
@@ -87,7 +87,7 @@ export const getUserIdFromToken = async (
   try {
     decodedToken = await adminAuth.verifyIdToken(token);
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return null;
   }
   if (!decodedToken?.uid) {
@@ -111,7 +111,7 @@ export const checkIfVerified = async (): Promise<boolean> => {
     const { role } = await getUserPerms(reqUserId);
     return role === "verified" || role === "admin";
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return false;
   }
 };
@@ -130,7 +130,7 @@ export const getCurrentUserRole = async (): Promise<UserRole> => {
     const { role } = await getUserPerms(reqUserId);
     return role;
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return "unverified";
   }
 };

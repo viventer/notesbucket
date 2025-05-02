@@ -67,8 +67,7 @@ export default function AuthForm() {
           return;
         }
       } catch (err) {
-        console.error(err);
-        showToast("Błąd pobierania danych nowego użytkownika.", "error");
+        showToast(`Błąd pobierania danych nowego użytkownika: ${err}`, "error");
         setIsLoading(false);
         return;
       }

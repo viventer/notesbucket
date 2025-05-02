@@ -15,14 +15,17 @@ export default async function Page() {
   if (!userId) {
     redirect("/auth");
   }
+
+  let name: { firstName: string; lastName: string } | null = null;
   try {
-    const { firstName, lastName } = await getUserName(userId);
-    if (firstName && lastName) {
-      redirect("/");
-    }
+    name = await getUserName(userId);
   } catch (err) {
     console.error("Błąd podczas pobierania nazwy użytkownika.", err);
     redirect("/auth");
+  }
+
+  if (name?.firstName && name?.lastName) {
+    redirect("/auth/waiting-room");
   }
 
   return (

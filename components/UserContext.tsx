@@ -6,6 +6,7 @@ import {
   ReactNode,
   useEffect,
   useState,
+  useMemo,
 } from "react";
 import { auth } from "@/lib/firebase";
 import { onIdTokenChanged } from "firebase/auth";
@@ -31,9 +32,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         const token = await user.getIdToken();
         await setAuthToken(token);
 
-        const value = await getCurrentUserRole();
-        if (value) {
-          setRole(value);
+        try {
+          const value = await getCurrentUserRole();
+          if (value && value !== role) {
+            setRole(value);
+          }
+        } catch (err) {
+          console.log("Użytkownik nie został jeszcze utworzony");
         }
       } else {
         await setAuthToken("");
@@ -41,10 +46,12 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [role]);
+
+  const contextValue = useMemo(() => ({ role }), [role]);
 
   return (
-    <UserContext.Provider value={{ role }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
   );
 };
 

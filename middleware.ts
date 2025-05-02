@@ -24,7 +24,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/auth", req.url));
     }
   } catch (err) {
-    console.error("Token nieprawidłowy lub brak:", err);
+    console.log("Token nieprawidłowy lub brak:", err);
     return NextResponse.redirect(new URL("/auth", req.url));
   }
 
