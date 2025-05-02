@@ -25,9 +25,9 @@ export default function Page() {
     }
 
     if (role !== "unverified") {
-      router.replace("/notes");
+      window.location.replace("/notes");
     } else if (!user) {
-      router.replace("/auth");
+      window.location.replace("/auth");
     }
   }, [role, loading, router, user]);
 
