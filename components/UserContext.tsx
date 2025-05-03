@@ -38,7 +38,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
             setRole(value);
           }
         } catch (err) {
-          console.log("Użytkownik nie został jeszcze utworzony");
+          console.log(`Użytkownik nie został jeszcze utworzony: ${err}`);
         }
       } else {
         await setAuthToken("");
