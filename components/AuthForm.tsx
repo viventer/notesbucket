@@ -68,14 +68,11 @@ export default function AuthForm() {
         }
       } catch (err) {
         showToast(`Błąd pobierania danych nowego użytkownika: ${err}`, "error");
-        setIsLoading(false);
         return;
       }
 
       await router.replace("/notes");
       showToast("Pomyślnie zalogowano.", "success");
-
-      setIsLoading(false);
     } catch (error) {
       console.error(error);
       showToast("Błąd logowania.", "error");
