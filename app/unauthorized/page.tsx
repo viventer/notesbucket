@@ -19,7 +19,7 @@ export default function Page() {
             <h2 className="text-[2rem] font-[500]">Brak dostępu</h2>
           </CardTitle>
           <CardDescription>
-            Nie masz uprawnień do rządanego zasobu. Jeśli uważasz, że to błąd -
+            Nie masz uprawnień do żądanego zasobu. Jeśli uważasz, że to błąd -
             skontaktuj się z administratorem.
           </CardDescription>
         </CardHeader>
