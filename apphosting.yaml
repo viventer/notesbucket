@@ -21,7 +21,7 @@ env:
     value: firebase-adminsdk-fbsvc@notesbucket-firebase.iam.gserviceaccount.com
 
   - variable: UPSTASH_REDIS_REST_URL
-    value: https://daring-ram-12905.upstash.io
+    value: https://infinite-buffalo-188114.upstash.io
 
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     secret: NEXT_PUBLIC_FIREBASE_API_KEY
