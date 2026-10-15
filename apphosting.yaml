@@ -1,27 +1,27 @@
 env:
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: notesbucket-firebase.firebaseapp.com
+    secret: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
 
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: notesbucket-firebase
+    secret: NEXT_PUBLIC_FIREBASE_PROJECT_ID
 
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: notesbucket-firebase.firebasestorage.app
+    secret: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: 15492670104
+    secret: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: 1:15492670104:web:a091bad9d0c0749e53e6ed
+    secret: NEXT_PUBLIC_FIREBASE_APP_ID
 
   - variable: FIREBASE_PROJECT_ID
-    value: notesbucket-firebase
+    secret: FIREBASE_PROJECT_ID
 
   - variable: FIREBASE_CLIENT_EMAIL
-    value: firebase-adminsdk-fbsvc@notesbucket-firebase.iam.gserviceaccount.com
+    secret: FIREBASE_CLIENT_EMAIL
 
   - variable: UPSTASH_REDIS_REST_URL
-    value: https://infinite-buffalo-188114.upstash.io
+    secret: UPSTASH_REDIS_REST_URL
 
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     secret: NEXT_PUBLIC_FIREBASE_API_KEY
