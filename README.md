@@ -2,6 +2,8 @@
 
 All your notes in one place.
 
+Built from March to May 2025.
+
 Live app: [notesbucket.pl](https://notesbucket.pl)
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
